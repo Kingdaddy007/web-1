@@ -63,12 +63,12 @@ Use one pinned media viewport rather than four independent cards.
 
 Suggested image sequence:
 
-1. `akoka-site-ceiling-open.jpg` — reading the exposed room and ceiling structure;
-2. `akoka-site-conversation.jpg` — aligning decisions with the site team;
+1. `akoka-site-ceiling-open-wide-clean-v1.png` — reading the exposed room and ceiling structure;
+2. `akoka-site-conversation-wide-clean-v1.png` — aligning decisions with the site team;
 3. `akoka-site-painting-wide-clean-v1.png` — refining light, texture, and finish;
-4. `akoka-site-installation.jpg` or a future clean landscape derivative — carrying the work into a resolved atmosphere.
+4. `akoka-site-installation-wide-clean-v1.png` — carrying the work into a resolved atmosphere.
 
-The supplied originals are portrait source evidence. Do not crop away the communication subject merely to fit a landscape box. Use clean 16:9 derivatives when available. Preserve the originals unchanged.
+The supplied originals are portrait source evidence. The complete clean 16:9 derivative set is now available under `public/assets/`; use those four files in the fixed process window and preserve every original unchanged.
 
 ## Copy direction
 
@@ -106,8 +106,8 @@ Per-image copy may use:
 
 ## Image generation boundary
 
-- `public/assets/akoka-site-painting-wide-clean-v1.png` is the first generated 16:9 feasibility test.
-- It removes the embedded `INVESTING` text and TTA watermark and outpaints the portrait source into a landscape room.
+- Four generated 16:9 derivatives are available for ceiling supervision, site conversation, wall refinement, and final installation.
+- They remove embedded social words and TTA watermarks and outpaint each portrait source into a landscape room.
 - Generated side areas are speculative. Keep the asset clearly labeled as a derivative and do not describe it as an untouched documentary photograph.
 - Do not overwrite any original selected visual.
 - If producing further derivatives, use versioned filenames and record the exact prompt and source.
@@ -145,4 +145,3 @@ Report:
 - build and browser-test results;
 - remaining visual or truth-boundary risks;
 - the final commit hash pushed to `experiment/process-window-parallax`.
-
