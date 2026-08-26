@@ -78,9 +78,10 @@
 ### Decision 009: Single-Action Axis Light Threshold
 
 - **Date:** 2026-08-26
-- **Status:** SELECTED REFINEMENT FOR LIVE REVIEW
+- **Status:** APPROVED WORKING HERO
 - **Decision:** Reject the Hinged Elevation for the current hero and collapse the Axis Light Commissioning experiment from two consecutive effects into one arrival law.
 - **Motion law:** The approved logo resolves through 3.05 seconds. Its D-axis becomes a full-height light datum. Two proportional light fronts travel outward from that real axis, reveal the room, and finish together. The room then holds before typography enters.
 - **Removed:** Refractive membrane bending, post-reveal commissioning pass, folded room planes, secondary wipe, and opening-stage scroll choreography.
 - **Scroll boundary:** Parallax, pinning, and reverse-parallax remain deferred until the next section has a defined narrative job.
 - **Implementation:** Branch `concept/axis-light-threshold`; detailed choreography in `DIRECTION.md`.
+- **Approval note:** Approved by the user on 2026-08-26 as the current authoritative opening and hero. Further concepts must remain isolated alternatives and must not overwrite this branch.

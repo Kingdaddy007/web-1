@@ -18,9 +18,11 @@ npm run dev
 
 The Vite preview defaults to the port reported in the terminal.
 
-## This branch
+## Approved concept
 
 The approved Constructed Axis logo arrival remains authoritative through 3.05 seconds. The D-axis then becomes one full-height light datum. A single pair of light fronts travels outward, reveals the room and settles the image before the interface arrives. The former membrane-plus-commissioning sequence has been removed.
+
+This is the current authoritative hero branch. New concepts are developed on separate branches.
 
 The detailed motion law, scroll boundary and evidence constraints are recorded in `DIRECTION.md`.
 
