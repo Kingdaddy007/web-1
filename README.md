@@ -1,4 +1,4 @@
-# TTA Designs — Axis Light Commissioning
+# TTA Designs — Axis Light Threshold
 
 Private speculative website studies for TTA Designs. The repository is organised by branch so each approved baseline or experiment remains independently reviewable.
 
@@ -7,6 +7,7 @@ Private speculative website studies for TTA Designs. The repository is organised
 - `concept/the-axis-opens` — approved baseline: **The Axis Opens**.
 - `experiment/axis-light-commissioning` — controlled evolution of the baseline.
 - `concept/hinged-elevation` — structurally different CSS 3D opening and hero.
+- `concept/axis-light-threshold` — selected single-action refinement.
 
 ## Run locally
 
@@ -17,9 +18,11 @@ npm run dev
 
 The Vite preview defaults to the port reported in the terminal.
 
-## Experiment
+## This branch
 
-The approved Constructed Axis logo arrival remains authoritative through 3.05 seconds. After its refractive membrane reveals the room, a commissioning-light band travels outward from the D-axis and restores the room's final warmth before the canvas retires. The detailed motion law and evidence boundaries are recorded in `DIRECTION.md`.
+The approved Constructed Axis logo arrival remains authoritative through 3.05 seconds. The D-axis then becomes one full-height light datum. A single pair of light fronts travels outward, reveals the room and settles the image before the interface arrives. The former membrane-plus-commissioning sequence has been removed.
+
+The detailed motion law, scroll boundary and evidence constraints are recorded in `DIRECTION.md`.
 
 ## Truth and publishing boundary
 

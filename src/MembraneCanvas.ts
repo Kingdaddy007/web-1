@@ -15,7 +15,6 @@ const fragmentShader = /* glsl */ `
   uniform vec2 uResolution;
   uniform vec2 uImageResolution;
   uniform float uProgress;
-  uniform float uCommissioning;
   uniform float uAxis;
   uniform float uVerticalFocus;
   varying vec2 vUv;
@@ -35,55 +34,36 @@ const fragmentShader = /* glsl */ `
 
   void main() {
     float p = clamp(uProgress, 0.0, 1.0);
-    float commissioning = clamp(uCommissioning, 0.0, 1.0);
     float opened = p * p * (3.0 - 2.0 * p);
     float startGate = smoothstep(0.015, 0.08, p);
     vec2 uv = vUv;
 
     float vertical = abs(uv.y - 0.5) * 2.0;
-    float sculpt = pow(vertical, 1.55) * (0.11 * (1.0 - p)) * startGate;
-    float radius = mix(0.003, 0.82, opened);
+    float sculpt = pow(vertical, 1.7) * (0.018 * (1.0 - p)) * startGate;
     float distanceFromAxis = abs(uv.x - uAxis);
-    float signedFront = radius - distanceFromAxis + sculpt;
+    float sideReach = uv.x < uAxis ? max(uAxis, 0.001) : max(1.0 - uAxis, 0.001);
+    float normalizedDistance = distanceFromAxis / sideReach;
+    float signedFront = opened - normalizedDistance + sculpt;
     float reveal = smoothstep(-0.018, 0.018, signedFront) * startGate;
 
-    float edge = exp(-pow(signedFront / 0.026, 2.0));
+    float edge = exp(-pow(signedFront / 0.022, 2.0));
     float direction = sign(uv.x - uAxis);
-    float refraction = edge * (1.0 - p) * 0.047;
+    float refraction = edge * (1.0 - p) * 0.012;
     vec2 warped = uv;
     warped.x += direction * refraction;
-    warped.y += sin((uv.y * 3.1415926) + p * 1.4) * edge * 0.012 * (1.0 - p);
-    warped.x = uAxis + (warped.x - uAxis) * mix(0.82, 1.0, opened);
+    warped.y += (1.0 - opened) * 0.032;
 
     vec2 imageUv = coverUv(warped, uResolution, uImageResolution);
-    float channelShift = edge * (1.0 - p) * 0.004;
+    float channelShift = edge * (1.0 - p) * 0.0015;
     vec3 room;
     room.r = texture2D(uImage, imageUv + vec2(channelShift, 0.0)).r;
     room.g = texture2D(uImage, imageUv).g;
     room.b = texture2D(uImage, imageUv - vec2(channelShift, 0.0)).b;
 
-    float exposure = mix(0.72, 1.0, smoothstep(0.18, 0.82, p));
-    room *= exposure;
-    float opticalGrade = 1.0 - smoothstep(0.62, 0.96, p);
-    room = mix(room, room * vec3(1.035, 0.995, 0.93), 0.18 * opticalGrade);
-
     vec3 blackSurface = vec3(0.018, 0.017, 0.015);
-    float seamGlow = edge * (1.0 - p) * 0.46 * startGate;
-    vec3 glow = vec3(1.0, 0.79, 0.48) * seamGlow;
+    float seamGlow = edge * (1.0 - smoothstep(0.9, 1.0, p)) * 0.52 * startGate;
+    vec3 glow = vec3(1.0, 0.76, 0.43) * seamGlow;
     vec3 color = mix(blackSurface, room, reveal) + glow;
-
-    float axisDistance = abs(uv.x - uAxis);
-    float commissioningReach = mix(0.0, 0.78, commissioning * commissioning * (3.0 - 2.0 * commissioning));
-    float commissioningActive = smoothstep(0.015, 0.08, commissioning);
-    float commissioned = (1.0 - smoothstep(commissioningReach - 0.035, commissioningReach + 0.018, axisDistance)) * commissioningActive;
-    float commissioningBand = exp(-pow((axisDistance - commissioningReach) / 0.018, 2.0)) * (1.0 - smoothstep(0.92, 1.0, commissioning)) * commissioningActive;
-    float luma = dot(color, vec3(0.2126, 0.7152, 0.0722));
-    vec3 waitingRoom = mix(vec3(luma), color, 0.74) * vec3(0.86, 0.88, 0.9);
-    color = mix(waitingRoom, color, commissioned);
-    color += vec3(1.0, 0.71, 0.36) * commissioningBand * 0.32;
-
-    float vignette = 1.0 - 0.20 * smoothstep(0.38, 0.88, distance(vUv, vec2(0.5)));
-    color *= mix(1.0, vignette, opticalGrade);
     gl_FragColor = vec4(color, 1.0);
     #include <tonemapping_fragment>
     #include <colorspace_fragment>
@@ -119,7 +99,6 @@ export class MembraneCanvas {
         uResolution: { value: new THREE.Vector2(1, 1) },
         uImageResolution: { value: new THREE.Vector2(1586, 992) },
         uProgress: { value: 0 },
-        uCommissioning: { value: 0 },
         uAxis: { value: 0.44 },
         uVerticalFocus: { value: 0.5 },
       },
@@ -136,11 +115,6 @@ export class MembraneCanvas {
 
   setProgress(progress: number) {
     this.material.uniforms.uProgress.value = progress;
-    this.dirty = true;
-  }
-
-  setCommissioning(progress: number) {
-    this.material.uniforms.uCommissioning.value = progress;
     this.dirty = true;
   }
 

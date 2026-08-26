@@ -74,3 +74,13 @@
 - **Verification:** Production TypeScript/Vite build passes; exact 3.05-second logo frame, transition frames, final 1440×900 hero, live autoplay, and forced reduced-motion route inspected in-browser with no console errors or warnings.
 - **Refinement:** The shader-to-DOM handoff now uses one shared overlay grade, matching crop and settled scale, and Three.js tone-mapping/output-colour conversion. Shader-only warmth and vignette decay before the transfer. This removes the darker-canvas/clearer-image exposure jump and any double-exposed room geometry identified during live review.
 - **Responsive framing:** The 16:10 concept plate remains centred through standard aspect ratios. At 1.8:1 and 2:1+, a shared responsive framing function moves the focal point upward to preserve ceiling architecture on short, wide laptop viewports. Both the shader and resting DOM image consume the same value.
+
+### Decision 009: Single-Action Axis Light Threshold
+
+- **Date:** 2026-08-26
+- **Status:** SELECTED REFINEMENT FOR LIVE REVIEW
+- **Decision:** Reject the Hinged Elevation for the current hero and collapse the Axis Light Commissioning experiment from two consecutive effects into one arrival law.
+- **Motion law:** The approved logo resolves through 3.05 seconds. Its D-axis becomes a full-height light datum. Two proportional light fronts travel outward from that real axis, reveal the room, and finish together. The room then holds before typography enters.
+- **Removed:** Refractive membrane bending, post-reveal commissioning pass, folded room planes, secondary wipe, and opening-stage scroll choreography.
+- **Scroll boundary:** Parallax, pinning, and reverse-parallax remain deferred until the next section has a defined narrative job.
+- **Implementation:** Branch `concept/axis-light-threshold`; detailed choreography in `DIRECTION.md`.

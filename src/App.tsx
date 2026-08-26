@@ -3,7 +3,7 @@ import { MembraneCanvas } from './MembraneCanvas';
 import { getHeroVerticalFocus } from './framing';
 import { renderApprovedLogoFrame, type LogoLayers } from './logoTimeline';
 
-const TOTAL = 9.2;
+const TOTAL = 7.4;
 const HERO_IMAGE = '/assets/tta-living-cinematic-master-v1.png';
 const clamp = (value: number, min = 0, max = 1) => Math.max(min, Math.min(max, value));
 const smooth = (value: number) => {
@@ -62,35 +62,33 @@ export function App() {
     const evaluate = (t: number) => {
       renderApprovedLogoFrame(Math.min(t, 3.05), layers, reduced);
 
-      const transition = reduced ? (t >= 0.55 ? 1 : 0) : smooth((t - 3.35) / 2.1);
+      const transition = reduced ? (t >= 0.55 ? 1 : 0) : smooth((t - 3.32) / 2.06);
       membraneRef.current?.setProgress(transition);
-      const commissioning = reduced ? 1 : smooth((t - 5.18) / 1.42);
-      membraneRef.current?.setCommissioning(commissioning);
 
-      const logoExit = reduced ? smooth((t - 0.55) / 0.3) : smooth((t - 3.38) / 0.86);
+      const logoExit = reduced ? smooth((t - 0.55) / 0.3) : smooth((t - 3.28) / 0.72);
       if (logoRef.current) {
         logoRef.current.style.opacity = String(1 - logoExit);
         logoRef.current.style.transform = `translate(-50%, -50%) scale(${(1 - logoExit * 0.035).toFixed(4)})`;
         logoRef.current.style.filter = `blur(${(logoExit * 5).toFixed(2)}px)`;
       }
 
-      const seam = reduced ? 0 : smooth((t - 3.2) / 0.48) * (1 - smooth((t - 6.02) / 0.72));
+      const seam = reduced ? 0 : smooth((t - 3.08) / 0.38) * (1 - smooth((t - 3.78) / 0.68));
       if (seamRef.current) {
         seamRef.current.style.opacity = String(seam);
         seamRef.current.style.transform = `translateX(-50%) scaleY(${(0.08 + seam * 0.92).toFixed(3)})`;
       }
 
-      const domHero = reduced ? smooth((t - 0.55) / 0.5) : smooth((t - 6.25) / 0.35);
+      const domHero = reduced ? smooth((t - 0.55) / 0.5) : smooth((t - 5.1) / 0.38);
       if (heroRef.current) {
         heroRef.current.style.opacity = String(domHero);
-        heroRef.current.style.transform = `scale(${(1.015 - domHero * 0.015).toFixed(4)})`;
+        heroRef.current.style.transform = `translateY(${((1 - domHero) * 8).toFixed(2)}px) scale(${(1.006 - domHero * 0.006).toFixed(4)})`;
       }
       if (canvasRef.current) {
-        const canvasExit = reduced ? smooth((t - 0.55) / 0.35) : smooth((t - 6.64) / 0.46);
+        const canvasExit = reduced ? smooth((t - 0.55) / 0.35) : smooth((t - 5.28) / 0.4);
         canvasRef.current.style.opacity = String(1 - canvasExit);
       }
 
-      const copyIn = reduced ? smooth((t - 0.9) / 0.45) : smooth((t - 6.92) / 0.78);
+      const copyIn = reduced ? smooth((t - 0.9) / 0.45) : smooth((t - 5.72) / 0.76);
       if (heroCopyRef.current) {
         heroCopyRef.current.style.opacity = String(copyIn);
         heroCopyRef.current.style.transform = `translateY(${((1 - copyIn) * 26).toFixed(2)}px)`;
@@ -135,7 +133,7 @@ export function App() {
 
   useEffect(() => {
     const onPointer = (event: PointerEvent) => {
-      if (time < 6.2 || !heroRef.current) return;
+      if (time < 6.45 || !heroRef.current) return;
       const x = event.clientX / window.innerWidth - 0.5;
       const y = event.clientY / window.innerHeight - 0.5;
       heroRef.current.style.setProperty('--pointer-x', `${x * -10}px`);
@@ -178,7 +176,7 @@ export function App() {
 
       {debug && (
         <aside className="debug-hud">
-          <span>AXIS LIGHT COMMISSIONING</span>
+          <span>AXIS LIGHT THRESHOLD</span>
           <output>{time.toFixed(2)} / {TOTAL.toFixed(2)}</output>
           <button onClick={() => window.location.reload()}>Replay</button>
           <span>R replay · Space pause</span>

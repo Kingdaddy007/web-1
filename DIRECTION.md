@@ -1,28 +1,40 @@
-# TTA Experiment — Axis Light Commissioning
+# TTA Concept — Axis Light Threshold
 
-## Thesis
+## Verdict
 
-This is a controlled evolution of **The Axis Opens**, not a replacement for its approved baseline. The logo still constructs through 3.05 seconds and the D-axis still opens the refractive room membrane. The experiment changes what happens after the room exists: the axis becomes a commissioning datum that activates the room's light and material colour from the centre outward.
+This supersedes the double-action Axis Light Commissioning experiment. The hinge concept is rejected for the current hero because its unfolding planes compete with the already-authored logo arrival.
 
-## Motion law
+## Singular motion law
 
-1. Identity establishes the datum.
-2. The datum opens space.
-3. The revealed room waits in a quieter, cooler state.
-4. Light travels outward from the axis and restores the room's final warmth and colour.
-5. The light band disappears; the room holds cleanly; semantic DOM copy arrives.
+1. The approved logo constructs and holds through 3.05 seconds.
+2. The D-axis extends into a full-height light datum.
+3. One pair of restrained light fronts travels outward from that datum.
+4. The same light fronts reveal the room while the image settles upward by a few pixels.
+5. The room holds in stillness; navigation and typography arrive afterward.
 
-## Why this is meaningfully different
+There is no membrane bend followed by commissioning, no second wipe, no fold, and no separate spectacle attached to the hero image.
 
-The baseline treats the completed room as the destination. This experiment treats lighting as the final design decision that makes material, comfort, and atmosphere legible. It extends the existing concept without inventing a new navigation system, image hierarchy, or brand claim.
+## Timing hierarchy
 
-## Implementation
+- `0.00–3.05s`: approved identity construction.
+- `3.08–3.46s`: axis becomes full-height datum.
+- `3.32–5.38s`: outward light threshold reveals the room.
+- `5.10–5.68s`: WebGL frame resolves invisibly into the matching DOM hero.
+- `5.72–6.48s`: interface and copy enter after spatial stillness.
+- `6.48–7.40s`: clean hold.
 
-- React and TypeScript retain semantic content.
-- A custom Three.js shader owns the temporary membrane and commissioning-light band.
-- The shader resolves to the exact DOM image, crop, scale, colour space, and shared grade before retiring.
-- Desktop focal framing, reduced motion, DPR cap, resize cleanup, and resource disposal remain inherited from the baseline.
+## Technical law
+
+- One custom Three.js fragment shader is responsible only for the temporary light-front reveal.
+- The shader and DOM use the same source image, cover crop, vertical focal point, colour space, and persistent DOM grade.
+- Final shader pixels are ungraded so the canvas-to-DOM handoff does not create a brightness jump.
+- Reduced motion uses a direct image crossfade.
+- Pointer drift begins only after the complete opening; it is not part of the arrival timeline.
+
+## Scroll boundary
+
+The opening is autoplay arrival motion. Parallax, reverse parallax, pinning, and scroll choreography are deliberately deferred until the next section has a defined narrative job. They must not be used to repair or complicate the first-view transition.
 
 ## Truth boundary
 
-The landscape room remains a replaceable private speculative plate. The commissioning effect is a conceptual presentation device, not evidence of an actual lighting-control product or project feature.
+The landscape room remains a replaceable private speculative plate. The light threshold is an authored presentation device, not evidence of a lighting-control product or a verified feature of the depicted project.

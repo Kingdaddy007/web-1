@@ -33,7 +33,7 @@ button { font: inherit; }
 .hero-image {
   z-index: 0;
   opacity: 0;
-  transform: scale(1.015);
+  transform: translateY(8px) scale(1.006);
   background-image: url('/assets/tta-living-cinematic-master-v1.png');
   background-position: calc(50% + var(--pointer-x, 0px)) calc(var(--hero-focus-y, 50%) + var(--pointer-y, 0px));
   background-size: cover;
