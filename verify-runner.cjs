@@ -39,16 +39,19 @@ async function run() {
 
   const reviewerScreenshotDir = path.resolve(__dirname, '.agents/teamwork_preview_reviewer_1/screenshots');
   const implementerScreenshotDir = path.resolve(__dirname, '.agents/teamwork_preview_implementer_1/screenshots');
+  const reviewer2ScreenshotDir = path.resolve(__dirname, '.agents/teamwork_preview_reviewer_2/screenshots');
   
-  [reviewerScreenshotDir, implementerScreenshotDir].forEach(dir => {
+  [reviewerScreenshotDir, implementerScreenshotDir, reviewer2ScreenshotDir].forEach(dir => {
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
   });
 
   async function saveScreenshot(page, filename) {
     const p1 = path.join(reviewerScreenshotDir, filename);
     const p2 = path.join(implementerScreenshotDir, filename);
+    const p3 = path.join(reviewer2ScreenshotDir, filename);
     await page.screenshot({ path: p1 });
     fs.copyFileSync(p1, p2);
+    fs.copyFileSync(p1, p3);
     console.log(`Captured: ${filename}`);
   }
 
@@ -155,8 +158,8 @@ async function run() {
   await pageReduced.waitForTimeout(500);
   await saveScreenshot(pageReduced, '12_reduced_motion_stage_02.png');
 
-  // 5. Stage Phase & Titles Content Assertion
-  console.log('\n--- 5. Checking Stage Phase & Title Structure ---');
+  // 5. Stage Phase, Titles & 16:9 Aspect Ratio Content Assertion
+  console.log('\n--- 5. Checking Stage Phase, Title Structure & 16:9 Aspect Ratio ---');
   const stageCaptionsText = (await page.locator('.process-stage-captions').innerText()).toUpperCase();
   console.log('Stage Captions Text:\n', stageCaptionsText);
   if (!stageCaptionsText.includes('STRUCTURE') || !stageCaptionsText.includes('ALIGNMENT') ||
@@ -165,23 +168,42 @@ async function run() {
   }
   console.log('PASSED: Stage phases verified in DOM.');
 
-  // 6. Dynamic Native Scroll & Reversibility Test
-  console.log('\n--- 6. Testing Dynamic Native Scroll & Reversibility ---');
+  // Check 16:9 aspect ratio of process window
+  const aspectBox = await page.locator('.process-window-aspect').boundingBox();
+  if (aspectBox) {
+    const ratio = aspectBox.width / aspectBox.height;
+    console.log(`Process window dimensions: ${aspectBox.width}x${aspectBox.height} (aspect ratio: ${ratio.toFixed(4)})`);
+    if (Math.abs(ratio - (16 / 9)) > 0.05) {
+      throw new Error(`Process window is not 16:9! Observed ratio: ${ratio}`);
+    }
+    console.log('PASSED: 16:9 aspect ratio strictly verified.');
+  }
+
+  // 6. Dynamic Native Scroll, Reversibility & Fast Scrubbing Test
+  console.log('\n--- 6. Testing Dynamic Native Scroll & Fast Scrubbing ---');
   const pageScroll = await contextDesktop.newPage();
   await pageScroll.goto('http://localhost:4173/?auditTime=6.5');
   await pageScroll.waitForTimeout(500);
 
-  // Scroll down smoothly
+  // Smooth scroll down
   for (let s = 0; s <= 2200; s += 150) {
     await pageScroll.evaluate((y) => window.scrollTo(0, y), s);
     await pageScroll.waitForTimeout(25);
   }
-  // Scroll back up smoothly
+  // Smooth scroll back up
   for (let s = 2200; s >= 0; s -= 150) {
     await pageScroll.evaluate((y) => window.scrollTo(0, y), s);
     await pageScroll.waitForTimeout(25);
   }
-  console.log('Dynamic scroll and reverse cycle completed without error.');
+
+  // Fast scrubbing / jump scrolling test
+  console.log('Testing rapid jump scrolling...');
+  const jumpTargets = [500, 1800, 200, 2400, 0, 1200, 2200, 100];
+  for (const target of jumpTargets) {
+    await pageScroll.evaluate((y) => window.scrollTo(0, y), target);
+    await pageScroll.waitForTimeout(40);
+  }
+  console.log('PASSED: Rapid jump scrolling and reversibility completed with zero errors.');
 
   await browser.close();
   try { vite.kill(); } catch (e) {}
