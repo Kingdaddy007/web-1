@@ -1,40 +1,46 @@
-# TTA Concept — Axis Light Threshold
+# TTA Concept — Material Registration
 
-## Verdict
+## Visual thesis
 
-This supersedes the double-action Axis Light Commissioning experiment. The hinge concept is rejected for the current hero because its unfolding planes compete with the already-authored logo arrival.
+The identity is constructed on the same champagne wall material that anchors the finished living room. The camera does not open a portal or wipe toward another page; it restores depth until the viewer understands that the logo and room have occupied one material world all along.
 
 ## Singular motion law
 
-1. The approved logo constructs and holds through 3.05 seconds.
-2. The D-axis extends into a full-height light datum.
-3. One pair of restrained light fronts travels outward from that datum.
-4. The same light fronts reveal the room while the image settles upward by a few pixels.
-5. The room holds in stillness; navigation and typography arrive afterward.
+**Registration, then relinquishment.**
 
-There is no membrane bend followed by commissioning, no second wipe, no fold, and no separate spectacle attached to the hero image.
+1. The selected wall-panel macro fills the viewport with its join aligned to the approved D-axis.
+2. The approved Constructed Axis logo resolves without modification.
+3. One continuous architectural pullback restores the room around the registered wall plane.
+4. The television returns as a foreground plane and physically occludes the shrinking wordmark.
+5. The complete room holds before navigation and copy appear.
+
+No wipe, aperture, curtain split, second shader, opacity exit, door metaphor, or cursor parallax is part of the arrival.
 
 ## Timing hierarchy
 
-- `0.00–3.05s`: approved identity construction.
-- `3.08–3.46s`: axis becomes full-height datum.
-- `3.32–5.38s`: outward light threshold reveals the room.
-- `5.10–5.68s`: WebGL frame resolves invisibly into the matching DOM hero.
-- `5.72–6.48s`: interface and copy enter after spatial stillness.
-- `6.48–7.40s`: clean hold.
+- `0.00–3.05s`: approved identity construction over the material field.
+- `3.05–3.32s`: exact-master hold.
+- `3.32–5.16s`: one material-to-room pullback.
+- `5.16–5.44s`: complete room rests without interface.
+- `5.44–6.16s`: navigation and typography enter as grouped DOM elements.
+- `6.16–7.15s`: clean reading hold.
 
 ## Technical law
 
-- One custom Three.js fragment shader is responsible only for the temporary light-front reveal.
-- The shader and DOM use the same source image, cover crop, vertical focal point, colour space, and persistent DOM grade.
-- Final shader pixels are ungraded so the canvas-to-DOM handoff does not create a brightness jump.
-- Reduced motion uses a direct image crossfade.
-- Pointer drift begins only after the complete opening; it is not part of the arrival timeline.
+- DOM/CSS image layers own the first implementation.
+- Background and foreground room layers use the same image, crop, focus point, transform origin, and camera scale.
+- The television is the first explicit foreground occluder; it sits above the identity while the room background sits below it.
+- The selected wall macro remains a replaceable production asset and is color-controlled to match the room.
+- Reduced motion replaces the pullback with a short crossfade and settled room.
+- Canvas/WebGL is not used unless a later isolated comparison proves a visible perspective gain without changing the final composition.
 
-## Scroll boundary
+## Hero destination
 
-The opening is autoplay arrival motion. Parallax, reverse parallax, pinning, and scroll choreography are deliberately deferred until the next section has a defined narrative job. They must not be used to repair or complicate the first-view transition.
+- Headline: `Designed around the way life is lived.`
+- Support: `Refined interiors shaped by movement, comfort, and the decisions that make everything else work.`
+- No hero inquiry button. Inquiry belongs after the short proof story.
+- The room is primary evidence; copy occupies the darker left curtain field.
 
 ## Truth boundary
 
-The landscape room remains a replaceable private speculative plate. The light threshold is an authored presentation device, not evidence of a lighting-control product or a verified feature of the depicted project.
+This remains a private speculative plate derived from observed TTA media. It is a presentation hypothesis, not a verified original project photograph or a public brand claim.

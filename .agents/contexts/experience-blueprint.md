@@ -1,5 +1,5 @@
 ---
-status: proposed-direction
+status: implemented-study
 scope: private-speculative-prototype
 project_id: tta-designs-digital-showroom
 updated_at: 2026-08-26
@@ -11,7 +11,15 @@ branch: concept/material-registration
 
 ## Decision status
 
-The approved Constructed Axis logo arrival remains authoritative through its exact-master settlement. The approved Axis Light Threshold branch remains untouched. This document defines the next isolated concept hypothesis; it is not yet an approved replacement.
+The approved Constructed Axis logo arrival remains authoritative through its exact-master settlement. The approved Axis Light Threshold branch remains untouched. The Material Registration first slice is now implemented on its isolated branch for visual judgement; it is not yet an approved replacement.
+
+## Implemented first slice
+
+- Wall source: `public/assets/tta-wall-macro-v1.jpeg`.
+- Room source: `public/assets/tta-living-cinematic-master-v1.png`.
+- Mechanism: synchronized DOM/CSS room planes with a foreground television occluder; no Canvas/WebGL dependency is active.
+- Verification viewports: 1440×900, 1920×1080, and 390×844 reduced motion.
+- Local preview route: the Vite root on the port reported by `npm run dev`.
 
 ## One thing the experience must make the viewer feel
 
