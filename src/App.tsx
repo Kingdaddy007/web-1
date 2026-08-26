@@ -89,14 +89,31 @@ export function App() {
 
   const frameRef = useRef(0);
   const elapsedRef = useRef(0);
-  const [time, setTime] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const [activeStage, setActiveStage] = useState(0);
-  const [scrollPct, setScrollPct] = useState(0);
-
   const params = useMemo(() => new URLSearchParams(window.location.search), []);
   const debug = params.get('debug') === '1';
   const forceReduced = params.get('reduced') === '1';
+
+  const [time, setTime] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const [activeStage, setActiveStage] = useState(() => {
+    const p = Number(params.get('scrollProgress'));
+    if (Number.isFinite(p) && params.has('scrollProgress')) {
+      const pp = clamp((p - 0.20) / 0.80);
+      if (pp < 0.28) return 0;
+      if (pp < 0.54) return 1;
+      if (pp < 0.80) return 2;
+      return 3;
+    }
+    return 0;
+  });
+  const [scrollPct, setScrollPct] = useState(() => {
+    const p = Number(params.get('scrollProgress'));
+    if (Number.isFinite(p) && params.has('scrollProgress')) {
+      const pp = clamp((p - 0.20) / 0.80);
+      return Math.round(pp * 100);
+    }
+    return 0;
+  });
 
   // Preload all 4 clean 16:9 images for zero flicker
   useEffect(() => {
@@ -433,7 +450,7 @@ export function App() {
   }, [forceReduced, params]);
 
   return (
-    <main className="site" ref={rootRef}>
+    <main className="site" ref={rootRef} data-reduced-motion={forceReduced ? 'true' : undefined}>
       <section className="story-stage" ref={storyStageRef} aria-label="TTA Designs introduction and process">
         <div className="experience">
           {/* Hero Scene (Near plane during underpass handoff) */}

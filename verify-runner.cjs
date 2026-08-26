@@ -40,8 +40,9 @@ async function run() {
   const reviewerScreenshotDir = path.resolve(__dirname, '.agents/teamwork_preview_reviewer_1/screenshots');
   const implementerScreenshotDir = path.resolve(__dirname, '.agents/teamwork_preview_implementer_1/screenshots');
   const reviewer2ScreenshotDir = path.resolve(__dirname, '.agents/teamwork_preview_reviewer_2/screenshots');
+  const reviewer3ScreenshotDir = path.resolve(__dirname, '.agents/teamwork_preview_reviewer_3/screenshots');
   
-  [reviewerScreenshotDir, implementerScreenshotDir, reviewer2ScreenshotDir].forEach(dir => {
+  [reviewerScreenshotDir, implementerScreenshotDir, reviewer2ScreenshotDir, reviewer3ScreenshotDir].forEach(dir => {
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
   });
 
@@ -49,10 +50,22 @@ async function run() {
     const p1 = path.join(reviewerScreenshotDir, filename);
     const p2 = path.join(implementerScreenshotDir, filename);
     const p3 = path.join(reviewer2ScreenshotDir, filename);
+    const p4 = path.join(reviewer3ScreenshotDir, filename);
     await page.screenshot({ path: p1 });
     fs.copyFileSync(p1, p2);
     fs.copyFileSync(p1, p3);
+    fs.copyFileSync(p1, p4);
     console.log(`Captured: ${filename}`);
+  }
+
+  async function assertNoHorizontalOverflow(page, label) {
+    const overflow = await page.evaluate(() => {
+      return document.documentElement.scrollWidth > window.innerWidth + 1;
+    });
+    if (overflow) {
+      throw new Error(`Horizontal overflow detected in ${label}!`);
+    }
+    console.log(`PASSED: Zero horizontal overflow on ${label}.`);
   }
 
   // 1. Desktop Standard 1440x900 Verification
@@ -71,6 +84,9 @@ async function run() {
     console.error('Page error:', err.message);
     consoleErrors.push(err.message);
   });
+
+  // Check horizontal overflow on desktop
+  await assertNoHorizontalOverflow(page, 'Desktop 1440x900');
 
   // Hero settled state
   await page.goto('http://localhost:4173/?auditTime=6.5&scrollProgress=0');
@@ -115,6 +131,7 @@ async function run() {
   const pageLarge = await contextLarge.newPage();
   await pageLarge.goto('http://localhost:4173/?auditTime=6.5&scrollProgress=0.45');
   await pageLarge.waitForTimeout(500);
+  await assertNoHorizontalOverflow(pageLarge, 'Large Desktop 1920x1080');
   await saveScreenshot(pageLarge, '08_process_stage_02_1920.png');
 
   // 3. Mobile 390x844 Verification & Bounds Assertion
@@ -128,6 +145,7 @@ async function run() {
   // Mobile Hero
   await pageMobile.goto('http://localhost:4173/?auditTime=6.5&scrollProgress=0');
   await pageMobile.waitForTimeout(500);
+  await assertNoHorizontalOverflow(pageMobile, 'Mobile 390x844 Hero');
   
   // Check hero copy bounding box on mobile
   const heroCopyBox = await pageMobile.locator('.hero-copy').boundingBox();
@@ -141,12 +159,34 @@ async function run() {
   // Mobile Process Stage 01
   await pageMobile.goto('http://localhost:4173/?auditTime=6.5&scrollProgress=0.25');
   await pageMobile.waitForTimeout(500);
+  await assertNoHorizontalOverflow(pageMobile, 'Mobile 390x844 Process Stage 01');
   await saveScreenshot(pageMobile, '10_mobile_process_stage_01_390.png');
+
+  // Mobile Process Stage 02
+  await pageMobile.goto('http://localhost:4173/?auditTime=6.5&scrollProgress=0.45');
+  await pageMobile.waitForTimeout(500);
+  await saveScreenshot(pageMobile, '11_mobile_process_stage_02_390.png');
 
   // Mobile Process Stage 03
   await pageMobile.goto('http://localhost:4173/?auditTime=6.5&scrollProgress=0.68');
   await pageMobile.waitForTimeout(500);
-  await saveScreenshot(pageMobile, '11_mobile_process_stage_03_390.png');
+  await saveScreenshot(pageMobile, '12_mobile_process_stage_03_390.png');
+
+  // Mobile Process Stage 04
+  await pageMobile.goto('http://localhost:4173/?auditTime=6.5&scrollProgress=0.92');
+  await pageMobile.waitForTimeout(500);
+  await saveScreenshot(pageMobile, '13_mobile_process_stage_04_390.png');
+
+  // Check 16:9 aspect ratio on mobile
+  const mobileAspectBox = await pageMobile.locator('.process-window-aspect').boundingBox();
+  if (mobileAspectBox) {
+    const mRatio = mobileAspectBox.width / mobileAspectBox.height;
+    console.log(`Mobile process window dimensions: ${mobileAspectBox.width}x${mobileAspectBox.height} (aspect ratio: ${mRatio.toFixed(4)})`);
+    if (Math.abs(mRatio - (16 / 9)) > 0.05) {
+      throw new Error(`Mobile process window is not 16:9! Observed ratio: ${mRatio}`);
+    }
+    console.log('PASSED: Mobile 16:9 aspect ratio strictly verified.');
+  }
 
   // 4. Reduced Motion Verification
   console.log('\n--- 4. Testing Reduced Motion ---');
@@ -156,17 +196,34 @@ async function run() {
   const pageReduced = await contextReduced.newPage();
   await pageReduced.goto('http://localhost:4173/?auditTime=6.5&reduced=1&scrollProgress=0.45');
   await pageReduced.waitForTimeout(500);
-  await saveScreenshot(pageReduced, '12_reduced_motion_stage_02.png');
+  await saveScreenshot(pageReduced, '14_reduced_motion_stage_02.png');
 
   // 5. Stage Phase, Titles & 16:9 Aspect Ratio Content Assertion
   console.log('\n--- 5. Checking Stage Phase, Title Structure & 16:9 Aspect Ratio ---');
-  const stageCaptionsText = (await page.locator('.process-stage-captions').innerText()).toUpperCase();
-  console.log('Stage Captions Text:\n', stageCaptionsText);
-  if (!stageCaptionsText.includes('STRUCTURE') || !stageCaptionsText.includes('ALIGNMENT') ||
-      !stageCaptionsText.includes('REFINEMENT') || !stageCaptionsText.includes('RESOLUTION')) {
-    throw new Error('Stage phases (Structure, Alignment, Refinement, Resolution) are missing from stage captions!');
+  const fullCaptionsDOM = (await page.locator('.process-stage-captions').textContent()).toUpperCase();
+  console.log('Full Stage Captions in DOM:\n', fullCaptionsDOM);
+  if (!fullCaptionsDOM.includes('STRUCTURE') || !fullCaptionsDOM.includes('ALIGNMENT') ||
+      !fullCaptionsDOM.includes('REFINEMENT') || !fullCaptionsDOM.includes('RESOLUTION')) {
+    throw new Error('Stage phases (Structure, Alignment, Refinement, Resolution) are missing from stage captions DOM!');
   }
-  console.log('PASSED: Stage phases verified in DOM.');
+  console.log('PASSED: All 4 stage phases verified in DOM.');
+
+  // Test active caption text at each stage progression
+  const stageChecks = [
+    { p: 0.25, expected: 'STRUCTURE' },
+    { p: 0.45, expected: 'ALIGNMENT' },
+    { p: 0.68, expected: 'REFINEMENT' },
+    { p: 0.92, expected: 'RESOLUTION' }
+  ];
+  for (const check of stageChecks) {
+    await page.goto(`http://localhost:4173/?auditTime=6.5&scrollProgress=${check.p}`);
+    await page.waitForTimeout(200);
+    const activeText = (await page.locator('.stage-caption-card.is-active').innerText()).toUpperCase();
+    if (!activeText.includes(check.expected)) {
+      throw new Error(`Expected active caption at scrollProgress=${check.p} to include ${check.expected}, got: ${activeText}`);
+    }
+    console.log(`PASSED: Stage at progress ${check.p} correctly displays active phase ${check.expected}.`);
+  }
 
   // Check 16:9 aspect ratio of process window
   const aspectBox = await page.locator('.process-window-aspect').boundingBox();

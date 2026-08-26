@@ -399,24 +399,29 @@ img.logo-layer {
   position: absolute;
   inset: 0;
   opacity: 0;
+  visibility: hidden;
   transform: translateY(14px);
-  transition: opacity 0.42s cubic-bezier(0.16, 1, 0.3, 1), transform 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.42s cubic-bezier(0.16, 1, 0.3, 1), transform 0.42s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.42s step-end;
   pointer-events: none;
 }
 
 .stage-caption-card.is-active {
   opacity: 1;
+  visibility: visible;
   transform: translateY(0);
+  transition: opacity 0.42s cubic-bezier(0.16, 1, 0.3, 1), transform 0.42s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s;
   pointer-events: auto;
 }
 
 .stage-caption-card.is-passed {
   opacity: 0;
+  visibility: hidden;
   transform: translateY(-14px);
 }
 
 .stage-caption-card.is-upcoming {
   opacity: 0;
+  visibility: hidden;
   transform: translateY(14px);
 }
 
@@ -733,4 +738,21 @@ img.logo-layer {
     transition: none !important;
     animation: none !important;
   }
+}
+
+.site[data-reduced-motion="true"] .story-stage { height: 360svh; }
+.site[data-reduced-motion="true"] .hero-scene,
+.site[data-reduced-motion="true"] .process-scene,
+.site[data-reduced-motion="true"] .process-window-slide,
+.site[data-reduced-motion="true"] .slide-media-wrap img,
+.site[data-reduced-motion="true"] .room-camera,
+.site[data-reduced-motion="true"] .material-field,
+.site[data-reduced-motion="true"] .material-light,
+.site[data-reduced-motion="true"] .logo-wrapper,
+.site[data-reduced-motion="true"] .hero-nav,
+.site[data-reduced-motion="true"] .hero-copy,
+.site[data-reduced-motion="true"] .stage-caption-card,
+.site[data-reduced-motion="true"] .line {
+  transition: none !important;
+  animation: none !important;
 }
