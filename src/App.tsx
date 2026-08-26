@@ -14,6 +14,7 @@ const mix = (from: number, to: number, progress: number) => from + (to - from) *
 
 interface ProcessStage {
   number: string;
+  phase: string;
   stageCode: string;
   title: string;
   desc: string;
@@ -24,7 +25,8 @@ interface ProcessStage {
 const PROCESS_STAGES: ProcessStage[] = [
   {
     number: '01',
-    stageCode: '01 / Read the room',
+    phase: 'Structure',
+    stageCode: '01 / Structure · Read the room',
     title: 'Read the room',
     desc: 'See what the space needs before the ceiling closes.',
     image: '/assets/akoka-site-ceiling-open-wide-clean-v1.png',
@@ -32,7 +34,8 @@ const PROCESS_STAGES: ProcessStage[] = [
   },
   {
     number: '02',
-    stageCode: '02 / Align the work',
+    phase: 'Alignment',
+    stageCode: '02 / Alignment · Align the work',
     title: 'Align the work',
     desc: 'Resolve decisions with the people building them.',
     image: '/assets/akoka-site-conversation-wide-clean-v1.png',
@@ -40,7 +43,8 @@ const PROCESS_STAGES: ProcessStage[] = [
   },
   {
     number: '03',
-    stageCode: '03 / Refine the surface',
+    phase: 'Refinement',
+    stageCode: '03 / Refinement · Refine the surface',
     title: 'Refine the surface',
     desc: 'Test light and texture in the room itself.',
     image: '/assets/akoka-site-painting-wide-clean-v1.png',
@@ -48,7 +52,8 @@ const PROCESS_STAGES: ProcessStage[] = [
   },
   {
     number: '04',
-    stageCode: '04 / Carry it through',
+    phase: 'Resolution',
+    stageCode: '04 / Resolution · Carry it through',
     title: 'Carry it through',
     desc: 'Let every early decision support the final atmosphere.',
     image: '/assets/akoka-site-installation-wide-clean-v1.png',
@@ -240,9 +245,13 @@ export function App() {
         }
       }
 
-      if (heroCopyRef.current && !reduced) {
-        // Foreground hero copy lifts slightly faster (1.12x)
-        heroCopyRef.current.style.transform = `translate(-50%, calc(var(--hero-copy-y, 24px) - ${(handoff * 112).toFixed(2)}svh))`;
+      if (heroCopyRef.current) {
+        if (reduced) {
+          heroCopyRef.current.style.removeProperty('--hero-copy-scroll-y');
+        } else {
+          // Foreground hero copy lifts slightly faster (1.12x)
+          heroCopyRef.current.style.setProperty('--hero-copy-scroll-y', `${(-handoff * 112).toFixed(2)}svh`);
+        }
       }
 
       if (navRef.current && !reduced) {
@@ -328,7 +337,7 @@ export function App() {
           s0.style.visibility = 'visible';
         }
         if (img0) {
-          const img0Offset = t1 > 0 ? mix(0, 10, t1) : mix(-2.5, 2.5, clamp(processProgress / 0.18));
+          const img0Offset = t1 > 0 ? mix(2.5, 10, t1) : mix(0, 2.5, clamp(processProgress / 0.18));
           img0.style.transform = `translate3d(0, ${img0Offset.toFixed(2)}%, 0) scale(1.12)`;
         }
 
@@ -343,9 +352,10 @@ export function App() {
           if (t1 < 1) {
             img1Offset = mix(-18, 0, t1); // Counter-parallax on enter
           } else if (t2 > 0) {
-            img1Offset = mix(0, 10, t2);  // Outgoing parallax
+            img1Offset = mix(2.5, 10, t2); // Outgoing parallax
           } else {
-            img1Offset = mix(-2.5, 2.5, clamp((processProgress - 0.34) / 0.10)); // Living rest glide
+            const holdP = clamp((processProgress - 0.34) / 0.10);
+            img1Offset = mix(0, 2.5, holdP); // Continuous living rest glide (0% -> 2.5%)
           }
           img1.style.transform = `translate3d(0, ${img1Offset.toFixed(2)}%, 0) scale(1.12)`;
         }
@@ -361,9 +371,10 @@ export function App() {
           if (t2 < 1) {
             img2Offset = mix(-18, 0, t2); // Counter-parallax on enter
           } else if (t3 > 0) {
-            img2Offset = mix(0, 10, t3);  // Outgoing parallax
+            img2Offset = mix(2.5, 10, t3); // Outgoing parallax
           } else {
-            img2Offset = mix(-2.5, 2.5, clamp((processProgress - 0.60) / 0.10)); // Living rest glide
+            const holdP = clamp((processProgress - 0.60) / 0.10);
+            img2Offset = mix(0, 2.5, holdP); // Continuous living rest glide (0% -> 2.5%)
           }
           img2.style.transform = `translate3d(0, ${img2Offset.toFixed(2)}%, 0) scale(1.12)`;
         }
@@ -379,7 +390,8 @@ export function App() {
           if (t3 < 1) {
             img3Offset = mix(-18, 0, t3); // Counter-parallax on enter
           } else {
-            img3Offset = mix(-2.5, 2.5, clamp((processProgress - 0.86) / 0.14)); // Living rest glide
+            const holdP = clamp((processProgress - 0.86) / 0.14);
+            img3Offset = mix(0, 3.5, holdP); // Continuous living rest glide (0% -> 3.5%)
           }
           img3.style.transform = `translate3d(0, ${img3Offset.toFixed(2)}%, 0) scale(1.12)`;
         }
@@ -526,6 +538,8 @@ export function App() {
                           <div className="stage-number-title">
                             <span className="stage-num">{stage.number}</span>
                             <span className="stage-divider">/</span>
+                            <span className="stage-phase">{stage.phase}</span>
+                            <span className="stage-divider">·</span>
                             <span className="stage-title">{stage.title}</span>
                           </div>
                           <p className="stage-desc">{stage.desc}</p>
