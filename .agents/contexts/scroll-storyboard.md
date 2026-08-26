@@ -1,66 +1,83 @@
 ---
 status: implementation-contract
-scope: hero-to-proof
+scope: hero-to-process
 updated_at: 2026-08-26
 owner: Studio Director
 branch: concept/material-registration
 ---
 
-# Scroll Storyboard — From Finish to Decision
+# Scroll Storyboard — The Work Beneath the Finish
 
 ## Activation rationale
 
-The meaning changes at authored scroll depths, the finished room must persist while the proof register replaces it, and desktop/mobile require different choreography. Ordinary independent sections would break the argument, so one bounded sticky scene is justified.
+The hero and process chapter must behave as one continuous vertical journey. The transition cannot be a dissolve between unrelated screens, and the process argument requires several photographs to become legible in sequence. A bounded sticky storyboard remains justified.
 
 ## Controlling argument
 
-TTA's refinement is not decoration applied at the end. It is the visible result of decisions made around how people live before costly mistakes become fixed.
+The final atmosphere is the visible outcome. TTA's value begins earlier, through decisions made in the room while the work can still be shaped.
 
 ## Feeling curve and peak
 
-`desire -> interruption -> scrutiny -> authority`
+`desire -> descent into process -> recognition -> confidence`
 
-The opening material-to-room registration remains the primary visual peak. This passage is deliberately quieter: its job is to convert admiration into respect.
+The opening material-to-room registration remains the visual peak. This chapter is not another reveal effect. Its pleasure comes from seeing real work accumulate into a coherent result.
 
 ## Physical law
 
-**The finished room yields as the viewer's attention tilts upward toward the structure that made it possible.**
+**The finished room lifts away like the top page of an architectural folio; the work beneath it continues upward as a measured project reel.**
 
-The complete room enlarges by a few percent and falls out of focus. A portrait proof plane rises into the viewport while its internal crop travels upward across the open ceiling grid. The movement is not a before/after comparison and does not claim that both images depict the same room.
+The hero never fades. It travels out of the viewport on the same vertical axis as the user's scroll. The process canvas rises directly behind it. Once registered, a sequence of differently proportioned photographs moves upward through a fixed editorial field. Image crops travel more slowly than their frames, creating real depth without suggesting a false before-and-after relationship.
 
 ## Beat map
 
 | Beat | Label | Scroll depth | Controlling idea | What the user sees | Feeling | Register | Continuity | Copy mode | Transition out |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | The Finished Hold | 0–12% | Desire has been established | Settled hero remains readable | Calm desire | FINISHED | Warm champagne tone | ATMOSPHERIC | FOCUS SHIFT |
-| 2 | Attention Tilts Up | 12–42% | Refinement begins above and behind the finish | Room enlarges slightly; Akoka open-ceiling proof plane rises and its crop travels upward | Interruption, curiosity | TRANSITION | Ceiling lines and warm neutral palette | SILENT | STRUCTURAL RISE |
-| 3 | Before the Finish | 42–76% | Hidden decisions precede visible refinement | Portrait site frame holds on ceiling grid and active supervision; headline resolves beside it | Scrutiny, respect | PROCESS | Editorial grid and one vertical proof plane | DECLARATIVE | EVIDENCE HOLD |
-| 4 | The Decision Ledger | 76–100% | TTA's value includes early coordination | Four restrained evidence terms settle: layout, electrical, ceiling, movement | Authority | PROCESS | Baseline rule and measured labels | EDITORIAL | HOLD |
+| 1 | The Finished Hold | 0–10% | The desired atmosphere has been established | Settled hero with centered lower typography | Calm desire | FINISHED | Warm room and central axis | ATMOSPHERIC | VERTICAL LIFT |
+| 2 | Beneath the Finish | 10–31% | The visible room rests on earlier work | The entire hero moves upward while a warm process canvas rises from below | Curiosity | TRANSITION | One continuous vertical trajectory | SILENT | REGISTER |
+| 3 | Read the Room | 31–49% | Site conditions are understood before they are concealed | Open-ceiling supervision frame crosses the reading line | Attention | PROCESS | Vertical image reel | EDITORIAL | PROCESS RISE |
+| 4 | Align the Work | 49–67% | Decisions are clarified with the people executing them | On-site conversation frame replaces the first | Recognition | PROCESS | Shared crop rhythm and captions | EDITORIAL | PROCESS RISE |
+| 5 | Refine the Surface | 67–84% | Light and finish are resolved in the actual room | Surface-application frame passes through the composition | Respect | PROCESS | Material tone and measured spacing | EDITORIAL | PROCESS RISE |
+| 6 | Carry It Through | 84–100% | Early attention becomes a composed final atmosphere | Finished Akoka frame settles and the closing statement becomes fully legible | Confidence | PROCESS | Ceiling geometry and warm light | DECLARATIVE | HOLD |
+
+## Process copy
+
+- Kicker: `How the room comes together`
+- Headline: **The finish is what you see. The thinking starts much earlier.**
+- Support: `TTA works through the room on site—reading the space, aligning the team, refining the surfaces, and carrying those decisions into the final atmosphere.`
+
+Image captions:
+
+1. `Read the room` — `The structure and services are considered before they disappear.`
+2. `Align the work` — `Decisions are clarified with the people bringing the room to life.`
+3. `Refine the surface` — `Light, texture and finish are tested where they will actually live.`
+4. `Carry it through` — `The final atmosphere inherits every decision made before it.`
 
 ## Desktop choreography
 
-- Scroll owner: one sticky stage of approximately 250svh.
-- Hero exit: scale `1 -> 1.035`, mild blur/darkening, then retirement.
-- Proof frame: right-side portrait plane, top-cropped to exclude embedded social captions while preserving ceiling, people, and pointing gesture.
-- Internal media motion: reverse parallax travels upward and stops when scroll stops.
-- Copy: left editorial field; headline arrives only after the ceiling structure is legible.
-- Final hold: no ambient loop and no automatic continuation.
+- Scroll owner: one sticky stage of approximately `430svh`.
+- Hero handoff: `translateY(0 -> -100svh)`; no blur, opacity, scale exit, wipe, or crossfade.
+- Process canvas: `translateY(100svh -> 0)` on the same interval, producing a physical page-to-page handoff.
+- Process copy: fixed left editorial field once the canvas registers.
+- Image reel: right-side vertical track with four unequal frames; the track travels upward while internal crops counter-travel at lower amplitude.
+- Captions remain attached to their photographs. There is no detached technical ledger.
+- Final frame holds without an ambient loop.
 
 ## Mobile and reduced motion
 
-- Mobile: image occupies the upper portion; copy anchors below. The frame rises less and the internal crop movement is reduced.
-- Reduced motion: a short scroll-controlled crossfade replaces scale, blur, and internal travel. All proof and copy remain present.
-- Loading failure: warm plaster field, headline, support copy, and decision labels remain readable without the image.
+- Mobile: hero still lifts vertically. The process copy becomes an introductory block, followed by an ordinary stacked image sequence with restrained crop movement; no long desktop pin is simulated.
+- Reduced motion: use discrete stacked states. The hero and process section remain adjacent in document flow with no crossfade, blur, or counter-travel.
+- Loading failure: the process argument and all captions remain readable against the warm field, with reserved frame dimensions preventing layout collapse.
 
 ## Truth boundary
 
-The Akoka open-ceiling image is evidence of TTA's process, but it is not presented as the construction stage of the hero living room. Copy must describe a general practice principle, not fabricate a direct before-and-after relationship.
+The selected images are observed TTA process and completion material from Project Akoka. The section describes a general working sequence and does not claim that the Akoka project is the construction stage of the separate hero living room.
 
 ## Acceptance conditions
 
 1. The approved autoplay opening remains unchanged at scroll position zero.
-2. Scroll-bound movement stops immediately when scroll stops.
-3. The portrait image excludes its embedded `WOULD` caption and lower social-logo area.
-4. The process image is legible before the headline arrives.
-5. The transition feels quieter than the opening and does not become a second spectacle.
-6. Mobile and reduced-motion paths retain the same argument without sticky-scroll breakage.
+2. The hero leaves by vertical travel, never opacity.
+3. Process images explain the sequence without detached labels such as `Electrical` or `Movement`.
+4. Embedded social captions and logos remain outside every visible crop.
+5. Image movement stops when scrolling stops.
+6. The process chapter remains quieter than the opening while still feeling authored.
+7. Mobile and reduced-motion experiences preserve the same sequence and truth boundary.

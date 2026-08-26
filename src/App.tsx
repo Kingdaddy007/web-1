@@ -30,10 +30,7 @@ export function App() {
   const storyStageRef = useRef<HTMLElement>(null);
   const heroSceneRef = useRef<HTMLDivElement>(null);
   const processSceneRef = useRef<HTMLElement>(null);
-  const processFrameRef = useRef<HTMLElement>(null);
-  const processImageRef = useRef<HTMLImageElement>(null);
-  const processCopyRef = useRef<HTMLDivElement>(null);
-  const processLedgerRef = useRef<HTMLDivElement>(null);
+  const processTrackRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef(0);
   const elapsedRef = useRef(0);
   const [time, setTime] = useState(0);
@@ -106,7 +103,7 @@ export function App() {
       const interfaceIn = reduced ? smooth((t - 1.08) / 0.42) : smooth((t - 5.44) / 0.72);
       if (heroCopyRef.current) {
         heroCopyRef.current.style.opacity = String(interfaceIn);
-        heroCopyRef.current.style.transform = `translateY(${mix(24, 0, interfaceIn).toFixed(2)}px)`;
+        heroCopyRef.current.style.setProperty('--hero-copy-y', `${mix(24, 0, interfaceIn).toFixed(2)}px`);
       }
       if (navRef.current) {
         navRef.current.style.opacity = String(interfaceIn);
@@ -159,48 +156,39 @@ export function App() {
 
     const renderScroll = (rawProgress: number) => {
       const progress = clamp(rawProgress);
-      const heroExit = reduced ? smooth((progress - 0.08) / 0.2) : smooth((progress - 0.04) / 0.28);
-      const processIn = reduced ? smooth((progress - 0.1) / 0.2) : smooth((progress - 0.12) / 0.28);
-      const mediaSettle = reduced ? processIn : smooth((progress - 0.16) / 0.44);
-      const copyIn = smooth((progress - 0.48) / 0.22);
-      const ledgerIn = smooth((progress - 0.72) / 0.17);
+      const handoff = smooth((progress - 0.06) / 0.24);
+      const processProgress = clamp((progress - 0.27) / 0.73);
 
       if (heroSceneRef.current) {
-        heroSceneRef.current.style.opacity = String(1 - smooth((progress - 0.09) / 0.24));
+        heroSceneRef.current.style.visibility = reduced && progress >= 0.18 ? 'hidden' : 'visible';
         heroSceneRef.current.style.transform = reduced
           ? 'none'
-          : `scale(${mix(1, 1.035, heroExit).toFixed(4)})`;
-        heroSceneRef.current.style.filter = reduced
-          ? 'none'
-          : `blur(${(heroExit * 4.5).toFixed(2)}px) brightness(${mix(1, 0.72, heroExit).toFixed(3)})`;
+          : `translate3d(0, ${(-handoff * 100).toFixed(2)}svh, 0)`;
       }
 
       if (processSceneRef.current) {
-        processSceneRef.current.style.opacity = String(processIn);
+        processSceneRef.current.style.visibility = reduced && progress < 0.18 ? 'hidden' : 'visible';
+        processSceneRef.current.style.transform = reduced
+          ? 'none'
+          : `translate3d(0, ${((1 - handoff) * 100).toFixed(2)}svh, 0)`;
       }
 
-      if (processFrameRef.current) {
-        const travel = reduced ? 0 : mix(34, 0, mediaSettle);
-        const scale = reduced ? 1 : mix(0.94, 1, mediaSettle);
-        processFrameRef.current.style.transform = `translate3d(0, ${travel.toFixed(2)}vh, 0) scale(${scale.toFixed(4)})`;
-      }
-
-      if (processImageRef.current) {
-        const imageTravel = reduced ? 0 : mix(4.5, -3.5, mediaSettle);
-        processImageRef.current.style.transform = `translate3d(0, ${imageTravel.toFixed(2)}%, 0) scale(1.035)`;
-      }
-
-      if (processCopyRef.current) {
-        processCopyRef.current.style.opacity = String(copyIn);
-        processCopyRef.current.style.transform = `translate3d(0, ${mix(28, 0, copyIn).toFixed(2)}px, 0)`;
-      }
-
-      if (processLedgerRef.current) {
-        processLedgerRef.current.style.opacity = String(ledgerIn);
-        processLedgerRef.current.style.transform = `translate3d(0, ${mix(18, 0, ledgerIn).toFixed(2)}px, 0)`;
+      if (processTrackRef.current) {
+        const reducedStep = Math.min(3, Math.floor(processProgress * 4));
+        const reducedOffsets = window.innerWidth <= 760
+          ? [0, -69, -138, -207]
+          : [0, -80, -146, -219];
+        const trackTravel = reduced ? reducedOffsets[reducedStep] : mix(22, -208, processProgress);
+        processTrackRef.current.style.transform = `translate3d(0, ${trackTravel.toFixed(2)}vh, 0)`;
+        processTrackRef.current.querySelectorAll<HTMLImageElement>('.process-card img').forEach((image, index) => {
+          const localProgress = smooth((processProgress - index * 0.21) / 0.34);
+          const cropTravel = reduced ? 0 : mix(-2.5, 4.5, localProgress);
+          image.style.transform = `translate3d(0, ${cropTravel.toFixed(2)}%, 0) scale(1.06)`;
+        });
       }
 
       rootRef.current?.style.setProperty('--scroll-progress', String(progress));
+      rootRef.current?.style.setProperty('--process-progress', String(processProgress));
     };
 
     const update = () => {
@@ -280,23 +268,32 @@ export function App() {
           <section className="process-scene" ref={processSceneRef} aria-labelledby="process-title">
             <div className="process-texture" aria-hidden="true" />
 
-            <div className="process-copy" ref={processCopyRef}>
-              <p className="process-kicker">02 / Before the finish</p>
-              <h2 id="process-title">The room is decided<br />long before<br />the final layer.</h2>
-              <p>Before the finishes arrive, layout, services, ceilings and movement are already being coordinated.</p>
+            <div className="process-copy">
+              <p className="process-kicker">02 / How the room comes together</p>
+              <h2 id="process-title">The finish is what you see.<br />The thinking starts much earlier.</h2>
+              <p>TTA works through the room on site—reading the space, aligning the team, refining the surfaces, and carrying those decisions into the final atmosphere.</p>
             </div>
 
-            <figure className="process-frame" ref={processFrameRef}>
-              <img ref={processImageRef} src="/assets/akoka-site-ceiling-open.jpg" alt="TTA Designs supervising an open ceiling structure during work in progress" />
-              <figcaption><span>Project Akoka</span><span>Work in progress</span></figcaption>
-            </figure>
-
-            <div className="process-ledger" ref={processLedgerRef} aria-label="Early design decisions">
-              <span><b>01</b>Layout</span>
-              <span><b>02</b>Electrical</span>
-              <span><b>03</b>Ceiling</span>
-              <span><b>04</b>Movement</span>
+            <div className="process-reel" ref={processTrackRef}>
+              <figure className="process-card process-card--wide">
+                <div className="process-media"><img src="/assets/akoka-site-ceiling-open.jpg" alt="TTA Designs supervising an open ceiling structure during work in progress" /></div>
+                <figcaption><b>01 / Read the room</b><span>The structure and services are considered before they disappear.</span></figcaption>
+              </figure>
+              <figure className="process-card process-card--narrow">
+                <div className="process-media"><img src="/assets/akoka-site-conversation.jpg" alt="TTA Designs discussing work with the project team on site" /></div>
+                <figcaption><b>02 / Align the work</b><span>Decisions are clarified with the people bringing the room to life.</span></figcaption>
+              </figure>
+              <figure className="process-card process-card--mid">
+                <div className="process-media"><img src="/assets/akoka-site-painting.jpg" alt="A surface finish being refined on site under TTA Designs supervision" /></div>
+                <figcaption><b>03 / Refine the surface</b><span>Light, texture and finish are tested where they will actually live.</span></figcaption>
+              </figure>
+              <figure className="process-card process-card--final">
+                <div className="process-media"><img src="/assets/akoka-site-installation.jpg" alt="The finished Akoka interior with a resolved ceiling, lighting and seating composition" /></div>
+                <figcaption><b>04 / Carry it through</b><span>The final atmosphere inherits every decision made before it.</span></figcaption>
+              </figure>
             </div>
+
+            <p className="process-project">Project Akoka · Process study</p>
           </section>
         </div>
       </section>

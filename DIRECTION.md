@@ -43,16 +43,16 @@ No wipe, aperture, curtain split, second shader, opacity exit, door metaphor, or
 
 ## Hero-to-proof scroll chapter
 
-The first scroll does not introduce another spectacle. It changes the viewer's attention from the finished atmosphere to the hidden decisions beneath it.
+The first scroll does not dissolve between independent screens. It treats the hero and process chapter as consecutive pages in one architectural folio.
 
 1. The completed room holds long enough to be desired.
-2. The hero advances slightly and softens, as if the viewer is looking beyond the finish.
-3. One vertical Akoka site frame rises from below and becomes readable before any explanation appears.
-4. The argument resolves beside it: `The room is decided long before the final layer.`
-5. `Layout`, `Electrical`, `Ceiling`, and `Movement` settle into a restrained decision ledger.
+2. The entire hero travels upward while the warm process canvas rises directly beneath it. Neither scene changes opacity.
+3. Four differently proportioned Akoka frames move upward as an editorial project reel.
+4. Their captions explain the sequence: read the room, align the work, refine the surface, and carry it through.
+5. The fixed argument reads: `The finish is what you see. The thinking starts much earlier.`
 
-The passage is pinned to one viewport and governed by scroll progress. It has no lateral carousel, portal, wipe, decorative parallax, or second cinematic peak. Mobile preserves the evidence order in a vertical composition. Reduced motion removes the frame travel while retaining the same progressive disclosure.
+The passage is pinned to one viewport and governed by scroll progress. Internal image crops move more slowly than their frames, creating depth that belongs to the photographic sequence rather than decorative parallax. It has no lateral carousel, portal, wipe, crossfade, or second cinematic peak. Mobile preserves the evidence order in a vertical composition. Reduced motion uses discrete image states while retaining the same argument.
 
 ## Truth boundary
 
-This remains a private speculative plate derived from observed TTA media. It is a presentation hypothesis, not a verified original project photograph or a public brand claim. The Akoka process image is not claimed to be the construction stage of the hero room.
+This remains a private speculative plate derived from observed TTA media. It is a presentation hypothesis, not a verified original project photograph or a public brand claim. The Akoka sequence is not claimed to be the construction stage of the hero room.

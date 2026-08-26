@@ -23,11 +23,11 @@ The approved Constructed Axis logo arrival remains authoritative through its exa
 
 ## Implemented proof passage
 
-- Proof source: `public/assets/akoka-site-ceiling-open.jpg`.
-- Scroll law: **the finished room yields as attention tilts upward toward the structure that made it possible.**
-- Choreography: the hero softens and enlarges; the Akoka construction frame rises and settles; the argument enters only after the image is legible; four early-decision labels complete the hold.
-- Final copy: **The room is decided long before the final layer.**
-- Evidence boundary: the Akoka image proves process and supervision in its own right. It is not represented as the construction stage of the living-room hero.
+- Proof sources: four Project Akoka frames covering open-ceiling supervision, on-site alignment, surface refinement, and the resolved room.
+- Scroll law: **the finished room lifts away like the top page of an architectural folio; the work beneath it continues upward as a measured project reel.**
+- Choreography: hero and process canvas travel vertically without opacity; an unequal image reel then progresses upward while each crop counter-travels at lower amplitude.
+- Final copy: **The finish is what you see. The thinking starts much earlier.**
+- Evidence boundary: the Akoka sequence proves process and follow-through in its own right. It is not represented as the construction stage of the separate living-room hero.
 - Full timing and responsive behavior: `.agents/contexts/scroll-storyboard.md`.
 
 ## One thing the experience must make the viewer feel
@@ -77,11 +77,11 @@ An atmosphere-led opening followed immediately by point-of-view and process proo
 ### 3. Before the finish
 
 - Job: prove design intelligence rather than styling alone.
-- Visual: one disciplined Akoka site sequence, led by the open ceiling frame and a short founder/process fragment.
-- Copy direction: **The room is decided long before the final layer.**
-- Proof to expose: layout, electrical points, plumbing, ceiling, movement, supervision, and early corrections; use only claims already supported by the evidence dossier.
+- Visual: an Akoka project reel moving from open structure and team alignment through surface refinement to the resolved room.
+- Copy direction: **The finish is what you see. The thinking starts much earlier.**
+- Proof to expose: reading the room, aligning execution, refining surfaces, and carrying decisions through; use only claims supported by visible evidence.
 - Intended feeling: respect and authority.
-- Implementation status: first static proof frame and pinned scroll choreography implemented; any future founder/process footage remains out of scope for this checkpoint.
+- Implementation status: four-frame image-led process choreography implemented; future process footage remains out of scope for this checkpoint.
 
 ### 4. A room with a job
 
