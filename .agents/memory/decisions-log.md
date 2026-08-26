@@ -85,3 +85,13 @@
 - **Scroll boundary:** Parallax, pinning, and reverse-parallax remain deferred until the next section has a defined narrative job.
 - **Implementation:** Branch `concept/axis-light-threshold`; detailed choreography in `DIRECTION.md`.
 - **Approval note:** Approved by the user on 2026-08-26 as the current authoritative opening and hero. Further concepts must remain isolated alternatives and must not overwrite this branch.
+
+### Decision 010: Spatial Focus Pull Alternative
+
+- **Date:** 2026-08-26
+- **Status:** ALTERNATIVE FOR LIVE REVIEW; NOT APPROVED
+- **Decision:** Test one complete alternative to the approved Axis Light Threshold using cinematic camera perception instead of identity geometry.
+- **Motion law:** After the locked logo arrival, subdued room colour appears under deep optical defocus. Blur, scale, saturation and exposure resolve together until the interior becomes legible; only then does the interface enter.
+- **Hero destination:** Full-bleed room with a restrained three-column editorial rail. The room carries the first impression instead of another large left-overlay composition.
+- **Canvas boundary:** One temporary custom Three.js focus shader; no Canvas UI upstream component or new dependency. Semantic content remains DOM-first, with direct reduced-motion and lower-DPR mobile paths.
+- **Implementation:** Branch `concept/spatial-focus-pull`; detailed choreography in `DIRECTION.md`.

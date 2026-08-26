@@ -14,8 +14,7 @@ const fragmentShader = /* glsl */ `
   uniform sampler2D uImage;
   uniform vec2 uResolution;
   uniform vec2 uImageResolution;
-  uniform float uProgress;
-  uniform float uAxis;
+  uniform float uFocus;
   uniform float uVerticalFocus;
   varying vec2 vUv;
 
@@ -32,45 +31,55 @@ const fragmentShader = /* glsl */ `
     return covered;
   }
 
+  vec3 opticalBlur(vec2 uv, float radius) {
+    vec2 aspect = vec2(1.0, uResolution.x / max(uResolution.y, 1.0));
+    vec2 r = vec2(radius) / aspect;
+    vec3 color = texture2D(uImage, uv).rgb * 2.0;
+    color += texture2D(uImage, uv + vec2( 1.0,  0.0) * r).rgb;
+    color += texture2D(uImage, uv + vec2(-1.0,  0.0) * r).rgb;
+    color += texture2D(uImage, uv + vec2( 0.0,  1.0) * r).rgb;
+    color += texture2D(uImage, uv + vec2( 0.0, -1.0) * r).rgb;
+    color += texture2D(uImage, uv + vec2( .72,  .72) * r).rgb;
+    color += texture2D(uImage, uv + vec2(-.72,  .72) * r).rgb;
+    color += texture2D(uImage, uv + vec2( .72, -.72) * r).rgb;
+    color += texture2D(uImage, uv + vec2(-.72, -.72) * r).rgb;
+    return color / 10.0;
+  }
+
+  float noise(vec2 p) {
+    return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+  }
+
   void main() {
-    float p = clamp(uProgress, 0.0, 1.0);
-    float opened = p * p * (3.0 - 2.0 * p);
-    float startGate = smoothstep(0.015, 0.08, p);
-    vec2 uv = vUv;
+    float p = clamp(uFocus, 0.0, 1.0);
+    float eased = p * p * (3.0 - 2.0 * p);
+    float defocus = 1.0 - eased;
+    float scale = mix(1.075, 1.0, eased);
+    vec2 settledUv = (vUv - 0.5) / scale + 0.5;
+    settledUv.y += defocus * 0.012;
+    vec2 imageUv = coverUv(settledUv, uResolution, uImageResolution);
 
-    float vertical = abs(uv.y - 0.5) * 2.0;
-    float sculpt = pow(vertical, 1.7) * (0.018 * (1.0 - p)) * startGate;
-    float distanceFromAxis = abs(uv.x - uAxis);
-    float sideReach = uv.x < uAxis ? max(uAxis, 0.001) : max(1.0 - uAxis, 0.001);
-    float normalizedDistance = distanceFromAxis / sideReach;
-    float signedFront = opened - normalizedDistance + sculpt;
-    float reveal = smoothstep(-0.018, 0.018, signedFront) * startGate;
+    float blurRadius = defocus * defocus * 0.037;
+    float chroma = defocus * defocus * 0.0032;
+    vec3 room = opticalBlur(imageUv, blurRadius);
+    room.r = opticalBlur(imageUv + vec2(chroma, 0.0), blurRadius).r;
+    room.b = opticalBlur(imageUv - vec2(chroma, 0.0), blurRadius).b;
 
-    float edge = exp(-pow(signedFront / 0.022, 2.0));
-    float direction = sign(uv.x - uAxis);
-    float refraction = edge * (1.0 - p) * 0.012;
-    vec2 warped = uv;
-    warped.x += direction * refraction;
-    warped.y += (1.0 - opened) * 0.032;
+    float luma = dot(room, vec3(0.2126, 0.7152, 0.0722));
+    room = mix(vec3(luma), room, mix(0.38, 1.0, eased));
+    room *= mix(0.52, 1.0, eased);
 
-    vec2 imageUv = coverUv(warped, uResolution, uImageResolution);
-    float channelShift = edge * (1.0 - p) * 0.0015;
-    vec3 room;
-    room.r = texture2D(uImage, imageUv + vec2(channelShift, 0.0)).r;
-    room.g = texture2D(uImage, imageUv).g;
-    room.b = texture2D(uImage, imageUv - vec2(channelShift, 0.0)).b;
+    float field = smoothstep(0.0, 0.24, p);
+    vec3 color = mix(vec3(0.018, 0.017, 0.015), room, field);
+    color += (noise(gl_FragCoord.xy) - 0.5) * defocus * 0.018;
 
-    vec3 blackSurface = vec3(0.018, 0.017, 0.015);
-    float seamGlow = edge * (1.0 - smoothstep(0.9, 1.0, p)) * 0.52 * startGate;
-    vec3 glow = vec3(1.0, 0.76, 0.43) * seamGlow;
-    vec3 color = mix(blackSurface, room, reveal) + glow;
     gl_FragColor = vec4(color, 1.0);
     #include <tonemapping_fragment>
     #include <colorspace_fragment>
   }
 `;
 
-export class MembraneCanvas {
+export class FocusCanvas {
   private renderer: THREE.WebGLRenderer;
   private scene = new THREE.Scene();
   private camera = new THREE.Camera();
@@ -81,8 +90,13 @@ export class MembraneCanvas {
   private dirty = true;
 
   constructor(private canvas: HTMLCanvasElement, imageUrl: string) {
-    this.renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: 'high-performance' });
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+    this.renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: false,
+      alpha: false,
+      powerPreference: 'high-performance',
+    });
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.6));
     this.texture = new THREE.TextureLoader().load(imageUrl, (texture) => {
       texture.colorSpace = THREE.SRGBColorSpace;
       const source = texture.image as HTMLImageElement;
@@ -98,8 +112,7 @@ export class MembraneCanvas {
         uImage: { value: this.texture },
         uResolution: { value: new THREE.Vector2(1, 1) },
         uImageResolution: { value: new THREE.Vector2(1586, 992) },
-        uProgress: { value: 0 },
-        uAxis: { value: 0.44 },
+        uFocus: { value: 0 },
         uVerticalFocus: { value: 0.5 },
       },
       depthTest: false,
@@ -113,20 +126,17 @@ export class MembraneCanvas {
     this.renderLoop();
   }
 
-  setProgress(progress: number) {
-    this.material.uniforms.uProgress.value = progress;
+  setFocus(progress: number) {
+    this.material.uniforms.uFocus.value = progress;
     this.dirty = true;
   }
 
   private resize() {
     const { clientWidth: width, clientHeight: height } = this.canvas;
+    this.renderer.setPixelRatio(width < 760 ? 1 : Math.min(window.devicePixelRatio, 1.6));
     this.renderer.setSize(width, height, false);
     this.material.uniforms.uResolution.value.set(width, height);
-    const logoWidth = Math.min(800, width * 0.82);
-    const axisOffset = logoWidth * (855 / 2172 - 0.5);
-    this.material.uniforms.uAxis.value = 0.5 + axisOffset / Math.max(width, 1);
-    const aspect = width / Math.max(height, 1);
-    this.material.uniforms.uVerticalFocus.value = getHeroVerticalFocus(aspect);
+    this.material.uniforms.uVerticalFocus.value = getHeroVerticalFocus(width / Math.max(height, 1));
     this.dirty = true;
   }
 

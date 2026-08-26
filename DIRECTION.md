@@ -1,40 +1,51 @@
-# TTA Concept — Axis Light Threshold
+# TTA Alternative Concept — Spatial Focus Pull
 
-## Verdict
+## Visual thesis
 
-This supersedes the double-action Axis Light Commissioning experiment. The hinge concept is rejected for the current hero because its unfolding planes compete with the already-authored logo arrival.
+The practice turns atmosphere into a resolved place. The transition therefore behaves like a cinematic focus pull rather than an architectural wipe: light, colour and mass become perceptible before individual details lock into clarity.
 
-## Singular motion law
+## Why this is a complete alternative
 
-1. The approved logo constructs and holds through 3.05 seconds.
-2. The D-axis extends into a full-height light datum.
-3. One pair of restrained light fronts travels outward from that datum.
-4. The same light fronts reveal the room while the image settles upward by a few pixels.
-5. The room holds in stillness; navigation and typography arrive afterward.
+- The approved Axis Light Threshold uses identity geometry to reveal space.
+- Spatial Focus Pull uses camera perception to reveal space.
+- The approved destination uses a large left-weighted statement.
+- This destination gives the room priority and places copy in a quiet editorial rail.
 
-There is no membrane bend followed by commissioning, no second wipe, no fold, and no separate spectacle attached to the hero image.
+The concepts share only the approved logo arrival, evidence-grounded copy and source image so the comparison remains meaningful.
 
-## Timing hierarchy
+## Arrival choreography
 
-- `0.00–3.05s`: approved identity construction.
-- `3.08–3.46s`: axis becomes full-height datum.
-- `3.32–5.38s`: outward light threshold reveals the room.
-- `5.10–5.68s`: WebGL frame resolves invisibly into the matching DOM hero.
-- `5.72–6.48s`: interface and copy enter after spatial stillness.
-- `6.48–7.40s`: clean hold.
+1. `0.00–3.05s`: approved Constructed Axis logo animation.
+2. `3.18–3.75s`: the black field acquires subdued room colour under deep defocus.
+3. `3.75–5.36s`: optical blur, slight chromatic separation, low saturation and camera scale resolve together into the room.
+4. `5.08–5.78s`: the final WebGL frame transfers to the matching DOM image.
+5. `5.82–6.64s`: navigation and editorial rail enter after focus locks.
+6. `6.64–7.90s`: still hold.
 
-## Technical law
+## Motion contract
 
-- One custom Three.js fragment shader is responsible only for the temporary light-front reveal.
-- The shader and DOM use the same source image, cover crop, vertical focal point, colour space, and persistent DOM grade.
-- Final shader pixels are ungraded so the canvas-to-DOM handoff does not create a brightness jump.
-- Reduced motion uses a direct image crossfade.
-- Pointer drift begins only after the complete opening; it is not part of the arrival timeline.
+- **Communication job:** shift from atmosphere to spatial proof.
+- **Track:** arrival only. No scroll-bound or ambient timeline is included.
+- **Why stillness is insufficient:** the concept depends on the perceptual change from feeling a room to reading its decisions.
+- **Reduced motion:** direct logo-to-room crossfade with no defocus travel.
+- **Mobile:** same narrative with a lower DPR cap and stacked editorial rail.
 
-## Scroll boundary
+## Canvas decision
 
-The opening is autoplay arrival motion. Parallax, reverse parallax, pinning, and scroll choreography are deliberately deferred until the next section has a defined narrative job. They must not be used to repair or complicate the first-view transition.
+Canvas UI's optical family was evaluated but no upstream component is imported. The existing project-local Three.js stack is used for one temporary custom focus shader. This avoids an additional dependency and keeps the effect limited to the transition surface.
+
+Semantic navigation, copy and CTA remain live DOM. The canvas caps DPR, redraws only when dirty, responds to its container, and disposes its texture, material, renderer, observer and animation frame on unmount.
+
+## Final hero
+
+The room remains full bleed. A three-column bottom rail carries:
+
+- the chapter label;
+- the central brand statement; and
+- restrained supporting copy and exploration cue.
+
+The layout intentionally avoids another giant left-overlay composition and does not introduce cards, split screens or decorative luxury signals.
 
 ## Truth boundary
 
-The landscape room remains a replaceable private speculative plate. The light threshold is an authored presentation device, not evidence of a lighting-control product or a verified feature of the depicted project.
+The landscape room remains a replaceable private speculative plate. The optical transition is an authored presentation device and must not be represented as evidence of an actual project camera treatment or final TTA brand system.
