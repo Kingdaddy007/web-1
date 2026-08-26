@@ -4,6 +4,7 @@ import { renderApprovedLogoFrame, type LogoLayers } from './logoTimeline';
 
 const TOTAL = 7.15;
 const AXIS_POSITION = 855 / 2172;
+
 const clamp = (value: number, min = 0, max = 1) => Math.max(min, Math.min(max, value));
 const smooth = (value: number) => {
   const x = clamp(value);
@@ -11,12 +12,57 @@ const smooth = (value: number) => {
 };
 const mix = (from: number, to: number, progress: number) => from + (to - from) * progress;
 
+interface ProcessStage {
+  number: string;
+  stageCode: string;
+  title: string;
+  desc: string;
+  image: string;
+  alt: string;
+}
+
+const PROCESS_STAGES: ProcessStage[] = [
+  {
+    number: '01',
+    stageCode: '01 / Read the room',
+    title: 'Read the room',
+    desc: 'See what the space needs before the ceiling closes.',
+    image: '/assets/akoka-site-ceiling-open-wide-clean-v1.png',
+    alt: 'TTA Designs supervising the exposed ceiling structure and mechanical routing during work in progress at Project Akoka'
+  },
+  {
+    number: '02',
+    stageCode: '02 / Align the work',
+    title: 'Align the work',
+    desc: 'Resolve decisions with the people building them.',
+    image: '/assets/akoka-site-conversation-wide-clean-v1.png',
+    alt: 'TTA Designs reviewing spatial alignment and construction detailing with the site team at Project Akoka'
+  },
+  {
+    number: '03',
+    stageCode: '03 / Refine the surface',
+    title: 'Refine the surface',
+    desc: 'Test light and texture in the room itself.',
+    image: '/assets/akoka-site-painting-wide-clean-v1.png',
+    alt: 'Surface finish, wall plaster, and natural light calibration on site under TTA Designs supervision'
+  },
+  {
+    number: '04',
+    stageCode: '04 / Carry it through',
+    title: 'Carry it through',
+    desc: 'Let every early decision support the final atmosphere.',
+    image: '/assets/akoka-site-installation-wide-clean-v1.png',
+    alt: 'The resolved Akoka living space with finished ceiling architecture, integrated lighting, and warm material palette'
+  }
+];
+
 export function App() {
   const rootRef = useRef<HTMLElement>(null);
   const macroRef = useRef<HTMLDivElement>(null);
   const materialLightRef = useRef<HTMLDivElement>(null);
   const backgroundCameraRef = useRef<HTMLDivElement>(null);
   const foregroundCameraRef = useRef<HTMLDivElement>(null);
+  const backgroundVideoRef = useRef<HTMLVideoElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
   const masterRef = useRef<HTMLImageElement>(null);
   const axisRef = useRef<HTMLDivElement>(null);
@@ -30,14 +76,30 @@ export function App() {
   const storyStageRef = useRef<HTMLElement>(null);
   const heroSceneRef = useRef<HTMLDivElement>(null);
   const processSceneRef = useRef<HTMLElement>(null);
-  const processTrackRef = useRef<HTMLDivElement>(null);
+  const headlineLine1Ref = useRef<HTMLSpanElement>(null);
+  const headlineLine2Ref = useRef<HTMLSpanElement>(null);
+
+  const slideRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const imageRefs = useRef<(HTMLImageElement | null)[]>([]);
+
   const frameRef = useRef(0);
   const elapsedRef = useRef(0);
   const [time, setTime] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [activeStage, setActiveStage] = useState(0);
+  const [scrollPct, setScrollPct] = useState(0);
+
   const params = useMemo(() => new URLSearchParams(window.location.search), []);
   const debug = params.get('debug') === '1';
   const forceReduced = params.get('reduced') === '1';
+
+  // Preload all 4 clean 16:9 images for zero flicker
+  useEffect(() => {
+    PROCESS_STAGES.forEach((stage) => {
+      const img = new Image();
+      img.src = stage.image;
+    });
+  }, []);
 
   useEffect(() => {
     const updateFraming = () => {
@@ -49,6 +111,7 @@ export function App() {
     return () => window.removeEventListener('resize', updateFraming);
   }, []);
 
+  // Hero arrival & logo timeline (0.00s - 7.15s)
   useEffect(() => {
     const layers: LogoLayers | null = masterRef.current && axisRef.current && dStemRef.current && dBowlRef.current && ttaRef.current && esignsRef.current
       ? { master: masterRef.current, axis: axisRef.current, dStem: dStemRef.current, dBowl: dBowlRef.current, tta: ttaRef.current, esigns: esignsRef.current }
@@ -76,7 +139,11 @@ export function App() {
         element.style.transform = `translate3d(0, ${cameraY.toFixed(2)}%, 0) scale(${cameraScale.toFixed(4)})`;
       };
       applyCamera(backgroundCameraRef.current);
-      applyCamera(foregroundCameraRef.current);
+      if (foregroundCameraRef.current) {
+        const apertureOut = smooth((registration - 0.72) / 0.24);
+        foregroundCameraRef.current.style.opacity = String(roomIn * (1 - apertureOut));
+        foregroundCameraRef.current.style.transform = `translate3d(0, ${cameraY.toFixed(2)}%, 0) scale(${cameraScale.toFixed(4)})`;
+      }
 
       if (macroRef.current) {
         macroRef.current.style.opacity = String(1 - macroOut);
@@ -144,6 +211,7 @@ export function App() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
+  // Dimensional Parallax Underpass & Pinned Process Window Scroll Choreography
   useEffect(() => {
     const stage = storyStageRef.current;
     if (!stage) return;
@@ -156,35 +224,165 @@ export function App() {
 
     const renderScroll = (rawProgress: number) => {
       const progress = clamp(rawProgress);
-      const handoff = smooth((progress - 0.06) / 0.24);
-      const processProgress = clamp((progress - 0.27) / 0.73);
+      // Underpass handoff spans progress [0.00, 0.20]
+      const handoff = smooth(clamp(progress / 0.20));
+      // Process section progression spans progress [0.20, 1.00]
+      const processProgress = clamp((progress - 0.20) / 0.80);
 
+      // 1. Hero-to-Process Dimensional Parallax Underpass
       if (heroSceneRef.current) {
-        heroSceneRef.current.style.visibility = reduced && progress >= 0.18 ? 'hidden' : 'visible';
-        heroSceneRef.current.style.transform = reduced
-          ? 'none'
-          : `translate3d(0, ${(-handoff * 100).toFixed(2)}svh, 0)`;
+        if (reduced) {
+          heroSceneRef.current.style.visibility = progress < 0.20 ? 'visible' : 'hidden';
+          heroSceneRef.current.style.transform = 'none';
+        } else {
+          heroSceneRef.current.style.visibility = progress >= 0.24 ? 'hidden' : 'visible';
+          heroSceneRef.current.style.transform = `translate3d(0, ${(-handoff * 100).toFixed(2)}svh, 0)`;
+        }
       }
 
+      if (heroCopyRef.current && !reduced) {
+        // Foreground hero copy lifts slightly faster (1.12x)
+        heroCopyRef.current.style.transform = `translate(-50%, calc(var(--hero-copy-y, 24px) - ${(handoff * 112).toFixed(2)}svh))`;
+      }
+
+      if (navRef.current && !reduced) {
+        navRef.current.style.transform = `translateY(${(-handoff * 80).toFixed(2)}px)`;
+      }
+
+      // Process scene emerges from underneath with subtle slower depth rate and gentle perspective scale
       if (processSceneRef.current) {
-        processSceneRef.current.style.visibility = reduced && progress < 0.18 ? 'hidden' : 'visible';
-        processSceneRef.current.style.transform = reduced
-          ? 'none'
-          : `translate3d(0, ${((1 - handoff) * 100).toFixed(2)}svh, 0)`;
+        if (reduced) {
+          processSceneRef.current.style.visibility = progress >= 0.20 ? 'visible' : 'hidden';
+          processSceneRef.current.style.transform = 'none';
+        } else {
+          processSceneRef.current.style.visibility = 'visible';
+          const underpassY = (1 - handoff) * 36;
+          const underpassScale = 0.96 + handoff * 0.04;
+          processSceneRef.current.style.transform = `translate3d(0, ${underpassY.toFixed(2)}svh, 0) scale(${underpassScale.toFixed(4)})`;
+        }
       }
 
-      if (processTrackRef.current) {
-        const reducedStep = Math.min(3, Math.floor(processProgress * 4));
-        const reducedOffsets = window.innerWidth <= 760
-          ? [0, -69, -138, -207]
-          : [0, -80, -146, -219];
-        const trackTravel = reduced ? reducedOffsets[reducedStep] : mix(22, -208, processProgress);
-        processTrackRef.current.style.transform = `translate3d(0, ${trackTravel.toFixed(2)}vh, 0)`;
-        processTrackRef.current.querySelectorAll<HTMLImageElement>('.process-card img').forEach((image, index) => {
-          const localProgress = smooth((processProgress - index * 0.21) / 0.34);
-          const cropTravel = reduced ? 0 : mix(-2.5, 4.5, localProgress);
-          image.style.transform = `translate3d(0, ${cropTravel.toFixed(2)}%, 0) scale(1.06)`;
+      // Headline baseline line reveal as process scene registers
+      if (!reduced) {
+        const l1 = smooth(clamp((handoff - 0.25) / 0.65));
+        const l2 = smooth(clamp((handoff - 0.38) / 0.62));
+        if (headlineLine1Ref.current) {
+          headlineLine1Ref.current.style.transform = `translate3d(0, ${((1 - l1) * 105).toFixed(2)}%, 0)`;
+        }
+        if (headlineLine2Ref.current) {
+          headlineLine2Ref.current.style.transform = `translate3d(0, ${((1 - l2) * 105).toFixed(2)}%, 0)`;
+        }
+      } else {
+        if (headlineLine1Ref.current) headlineLine1Ref.current.style.transform = 'none';
+        if (headlineLine2Ref.current) headlineLine2Ref.current.style.transform = 'none';
+      }
+
+      // 2. Single-Window Process Image Progression with Counter-Parallax
+      let activeIndex = 0;
+      if (processProgress < 0.28) {
+        activeIndex = 0;
+      } else if (processProgress < 0.54) {
+        activeIndex = 1;
+      } else if (processProgress < 0.80) {
+        activeIndex = 2;
+      } else {
+        activeIndex = 3;
+      }
+
+      setActiveStage(activeIndex);
+      setScrollPct(Math.round(processProgress * 100));
+
+      const s0 = slideRefs.current[0];
+      const s1 = slideRefs.current[1];
+      const s2 = slideRefs.current[2];
+      const s3 = slideRefs.current[3];
+
+      const img0 = imageRefs.current[0];
+      const img1 = imageRefs.current[1];
+      const img2 = imageRefs.current[2];
+      const img3 = imageRefs.current[3];
+
+      if (reduced) {
+        // Clean discrete fallback for prefers-reduced-motion
+        const discreteStep = Math.min(3, Math.floor(processProgress * 4));
+        [s0, s1, s2, s3].forEach((slide, idx) => {
+          if (!slide) return;
+          slide.style.transform = 'none';
+          slide.style.opacity = idx === discreteStep ? '1' : '0';
+          slide.style.visibility = idx === discreteStep ? 'visible' : 'hidden';
         });
+        [img0, img1, img2, img3].forEach((img) => {
+          if (!img) return;
+          img.style.transform = 'none';
+        });
+      } else {
+        // Continuous transitions between the 4 stages
+        const t1 = smooth(clamp((processProgress - 0.18) / 0.16));
+        const t2 = smooth(clamp((processProgress - 0.44) / 0.16));
+        const t3 = smooth(clamp((processProgress - 0.70) / 0.16));
+
+        // Slide 0 (Base Layer)
+        if (s0) {
+          s0.style.transform = 'translate3d(0, 0, 0)';
+          s0.style.opacity = '1';
+          s0.style.visibility = 'visible';
+        }
+        if (img0) {
+          const img0Offset = t1 > 0 ? mix(0, 10, t1) : mix(-2.5, 2.5, clamp(processProgress / 0.18));
+          img0.style.transform = `translate3d(0, ${img0Offset.toFixed(2)}%, 0) scale(1.12)`;
+        }
+
+        // Slide 1 (Transition 0 -> 1)
+        if (s1) {
+          s1.style.transform = `translate3d(0, ${((1 - t1) * 100).toFixed(2)}%, 0)`;
+          s1.style.opacity = t1 > 0 ? '1' : '0';
+          s1.style.visibility = t1 > 0 ? 'visible' : 'hidden';
+        }
+        if (img1) {
+          let img1Offset = 0;
+          if (t1 < 1) {
+            img1Offset = mix(-18, 0, t1); // Counter-parallax on enter
+          } else if (t2 > 0) {
+            img1Offset = mix(0, 10, t2);  // Outgoing parallax
+          } else {
+            img1Offset = mix(-2.5, 2.5, clamp((processProgress - 0.34) / 0.10)); // Living rest glide
+          }
+          img1.style.transform = `translate3d(0, ${img1Offset.toFixed(2)}%, 0) scale(1.12)`;
+        }
+
+        // Slide 2 (Transition 1 -> 2)
+        if (s2) {
+          s2.style.transform = `translate3d(0, ${((1 - t2) * 100).toFixed(2)}%, 0)`;
+          s2.style.opacity = t2 > 0 ? '1' : '0';
+          s2.style.visibility = t2 > 0 ? 'visible' : 'hidden';
+        }
+        if (img2) {
+          let img2Offset = 0;
+          if (t2 < 1) {
+            img2Offset = mix(-18, 0, t2); // Counter-parallax on enter
+          } else if (t3 > 0) {
+            img2Offset = mix(0, 10, t3);  // Outgoing parallax
+          } else {
+            img2Offset = mix(-2.5, 2.5, clamp((processProgress - 0.60) / 0.10)); // Living rest glide
+          }
+          img2.style.transform = `translate3d(0, ${img2Offset.toFixed(2)}%, 0) scale(1.12)`;
+        }
+
+        // Slide 3 (Transition 2 -> 3)
+        if (s3) {
+          s3.style.transform = `translate3d(0, ${((1 - t3) * 100).toFixed(2)}%, 0)`;
+          s3.style.opacity = t3 > 0 ? '1' : '0';
+          s3.style.visibility = t3 > 0 ? 'visible' : 'hidden';
+        }
+        if (img3) {
+          let img3Offset = 0;
+          if (t3 < 1) {
+            img3Offset = mix(-18, 0, t3); // Counter-parallax on enter
+          } else {
+            img3Offset = mix(-2.5, 2.5, clamp((processProgress - 0.86) / 0.14)); // Living rest glide
+          }
+          img3.style.transform = `translate3d(0, ${img3Offset.toFixed(2)}%, 0) scale(1.12)`;
+        }
       }
 
       rootRef.current?.style.setProperty('--scroll-progress', String(progress));
@@ -226,9 +424,20 @@ export function App() {
     <main className="site" ref={rootRef}>
       <section className="story-stage" ref={storyStageRef} aria-label="TTA Designs introduction and process">
         <div className="experience">
+          {/* Hero Scene (Near plane during underpass handoff) */}
           <div className="hero-scene" ref={heroSceneRef}>
             <div className="room-camera room-camera--background" ref={backgroundCameraRef} aria-hidden="true">
-              <img src="/assets/tta-living-cinematic-master-v1.png" alt="" />
+              <video
+                ref={backgroundVideoRef}
+                src="/assets/tta-living-cinematic-camera-v1.mp4"
+                poster="/assets/tta-living-cinematic-master-v1.png"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="auto"
+                disablePictureInPicture
+              />
             </div>
 
             <div className="material-field" ref={macroRef} aria-hidden="true">
@@ -265,42 +474,107 @@ export function App() {
             </section>
           </div>
 
+          {/* Process Chapter (Underneath plane discovered through dimensional underpass) */}
           <section className="process-scene" ref={processSceneRef} aria-labelledby="process-title">
             <div className="process-texture" aria-hidden="true" />
 
-            <div className="process-copy">
-              <p className="process-kicker">02 / How the room comes together</p>
-              <h2 id="process-title">The finish is what you see.<br />The thinking starts much earlier.</h2>
-              <p>TTA works through the room on site—reading the space, aligning the team, refining the surfaces, and carrying those decisions into the final atmosphere.</p>
-            </div>
+            <div className="process-container">
+              {/* Left Column: Narrative Bridge & Stage Typographic Choreography */}
+              <div className="process-narrative">
+                <div className="process-bridge">
+                  <p className="process-kicker">02 / From the first site decision</p>
+                  <h2 id="process-title" className="process-heading">
+                    <span className="line-wrap">
+                      <span className="line" ref={headlineLine1Ref}>Before it looks complete,</span>
+                    </span>
+                    <span className="line-wrap">
+                      <span className="line" ref={headlineLine2Ref}>it has to work beautifully.</span>
+                    </span>
+                  </h2>
+                  <p className="process-support">
+                    On site, TTA shapes how light lands, how people move, and how every finish meets—so the final room feels effortless.
+                  </p>
+                </div>
 
-            <div className="process-reel" ref={processTrackRef}>
-              <figure className="process-card process-card--wide">
-                <div className="process-media"><img src="/assets/akoka-site-ceiling-open.jpg" alt="TTA Designs supervising an open ceiling structure during work in progress" /></div>
-                <figcaption><b>01 / Read the room</b><span>The structure and services are considered before they disappear.</span></figcaption>
-              </figure>
-              <figure className="process-card process-card--narrow">
-                <div className="process-media"><img src="/assets/akoka-site-conversation.jpg" alt="TTA Designs discussing work with the project team on site" /></div>
-                <figcaption><b>02 / Align the work</b><span>Decisions are clarified with the people bringing the room to life.</span></figcaption>
-              </figure>
-              <figure className="process-card process-card--mid">
-                <div className="process-media"><img src="/assets/akoka-site-painting.jpg" alt="A surface finish being refined on site under TTA Designs supervision" /></div>
-                <figcaption><b>03 / Refine the surface</b><span>Light, texture and finish are tested where they will actually live.</span></figcaption>
-              </figure>
-              <figure className="process-card process-card--final">
-                <div className="process-media"><img src="/assets/akoka-site-installation.jpg" alt="The finished Akoka interior with a resolved ceiling, lighting and seating composition" /></div>
-                <figcaption><b>04 / Carry it through</b><span>The final atmosphere inherits every decision made before it.</span></figcaption>
-              </figure>
-            </div>
+                {/* Stage Progression Track & Indicators */}
+                <div className="process-stage-meta">
+                  <div className="process-stage-progress" aria-hidden="true">
+                    <div className="progress-bar-track">
+                      <div className="progress-bar-fill" style={{ width: `${scrollPct}%` }} />
+                    </div>
+                    <div className="stage-pills">
+                      {PROCESS_STAGES.map((s, idx) => (
+                        <span
+                          key={s.number}
+                          className={`stage-pill ${activeStage === idx ? 'active' : ''} ${activeStage > idx ? 'passed' : ''}`}
+                        >
+                          {s.number}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
 
-            <p className="process-project">Project Akoka · Process study</p>
+                  {/* Active Stage Captions */}
+                  <div className="process-stage-captions" aria-live="polite">
+                    {PROCESS_STAGES.map((stage, idx) => {
+                      let statusClass = 'is-upcoming';
+                      if (activeStage === idx) statusClass = 'is-active';
+                      else if (activeStage > idx) statusClass = 'is-passed';
+
+                      return (
+                        <div key={stage.number} className={`stage-caption-card ${statusClass}`}>
+                          <div className="stage-number-title">
+                            <span className="stage-num">{stage.number}</span>
+                            <span className="stage-divider">/</span>
+                            <span className="stage-title">{stage.title}</span>
+                          </div>
+                          <p className="stage-desc">{stage.desc}</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <p className="process-project">Project Akoka · Process study</p>
+              </div>
+
+              {/* Right Column: Pinned Single Architectural 16:9 Window */}
+              <div className="process-window-container">
+                <div className="process-window-frame">
+                  <div className="process-window-aspect">
+                    {PROCESS_STAGES.map((stage, idx) => (
+                      <div
+                        key={stage.number}
+                        className={`process-window-slide slide-${idx}`}
+                        ref={(el) => { slideRefs.current[idx] = el; }}
+                      >
+                        <div className="slide-media-wrap">
+                          <img
+                            src={stage.image}
+                            alt={stage.alt}
+                            ref={(el) => { imageRefs.current[idx] = el; }}
+                            loading="eager"
+                            decoding="async"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                    <div className="process-window-lens" aria-hidden="true" />
+                  </div>
+                  <div className="process-window-footer">
+                    <span className="window-coord">16:9 ARCHITECTURAL PROJECTION · AKOKA ARCHIVE</span>
+                    <span className="window-index">{`0${activeStage + 1} // 04`}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </section>
         </div>
       </section>
 
       {debug && (
         <aside className="debug-hud">
-          <span>MATERIAL REGISTRATION</span>
+          <span>PROCESS PARALLAX</span>
           <output>{time.toFixed(2)} / {TOTAL.toFixed(2)}</output>
           <button onClick={() => window.location.reload()}>Replay</button>
           <span>R replay · Space pause</span>
