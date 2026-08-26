@@ -11,7 +11,7 @@ branch: concept/material-registration
 
 ## Decision status
 
-The approved Constructed Axis logo arrival remains authoritative through its exact-master settlement. The approved Axis Light Threshold branch remains untouched. The Material Registration first slice is now implemented on its isolated branch for visual judgement; it is not yet an approved replacement.
+The approved Constructed Axis logo arrival remains authoritative through its exact-master settlement. The approved Axis Light Threshold branch remains untouched. The Material Registration opening and its first scroll-led proof chapter are now implemented on this isolated branch for visual judgement; the new proof passage is not yet user-approved.
 
 ## Implemented first slice
 
@@ -20,6 +20,15 @@ The approved Constructed Axis logo arrival remains authoritative through its exa
 - Mechanism: synchronized DOM/CSS room planes with a foreground television occluder; no Canvas/WebGL dependency is active.
 - Verification viewports: 1440×900, 1920×1080, and 390×844 reduced motion.
 - Local preview route: the Vite root on the port reported by `npm run dev`.
+
+## Implemented proof passage
+
+- Proof source: `public/assets/akoka-site-ceiling-open.jpg`.
+- Scroll law: **the finished room yields as attention tilts upward toward the structure that made it possible.**
+- Choreography: the hero softens and enlarges; the Akoka construction frame rises and settles; the argument enters only after the image is legible; four early-decision labels complete the hold.
+- Final copy: **The room is decided long before the final layer.**
+- Evidence boundary: the Akoka image proves process and supervision in its own right. It is not represented as the construction stage of the living-room hero.
+- Full timing and responsive behavior: `.agents/contexts/scroll-storyboard.md`.
 
 ## One thing the experience must make the viewer feel
 
@@ -72,6 +81,7 @@ An atmosphere-led opening followed immediately by point-of-view and process proo
 - Copy direction: **The room is decided long before the final layer.**
 - Proof to expose: layout, electrical points, plumbing, ceiling, movement, supervision, and early corrections; use only claims already supported by the evidence dossier.
 - Intended feeling: respect and authority.
+- Implementation status: first static proof frame and pinned scroll choreography implemented; any future founder/process footage remains out of scope for this checkpoint.
 
 ### 4. A room with a job
 

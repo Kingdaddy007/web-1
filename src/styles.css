@@ -8,17 +8,39 @@
 }
 
 * { box-sizing: border-box; }
-html, body, #root { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+html, body, #root { width: 100%; min-height: 100%; margin: 0; }
+html { background: #ad815d; }
+body { overflow-x: hidden; overflow-y: auto; }
 button { font: inherit; }
 
-.experience {
+.site {
+  min-height: 100%;
+  background: #ad815d;
+}
+
+.story-stage {
   position: relative;
+  height: 250svh;
+}
+
+.experience {
+  position: sticky;
+  top: 0;
   width: 100%;
-  height: 100%;
+  height: 100svh;
   min-height: 640px;
   overflow: hidden;
   isolation: isolate;
   background: #ad815d;
+}
+
+.hero-scene {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  transform-origin: center;
+  will-change: opacity, transform, filter;
 }
 
 .room-camera,
@@ -215,6 +237,144 @@ img.logo-layer {
 }
 .scroll-cue i { display: block; width: 52px; height: 1px; background: currentColor; }
 
+.process-scene {
+  position: absolute;
+  z-index: 10;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0;
+  background: #d5c2aa;
+  color: #2d2119;
+  pointer-events: none;
+  will-change: opacity;
+}
+
+.process-texture {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(74, 52, 37, .045) 1px, transparent 1px) 0 0 / 25% 100%,
+    radial-gradient(circle at 18% 20%, rgba(255,255,255,.28), transparent 32%),
+    linear-gradient(180deg, rgba(255,255,255,.12), rgba(86, 59, 39, .06));
+}
+
+.process-copy {
+  position: absolute;
+  z-index: 2;
+  top: clamp(72px, 11vh, 108px);
+  left: clamp(34px, 5vw, 78px);
+  width: min(51vw, 760px);
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+.process-kicker {
+  margin: 0 0 clamp(26px, 4.5vh, 48px);
+  color: rgba(45, 33, 25, .65);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .19em;
+  text-transform: uppercase;
+}
+
+.process-copy h2 {
+  margin: 0;
+  max-width: 780px;
+  font-size: clamp(54px, 5.55vw, 86px);
+  font-weight: 300;
+  letter-spacing: -.055em;
+  line-height: .94;
+}
+
+.process-copy > p:last-child {
+  max-width: 390px;
+  margin: clamp(28px, 4vh, 42px) 0 0;
+  color: rgba(45, 33, 25, .72);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.process-frame {
+  position: absolute;
+  z-index: 3;
+  top: clamp(64px, 9vh, 90px);
+  right: clamp(34px, 5vw, 78px);
+  width: min(33vw, 480px);
+  height: min(76vh, 700px);
+  margin: 0;
+  overflow: hidden;
+  background: #9d8e7d;
+  box-shadow: 0 28px 70px rgba(67, 43, 26, .18);
+  transform-origin: bottom center;
+  will-change: transform;
+}
+
+.process-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(255,255,255,.24);
+  pointer-events: none;
+}
+
+.process-frame img {
+  display: block;
+  width: 100%;
+  height: 142%;
+  object-fit: cover;
+  object-position: center top;
+  filter: saturate(.82) contrast(1.04) brightness(.92);
+  transform-origin: center top;
+  will-change: transform;
+}
+
+.process-frame figcaption {
+  position: absolute;
+  z-index: 2;
+  right: 18px;
+  bottom: 16px;
+  left: 18px;
+  display: flex;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,.58);
+  color: rgba(255,255,255,.92);
+  font-size: 9px;
+  letter-spacing: .15em;
+  text-shadow: 0 1px 16px rgba(0,0,0,.45);
+  text-transform: uppercase;
+}
+
+.process-ledger {
+  position: absolute;
+  z-index: 4;
+  right: calc(min(33vw, 480px) + clamp(34px, 5vw, 78px) + 4vw);
+  bottom: clamp(34px, 6vh, 62px);
+  left: clamp(34px, 5vw, 78px);
+  display: grid;
+  grid-template-columns: repeat(4, minmax(92px, 1fr));
+  gap: 0;
+  opacity: 0;
+  border-top: 1px solid rgba(45, 33, 25, .34);
+  will-change: opacity, transform;
+}
+
+.process-ledger span {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 14px 18px 0 0;
+  color: rgba(45, 33, 25, .78);
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.process-ledger b {
+  color: rgba(45, 33, 25, .42);
+  font: 500 9px/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
 .debug-hud {
   position: fixed;
   z-index: 20;
@@ -235,6 +395,7 @@ img.logo-layer {
 .debug-hud button { border: 0; color: white; background: transparent; cursor: pointer; }
 
 @media (max-width: 760px) {
+  .story-stage { height: 225svh; }
   .experience { min-height: 560px; }
   .room-camera { transform-origin: 50% 36%; }
   .room-camera--foreground { display: none; }
@@ -243,9 +404,53 @@ img.logo-layer {
   .hero-copy { width: calc(100vw - 48px); }
   .hero-copy h1 { font-size: clamp(42px, 12.8vw, 68px); }
   .hero-support { max-width: 320px; }
+
+  .process-copy {
+    top: 56vh;
+    left: 24px;
+    width: calc(100vw - 48px);
+  }
+  .process-kicker { margin-bottom: 14px; }
+  .process-copy h2 {
+    font-size: clamp(40px, 11.4vw, 58px);
+    line-height: .94;
+  }
+  .process-copy > p:last-child {
+    max-width: 340px;
+    margin-top: 18px;
+    font-size: 12px;
+    line-height: 1.45;
+  }
+  .process-frame {
+    top: 3.5vh;
+    right: 24px;
+    left: 24px;
+    width: auto;
+    height: 48vh;
+  }
+  .process-frame img { height: 145%; }
+  .process-ledger {
+    right: 24px;
+    bottom: 2.6vh;
+    left: 24px;
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .process-ledger span {
+    gap: 7px;
+    padding-right: 6px;
+    font-size: 8px;
+    letter-spacing: .08em;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .story-stage { height: 180svh; }
+  .hero-scene,
+  .process-scene,
+  .process-frame,
+  .process-frame img,
+  .process-copy,
+  .process-ledger,
   .room-camera,
   .material-field,
   .material-light,

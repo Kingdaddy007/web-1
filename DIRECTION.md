@@ -41,6 +41,18 @@ No wipe, aperture, curtain split, second shader, opacity exit, door metaphor, or
 - No hero inquiry button. Inquiry belongs after the short proof story.
 - The room is primary evidence; copy occupies the darker left curtain field.
 
+## Hero-to-proof scroll chapter
+
+The first scroll does not introduce another spectacle. It changes the viewer's attention from the finished atmosphere to the hidden decisions beneath it.
+
+1. The completed room holds long enough to be desired.
+2. The hero advances slightly and softens, as if the viewer is looking beyond the finish.
+3. One vertical Akoka site frame rises from below and becomes readable before any explanation appears.
+4. The argument resolves beside it: `The room is decided long before the final layer.`
+5. `Layout`, `Electrical`, `Ceiling`, and `Movement` settle into a restrained decision ledger.
+
+The passage is pinned to one viewport and governed by scroll progress. It has no lateral carousel, portal, wipe, decorative parallax, or second cinematic peak. Mobile preserves the evidence order in a vertical composition. Reduced motion removes the frame travel while retaining the same progressive disclosure.
+
 ## Truth boundary
 
-This remains a private speculative plate derived from observed TTA media. It is a presentation hypothesis, not a verified original project photograph or a public brand claim.
+This remains a private speculative plate derived from observed TTA media. It is a presentation hypothesis, not a verified original project photograph or a public brand claim. The Akoka process image is not claimed to be the construction stage of the hero room.

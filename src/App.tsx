@@ -27,6 +27,13 @@ export function App() {
   const heroGradeRef = useRef<HTMLDivElement>(null);
   const heroCopyRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLElement>(null);
+  const storyStageRef = useRef<HTMLElement>(null);
+  const heroSceneRef = useRef<HTMLDivElement>(null);
+  const processSceneRef = useRef<HTMLElement>(null);
+  const processFrameRef = useRef<HTMLElement>(null);
+  const processImageRef = useRef<HTMLImageElement>(null);
+  const processCopyRef = useRef<HTMLDivElement>(null);
+  const processLedgerRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef(0);
   const elapsedRef = useRef(0);
   const [time, setTime] = useState(0);
@@ -140,43 +147,158 @@ export function App() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
+  useEffect(() => {
+    const stage = storyStageRef.current;
+    if (!stage) return;
+
+    const reduced = forceReduced || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const auditProgress = Number(params.get('scrollProgress'));
+    const isAudit = Number.isFinite(auditProgress) && params.has('scrollProgress');
+    let scrollFrame = 0;
+    let scrollQueued = false;
+
+    const renderScroll = (rawProgress: number) => {
+      const progress = clamp(rawProgress);
+      const heroExit = reduced ? smooth((progress - 0.08) / 0.2) : smooth((progress - 0.04) / 0.28);
+      const processIn = reduced ? smooth((progress - 0.1) / 0.2) : smooth((progress - 0.12) / 0.28);
+      const mediaSettle = reduced ? processIn : smooth((progress - 0.16) / 0.44);
+      const copyIn = smooth((progress - 0.48) / 0.22);
+      const ledgerIn = smooth((progress - 0.72) / 0.17);
+
+      if (heroSceneRef.current) {
+        heroSceneRef.current.style.opacity = String(1 - smooth((progress - 0.09) / 0.24));
+        heroSceneRef.current.style.transform = reduced
+          ? 'none'
+          : `scale(${mix(1, 1.035, heroExit).toFixed(4)})`;
+        heroSceneRef.current.style.filter = reduced
+          ? 'none'
+          : `blur(${(heroExit * 4.5).toFixed(2)}px) brightness(${mix(1, 0.72, heroExit).toFixed(3)})`;
+      }
+
+      if (processSceneRef.current) {
+        processSceneRef.current.style.opacity = String(processIn);
+      }
+
+      if (processFrameRef.current) {
+        const travel = reduced ? 0 : mix(34, 0, mediaSettle);
+        const scale = reduced ? 1 : mix(0.94, 1, mediaSettle);
+        processFrameRef.current.style.transform = `translate3d(0, ${travel.toFixed(2)}vh, 0) scale(${scale.toFixed(4)})`;
+      }
+
+      if (processImageRef.current) {
+        const imageTravel = reduced ? 0 : mix(4.5, -3.5, mediaSettle);
+        processImageRef.current.style.transform = `translate3d(0, ${imageTravel.toFixed(2)}%, 0) scale(1.035)`;
+      }
+
+      if (processCopyRef.current) {
+        processCopyRef.current.style.opacity = String(copyIn);
+        processCopyRef.current.style.transform = `translate3d(0, ${mix(28, 0, copyIn).toFixed(2)}px, 0)`;
+      }
+
+      if (processLedgerRef.current) {
+        processLedgerRef.current.style.opacity = String(ledgerIn);
+        processLedgerRef.current.style.transform = `translate3d(0, ${mix(18, 0, ledgerIn).toFixed(2)}px, 0)`;
+      }
+
+      rootRef.current?.style.setProperty('--scroll-progress', String(progress));
+    };
+
+    const update = () => {
+      const rect = stage.getBoundingClientRect();
+      const scrollable = Math.max(stage.offsetHeight - window.innerHeight, 1);
+      renderScroll(-rect.top / scrollable);
+    };
+
+    if (isAudit) {
+      renderScroll(auditProgress);
+      return;
+    }
+
+    const queueUpdate = () => {
+      if (!scrollQueued) {
+        scrollQueued = true;
+        scrollFrame = requestAnimationFrame(() => {
+          scrollQueued = false;
+          update();
+        });
+      }
+    };
+
+    update();
+    window.addEventListener('scroll', queueUpdate, { passive: true });
+    window.addEventListener('resize', queueUpdate, { passive: true });
+    return () => {
+      cancelAnimationFrame(scrollFrame);
+      window.removeEventListener('scroll', queueUpdate);
+      window.removeEventListener('resize', queueUpdate);
+    };
+  }, [forceReduced, params]);
+
   return (
-    <main className="experience" ref={rootRef}>
-      <div className="room-camera room-camera--background" ref={backgroundCameraRef} aria-hidden="true">
-        <img src="/assets/tta-living-cinematic-master-v1.png" alt="" />
-      </div>
+    <main className="site" ref={rootRef}>
+      <section className="story-stage" ref={storyStageRef} aria-label="TTA Designs introduction and process">
+        <div className="experience">
+          <div className="hero-scene" ref={heroSceneRef}>
+            <div className="room-camera room-camera--background" ref={backgroundCameraRef} aria-hidden="true">
+              <img src="/assets/tta-living-cinematic-master-v1.png" alt="" />
+            </div>
 
-      <div className="material-field" ref={macroRef} aria-hidden="true">
-        <img src="/assets/tta-wall-macro-v1.jpeg" alt="" />
-        <span className="material-shade" />
-      </div>
-      <div className="material-light" ref={materialLightRef} aria-hidden="true" />
+            <div className="material-field" ref={macroRef} aria-hidden="true">
+              <img src="/assets/tta-wall-macro-v1.jpeg" alt="" />
+              <span className="material-shade" />
+            </div>
+            <div className="material-light" ref={materialLightRef} aria-hidden="true" />
 
-      <div className="logo-wrapper" ref={logoRef} aria-label="TTA Designs">
-        <img src="/assets/tta-wordmark-white.png" className="logo-layer master-wordmark" ref={masterRef} alt="TTA Designs" />
-        <div className="logo-layer" ref={axisRef}><img src="/assets/axis-line.png" alt="" /></div>
-        <div className="logo-layer" ref={dStemRef}><img src="/assets/d-stem.png" alt="" /></div>
-        <div className="logo-layer" ref={dBowlRef}><img src="/assets/d-bowl.png" alt="" /></div>
-        <div className="logo-layer" ref={ttaRef}><img src="/assets/tta-unified-group.png" alt="" /></div>
-        <div className="logo-layer" ref={esignsRef}><img src="/assets/esigns-unified-group.png" alt="" /></div>
-      </div>
+            <div className="logo-wrapper" ref={logoRef} aria-label="TTA Designs">
+              <img src="/assets/tta-wordmark-white.png" className="logo-layer master-wordmark" ref={masterRef} alt="TTA Designs" />
+              <div className="logo-layer" ref={axisRef}><img src="/assets/axis-line.png" alt="" /></div>
+              <div className="logo-layer" ref={dStemRef}><img src="/assets/d-stem.png" alt="" /></div>
+              <div className="logo-layer" ref={dBowlRef}><img src="/assets/d-bowl.png" alt="" /></div>
+              <div className="logo-layer" ref={ttaRef}><img src="/assets/tta-unified-group.png" alt="" /></div>
+              <div className="logo-layer" ref={esignsRef}><img src="/assets/esigns-unified-group.png" alt="" /></div>
+            </div>
 
-      <div className="room-camera room-camera--foreground" ref={foregroundCameraRef} aria-hidden="true">
-        <img src="/assets/tta-living-cinematic-master-v1.png" alt="" />
-      </div>
+            <div className="room-camera room-camera--foreground" ref={foregroundCameraRef} aria-hidden="true">
+              <img src="/assets/tta-living-cinematic-master-v1.png" alt="" />
+            </div>
 
-      <div className="hero-grade" ref={heroGradeRef} aria-hidden="true" />
+            <div className="hero-grade" ref={heroGradeRef} aria-hidden="true" />
 
-      <nav className="hero-nav" ref={navRef} aria-label="Primary">
-        <img src="/assets/tta-wordmark-white.png" alt="TTA Designs" />
-        <span>Residential interiors · Lagos</span>
-      </nav>
+            <nav className="hero-nav" ref={navRef} aria-label="Primary">
+              <img src="/assets/tta-wordmark-white.png" alt="TTA Designs" />
+              <span>Residential interiors · Lagos</span>
+            </nav>
 
-      <section className="hero-copy" ref={heroCopyRef} aria-label="Introduction">
-        <p className="eyebrow">Refined in feeling · Considered in use</p>
-        <h1>Designed around<br />the way life is lived.</h1>
-        <p className="hero-support">Refined interiors shaped by movement, comfort, and the decisions that make everything else work.</p>
-        <span className="scroll-cue">Scroll to enter<i /></span>
+            <section className="hero-copy" ref={heroCopyRef} aria-label="Introduction">
+              <p className="eyebrow">Refined in feeling · Considered in use</p>
+              <h1>Designed around<br />the way life is lived.</h1>
+              <p className="hero-support">Refined interiors shaped by movement, comfort, and the decisions that make everything else work.</p>
+              <span className="scroll-cue">Scroll to enter<i /></span>
+            </section>
+          </div>
+
+          <section className="process-scene" ref={processSceneRef} aria-labelledby="process-title">
+            <div className="process-texture" aria-hidden="true" />
+
+            <div className="process-copy" ref={processCopyRef}>
+              <p className="process-kicker">02 / Before the finish</p>
+              <h2 id="process-title">The room is decided<br />long before<br />the final layer.</h2>
+              <p>Before the finishes arrive, layout, services, ceilings and movement are already being coordinated.</p>
+            </div>
+
+            <figure className="process-frame" ref={processFrameRef}>
+              <img ref={processImageRef} src="/assets/akoka-site-ceiling-open.jpg" alt="TTA Designs supervising an open ceiling structure during work in progress" />
+              <figcaption><span>Project Akoka</span><span>Work in progress</span></figcaption>
+            </figure>
+
+            <div className="process-ledger" ref={processLedgerRef} aria-label="Early design decisions">
+              <span><b>01</b>Layout</span>
+              <span><b>02</b>Electrical</span>
+              <span><b>03</b>Ceiling</span>
+              <span><b>04</b>Movement</span>
+            </div>
+          </section>
+        </div>
       </section>
 
       {debug && (
