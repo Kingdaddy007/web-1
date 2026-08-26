@@ -1,0 +1,43 @@
+{
+  "project_id": "tta-digital-showroom-prototype",
+  "current_phase": "PHASE_2_OPENING_HERO_REEXPLORATION",
+  "last_updated": "2026-08-26T13:30:00Z",
+  "active_stage": "AUTHORED_HERO_V1_READY_FOR_LIVE_USER_REVIEW",
+  "selected_decisions": {
+    "logo_arrival": "Terra-corrected Concept A — The Constructed Axis",
+    "hero_direction": "The Axis Opens authored V1; pending live user verdict",
+    "arrival_hold": "Approved logo settles cleanly at 3.05s before the D-axis optical passage",
+    "first_scroll_destination": "Unresolved",
+    "working_media": "tta-living-cinematic-master-v1.png as a provisional replaceable private concept plate",
+    "canvas_ui": "Current Canvas job is a contained custom Three.js membrane; Canvas UI Bend evaluated and not imported"
+  },
+  "completed_deliverables": [
+    "Phase 1 Logo Motion Studies (A, B, C)",
+    "Phase 1A Terra Correction and Approval (A-constructed-axis-refined)",
+    "Phase 2 Static Hero Destination Studies (01–06)",
+    "Hero Destination Master Static Comparison Board",
+    "Monolithic Aperture Room-First Media Plate",
+    "Monolithic Aperture Static Refinement (centered, asymmetric, near-full-bleed)",
+    "Logo-to-Aperture Integration V1 (approved arrival, centered hold, scroll to near-full-bleed)",
+    "TTA Authored Hero V1 — The Axis Opens (React, TypeScript, Three.js)"
+  ],
+  "evidence": [
+    "C:\\Users\\Oviks\\Documents\\WEB 1 Codex\\.agents\\studies\\logo-motion\\A-constructed-axis-refined\\APPROVED-INTEGRATION.md",
+    "C:\\Users\\Oviks\\Documents\\WEB 1 Codex\\.agents\\studies\\hero-development\\monolithic-aperture-refinement\\01-centered-aperture\\final-frame.png",
+    "C:\\Users\\Oviks\\Documents\\WEB 1 Codex\\.agents\\studies\\hero-development\\monolithic-aperture-refinement\\03-near-full-bleed\\final-frame.png",
+    "C:\\Users\\Oviks\\Documents\\WEB 1 Codex\\.agents\\briefs\\tta-monolithic-aperture-refinement.md",
+    "C:\\Users\\Oviks\\Documents\\WEB 1 Codex\\.agents\\studies\\hero-development\\logo-to-aperture-integration-v1\\integration-notes.md",
+    "C:\\Users\\Oviks\\Documents\\WEB 1 Codex\\.agents\\studies\\hero-development\\tta-authored-hero-v1\\DIRECTION.md"
+  ],
+  "next_actions": [
+    "Conduct the user's live review of The Axis Opens without introducing more option sets",
+    "If accepted, lock the opening-to-hero sequence and replace only the provisional media or copy if required",
+    "After hero approval, storyboard the first project chapter below the hero"
+  ],
+  "server": {
+    "status": "RUNNING",
+    "port": 8080,
+    "root_directory": "C:\\Users\\Oviks\\Documents\\WEB 1 Codex\\.agents\\studies",
+    "authored_preview": "http://localhost:4173/"
+  }
+}

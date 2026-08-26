@@ -1,0 +1,221 @@
+:root {
+  font-family: "Helvetica Neue", "Inter", Arial, sans-serif;
+  color: #f7f1e8;
+  background: #15120e;
+  font-synthesis: none;
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+button { font: inherit; }
+
+.experience {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 640px;
+  overflow: hidden;
+  isolation: isolate;
+  background: #15120e;
+}
+
+.hero-image,
+.hero-grade,
+.membrane-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-image {
+  z-index: 0;
+  opacity: 0;
+  transform: scale(1.015);
+  background-image: url('/assets/tta-living-cinematic-master-v1.png');
+  background-position: calc(50% + var(--pointer-x, 0px)) calc(var(--hero-focus-y, 50%) + var(--pointer-y, 0px));
+  background-size: cover;
+  will-change: opacity, transform;
+  transition: background-position 1.4s cubic-bezier(.16, 1, .3, 1);
+}
+
+.hero-grade {
+  z-index: 3;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(17, 13, 9, .62) 0%, rgba(19, 15, 11, .30) 31%, transparent 58%),
+    linear-gradient(180deg, rgba(9, 7, 5, .35) 0%, transparent 22%, transparent 66%, rgba(12, 9, 6, .39) 100%);
+}
+
+.membrane-canvas {
+  z-index: 2;
+  display: block;
+  background: #050504;
+  will-change: opacity;
+}
+
+.logo-wrapper {
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  top: 48%;
+  width: min(800px, 82vw);
+  aspect-ratio: 2172 / 724;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  will-change: opacity, transform, filter;
+}
+
+.logo-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity, transform, clip-path;
+}
+
+.logo-layer img,
+img.logo-layer {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.master-wordmark { z-index: 10; }
+
+.transition-seam {
+  position: absolute;
+  z-index: 4;
+  left: calc(50% + min(800px, 82vw) * (855 / 2172 - .5));
+  top: 0;
+  width: 1px;
+  height: 100%;
+  opacity: 0;
+  transform: translateX(-50%) scaleY(.08);
+  transform-origin: center;
+  background: linear-gradient(180deg, transparent 2%, rgba(255,250,235,.88) 22%, #fff 50%, rgba(255,231,186,.8) 78%, transparent 98%);
+  box-shadow: 0 0 18px rgba(255, 220, 151, .46), 0 0 58px rgba(255, 190, 90, .2);
+  pointer-events: none;
+}
+
+.hero-nav {
+  position: absolute;
+  z-index: 6;
+  top: clamp(24px, 4.2vw, 58px);
+  left: clamp(24px, 5vw, 74px);
+  right: clamp(24px, 5vw, 74px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  opacity: 0;
+  transform: translateY(-12px);
+  will-change: opacity, transform;
+}
+
+.hero-nav img { width: clamp(148px, 13vw, 205px); height: auto; }
+.hero-nav button {
+  padding: 12px 0;
+  border: 0;
+  border-bottom: 1px solid rgba(255,255,255,.55);
+  color: #fffaf2;
+  background: transparent;
+  font-size: 12px;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.hero-nav button span { display: inline-block; margin-left: 16px; }
+
+.hero-copy {
+  position: absolute;
+  z-index: 6;
+  left: clamp(24px, 5vw, 74px);
+  bottom: clamp(38px, 7.4vh, 76px);
+  width: min(760px, 75vw);
+  opacity: 0;
+  transform: translateY(26px);
+  will-change: opacity, transform;
+}
+
+.eyebrow {
+  margin: 0 0 20px;
+  color: rgba(255, 248, 238, .74);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+}
+
+.hero-copy h1 {
+  margin: 0;
+  max-width: 830px;
+  color: #fffaf1;
+  font-size: clamp(46px, 6.1vw, 92px);
+  font-weight: 300;
+  letter-spacing: -.055em;
+  line-height: .93;
+  text-wrap: balance;
+  text-shadow: 0 2px 32px rgba(15, 10, 6, .18);
+}
+
+.hero-meta {
+  display: flex;
+  align-items: flex-end;
+  gap: 42px;
+  margin-top: clamp(24px, 4vh, 42px);
+}
+.hero-meta p {
+  margin: 0;
+  color: rgba(255, 248, 238, .76);
+  font-size: 13px;
+  letter-spacing: .01em;
+  line-height: 1.45;
+}
+.scroll-cue {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: rgba(255, 248, 238, .64);
+  font-size: 10px;
+  letter-spacing: .14em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+.scroll-cue i { display: block; width: 52px; height: 1px; background: currentColor; }
+
+.debug-hud {
+  position: fixed;
+  z-index: 20;
+  right: 20px;
+  bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 11px 14px;
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(12,10,8,.7);
+  color: rgba(255,255,255,.76);
+  backdrop-filter: blur(12px);
+  font: 10px/1.2 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.debug-hud button { border: 0; color: white; background: transparent; cursor: pointer; }
+
+@media (max-width: 760px) {
+  .experience { min-height: 560px; }
+  .hero-image { background-position: calc(50% + var(--pointer-x, 0px)) calc(var(--hero-focus-y, 50%) + var(--pointer-y, 0px)); }
+  .hero-nav button { font-size: 9px; }
+  .hero-copy { width: calc(100vw - 48px); }
+  .hero-copy h1 { font-size: clamp(42px, 13.4vw, 72px); }
+  .hero-meta { margin-top: 24px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-image, .hero-nav, .hero-copy { transition: none !important; }
+}

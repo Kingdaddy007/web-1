@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TTA Designs — Concept A Refinement: The Constructed Axis</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="viewport-canvas" id="viewportCanvas">
+    <div class="axis-guide-line" id="axisGuideLine"></div>
+    <div class="baseline-guide-line" id="baselineGuideLine"></div>
+
+    <main class="stage" id="stage" aria-label="TTA Designs Logo Motion Canvas">
+      <div class="logo-wrapper" id="logoWrapper">
+        <!-- Master Authoritative Resting Mark -->
+        <img src="assets/tta-wordmark-white.png" class="logo-layer master-wordmark" id="layerMaster" alt="TTA DESIGNS Master Mark" />
+        
+        <!-- Architectural Axis Datum -->
+        <div class="logo-layer" id="layerAxis"><img src="assets/axis-line.png" alt="Axis Datum" /></div>
+        
+        <!-- Signature D Form -->
+        <div class="logo-layer" id="layerDStem"><img src="assets/d-stem.png" alt="D Left Stem" /></div>
+        <div class="logo-layer" id="layerDBowl"><img src="assets/d-bowl.png" alt="D Outer Bowl" /></div>
+        
+        <!-- Unified Typographic Systems (No staggered individual letters) -->
+        <div class="logo-layer" id="layerTTA"><img src="assets/tta-unified-group.png" alt="TTA Unified Mass" /></div>
+        <div class="logo-layer" id="layerESIGNS"><img src="assets/esigns-unified-group.png" alt="DESIGNS Fine Structure" /></div>
+      </div>
+    </main>
+
+    <!-- Inspection HUD / Controls -->
+    <nav class="hud-controls" aria-label="Playback controls">
+      <div class="hud-left">
+        <span class="hud-badge">CONCEPT A // REFINED PASS</span>
+        <span class="hud-time" id="hudTime">0.00s / 4.50s</span>
+        <span class="hud-beat" id="hudBeat">BEAT 0: STILLNESS (0.00s – 0.30s)</span>
+      </div>
+      <div class="hud-right">
+        <input type="range" class="hud-scrubber" id="timelineScrubber" min="0" max="4.50" step="0.01" value="0" aria-label="Timeline Scrubber" />
+        <button type="button" class="hud-btn" id="btnTogglePlay">PAUSE</button>
+        <button type="button" class="hud-btn" id="btnReplay">REPLAY</button>
+        <button type="button" class="hud-btn" id="btnReducedMotion">REDUCED: OFF · SYSTEM</button>
+        <button type="button" class="hud-btn" id="btnGuide">GUIDES: OFF</button>
+      </div>
+    </nav>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
