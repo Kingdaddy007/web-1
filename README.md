@@ -1,4 +1,4 @@
-# TTA Designs — Cinematic Website Concepts
+# TTA Designs — Axis Light Commissioning
 
 Private speculative website studies for TTA Designs. The repository is organised by branch so each approved baseline or experiment remains independently reviewable.
 
@@ -17,9 +17,9 @@ npm run dev
 
 The Vite preview defaults to the port reported in the terminal.
 
-## Baseline concept
+## Experiment
 
-The approved Constructed Axis logo arrival remains authoritative through 3.05 seconds. A custom Three.js refractive membrane grows from the D-axis, reveals the room, then retires into an ordinary DOM hero. The detailed motion law, responsive framing, fallbacks, and evidence boundaries are recorded in `DIRECTION.md`.
+The approved Constructed Axis logo arrival remains authoritative through 3.05 seconds. After its refractive membrane reveals the room, a commissioning-light band travels outward from the D-axis and restores the room's final warmth before the canvas retires. The detailed motion law and evidence boundaries are recorded in `DIRECTION.md`.
 
 ## Truth and publishing boundary
 

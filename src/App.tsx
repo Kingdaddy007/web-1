@@ -3,7 +3,7 @@ import { MembraneCanvas } from './MembraneCanvas';
 import { getHeroVerticalFocus } from './framing';
 import { renderApprovedLogoFrame, type LogoLayers } from './logoTimeline';
 
-const TOTAL = 8.2;
+const TOTAL = 9.2;
 const HERO_IMAGE = '/assets/tta-living-cinematic-master-v1.png';
 const clamp = (value: number, min = 0, max = 1) => Math.max(min, Math.min(max, value));
 const smooth = (value: number) => {
@@ -62,8 +62,10 @@ export function App() {
     const evaluate = (t: number) => {
       renderApprovedLogoFrame(Math.min(t, 3.05), layers, reduced);
 
-      const transition = reduced ? (t >= 0.55 ? 1 : 0) : smooth((t - 3.35) / 2.35);
+      const transition = reduced ? (t >= 0.55 ? 1 : 0) : smooth((t - 3.35) / 2.1);
       membraneRef.current?.setProgress(transition);
+      const commissioning = reduced ? 1 : smooth((t - 5.18) / 1.42);
+      membraneRef.current?.setCommissioning(commissioning);
 
       const logoExit = reduced ? smooth((t - 0.55) / 0.3) : smooth((t - 3.38) / 0.86);
       if (logoRef.current) {
@@ -72,23 +74,23 @@ export function App() {
         logoRef.current.style.filter = `blur(${(logoExit * 5).toFixed(2)}px)`;
       }
 
-      const seam = reduced ? 0 : smooth((t - 3.2) / 0.48) * (1 - smooth((t - 4.65) / 0.9));
+      const seam = reduced ? 0 : smooth((t - 3.2) / 0.48) * (1 - smooth((t - 6.02) / 0.72));
       if (seamRef.current) {
         seamRef.current.style.opacity = String(seam);
         seamRef.current.style.transform = `translateX(-50%) scaleY(${(0.08 + seam * 0.92).toFixed(3)})`;
       }
 
-      const domHero = reduced ? smooth((t - 0.55) / 0.5) : smooth((t - 5.05) / 0.45);
+      const domHero = reduced ? smooth((t - 0.55) / 0.5) : smooth((t - 6.25) / 0.35);
       if (heroRef.current) {
         heroRef.current.style.opacity = String(domHero);
         heroRef.current.style.transform = `scale(${(1.015 - domHero * 0.015).toFixed(4)})`;
       }
       if (canvasRef.current) {
-        const canvasExit = reduced ? smooth((t - 0.55) / 0.35) : smooth((t - 5.72) / 0.5);
+        const canvasExit = reduced ? smooth((t - 0.55) / 0.35) : smooth((t - 6.64) / 0.46);
         canvasRef.current.style.opacity = String(1 - canvasExit);
       }
 
-      const copyIn = reduced ? smooth((t - 0.9) / 0.45) : smooth((t - 6.15) / 0.72);
+      const copyIn = reduced ? smooth((t - 0.9) / 0.45) : smooth((t - 6.92) / 0.78);
       if (heroCopyRef.current) {
         heroCopyRef.current.style.opacity = String(copyIn);
         heroCopyRef.current.style.transform = `translateY(${((1 - copyIn) * 26).toFixed(2)}px)`;
@@ -176,7 +178,7 @@ export function App() {
 
       {debug && (
         <aside className="debug-hud">
-          <span>THE AXIS OPENS</span>
+          <span>AXIS LIGHT COMMISSIONING</span>
           <output>{time.toFixed(2)} / {TOTAL.toFixed(2)}</output>
           <button onClick={() => window.location.reload()}>Replay</button>
           <span>R replay · Space pause</span>
