@@ -1,5 +1,5 @@
 {
-  "name": "tta-authored-hero-v1",
+  "name": "tta-hinged-elevation",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -10,16 +10,13 @@
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
-    "gsap": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "three": "latest",
     "vite": "latest"
   },
   "devDependencies": {
     "@types/react": "latest",
     "@types/react-dom": "latest",
-    "@types/three": "latest",
     "typescript": "latest"
   }
 }

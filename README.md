@@ -17,9 +17,11 @@ npm run dev
 
 The Vite preview defaults to the port reported in the terminal.
 
-## Baseline concept
+## This branch: The Hinged Elevation
 
-The approved Constructed Axis logo arrival remains authoritative through 3.05 seconds. A custom Three.js refractive membrane grows from the D-axis, reveals the room, then retires into an ordinary DOM hero. The detailed motion law, responsive framing, fallbacks, and evidence boundaries are recorded in `DIRECTION.md`.
+The approved Constructed Axis logo arrival remains authoritative through 3.05 seconds. Its D-axis then becomes a full-height architectural hinge: two dark elevation leaves rotate away while five room planes unfold from depth and register into one complete interior. The resting hero is a contained 16:10 architectural elevation on a warm plaster field.
+
+This branch deliberately uses CSS 3D rather than a shader or third-party motion component. It tests a different governing law—not a cosmetic variation of the approved membrane reveal. The detailed choreography, fallback, and evidence boundaries are recorded in `DIRECTION.md`.
 
 ## Truth and publishing boundary
 

@@ -1,10 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { MembraneCanvas } from './MembraneCanvas';
-import { getHeroVerticalFocus } from './framing';
 import { renderApprovedLogoFrame, type LogoLayers } from './logoTimeline';
 
-const TOTAL = 8.2;
-const HERO_IMAGE = '/assets/tta-living-cinematic-master-v1.png';
+const TOTAL = 8.8;
 const clamp = (value: number, min = 0, max = 1) => Math.max(min, Math.min(max, value));
 const smooth = (value: number) => {
   const x = clamp(value);
@@ -13,7 +10,6 @@ const smooth = (value: number) => {
 
 export function App() {
   const rootRef = useRef<HTMLElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
   const masterRef = useRef<HTMLImageElement>(null);
   const axisRef = useRef<HTMLDivElement>(null);
@@ -21,32 +17,17 @@ export function App() {
   const dBowlRef = useRef<HTMLDivElement>(null);
   const ttaRef = useRef<HTMLDivElement>(null);
   const esignsRef = useRef<HTMLDivElement>(null);
-  const seamRef = useRef<HTMLDivElement>(null);
-  const heroRef = useRef<HTMLDivElement>(null);
-  const heroCopyRef = useRef<HTMLDivElement>(null);
+  const curtainLeftRef = useRef<HTMLDivElement>(null);
+  const curtainRightRef = useRef<HTMLDivElement>(null);
+  const hingeRef = useRef<HTMLDivElement>(null);
+  const leafRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const finalPhotoRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLElement>(null);
-  const membraneRef = useRef<MembraneCanvas | null>(null);
-  const frameRef = useRef(0);
+  const copyRef = useRef<HTMLDivElement>(null);
+  const frame = useRef(0);
   const [time, setTime] = useState(0);
   const [paused, setPaused] = useState(false);
   const debug = useMemo(() => new URLSearchParams(window.location.search).get('debug') === '1', []);
-  const forceReduced = useMemo(() => new URLSearchParams(window.location.search).get('reduced') === '1', []);
-
-  useEffect(() => {
-    if (!canvasRef.current) return;
-    membraneRef.current = new MembraneCanvas(canvasRef.current, HERO_IMAGE);
-    return () => membraneRef.current?.destroy();
-  }, []);
-
-  useEffect(() => {
-    const updateFraming = () => {
-      const focus = getHeroVerticalFocus(window.innerWidth / Math.max(window.innerHeight, 1));
-      rootRef.current?.style.setProperty('--hero-focus-y', `${focus * 100}%`);
-    };
-    updateFraming();
-    window.addEventListener('resize', updateFraming, { passive: true });
-    return () => window.removeEventListener('resize', updateFraming);
-  }, []);
 
   useEffect(() => {
     const layers: LogoLayers | null = masterRef.current && axisRef.current && dStemRef.current && dBowlRef.current && ttaRef.current && esignsRef.current
@@ -54,51 +35,58 @@ export function App() {
       : null;
     if (!layers) return;
 
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const params = new URLSearchParams(window.location.search);
+    const audit = Number(params.get('auditTime'));
+    const isAudit = Number.isFinite(audit) && params.has('auditTime');
     let start = performance.now() - time * 1000;
-    const reduced = forceReduced || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const audit = Number(new URLSearchParams(window.location.search).get('auditTime'));
-    const isAudit = Number.isFinite(audit) && new URLSearchParams(window.location.search).has('auditTime');
 
     const evaluate = (t: number) => {
       renderApprovedLogoFrame(Math.min(t, 3.05), layers, reduced);
 
-      const transition = reduced ? (t >= 0.55 ? 1 : 0) : smooth((t - 3.35) / 2.35);
-      membraneRef.current?.setProgress(transition);
-
-      const logoExit = reduced ? smooth((t - 0.55) / 0.3) : smooth((t - 3.38) / 0.86);
+      const logoExit = reduced ? smooth((t - 0.52) / 0.3) : smooth((t - 3.22) / 0.72);
       if (logoRef.current) {
         logoRef.current.style.opacity = String(1 - logoExit);
-        logoRef.current.style.transform = `translate(-50%, -50%) scale(${(1 - logoExit * 0.035).toFixed(4)})`;
-        logoRef.current.style.filter = `blur(${(logoExit * 5).toFixed(2)}px)`;
+        logoRef.current.style.transform = `translate(-50%, -50%) scale(${(1 - logoExit * 0.025).toFixed(4)})`;
       }
 
-      const seam = reduced ? 0 : smooth((t - 3.2) / 0.48) * (1 - smooth((t - 4.65) / 0.9));
-      if (seamRef.current) {
-        seamRef.current.style.opacity = String(seam);
-        seamRef.current.style.transform = `translateX(-50%) scaleY(${(0.08 + seam * 0.92).toFixed(3)})`;
+      const opening = reduced ? 1 : smooth((t - 3.2) / 1.45);
+      const curtainOpacity = reduced ? 0 : 1 - smooth((t - 4.0) / 0.62);
+      if (curtainLeftRef.current) {
+        curtainLeftRef.current.style.opacity = String(curtainOpacity);
+        curtainLeftRef.current.style.transform = `rotateY(${(-104 * opening).toFixed(2)}deg)`;
+      }
+      if (curtainRightRef.current) {
+        curtainRightRef.current.style.opacity = String(curtainOpacity);
+        curtainRightRef.current.style.transform = `rotateY(${(104 * opening).toFixed(2)}deg)`;
       }
 
-      const domHero = reduced ? smooth((t - 0.55) / 0.5) : smooth((t - 5.05) / 0.45);
-      if (heroRef.current) {
-        heroRef.current.style.opacity = String(domHero);
-        heroRef.current.style.transform = `scale(${(1.015 - domHero * 0.015).toFixed(4)})`;
-      }
-      if (canvasRef.current) {
-        const canvasExit = reduced ? smooth((t - 0.55) / 0.35) : smooth((t - 5.72) / 0.5);
-        canvasRef.current.style.opacity = String(1 - canvasExit);
+      const hinge = reduced ? 0 : smooth((t - 3.08) / 0.34) * (1 - smooth((t - 5.42) / 0.72));
+      if (hingeRef.current) {
+        hingeRef.current.style.opacity = String(hinge);
+        hingeRef.current.style.transform = `translateX(-50%) scaleY(${(0.06 + hinge * 0.94).toFixed(3)})`;
       }
 
-      const copyIn = reduced ? smooth((t - 0.9) / 0.45) : smooth((t - 6.15) / 0.72);
-      if (heroCopyRef.current) {
-        heroCopyRef.current.style.opacity = String(copyIn);
-        heroCopyRef.current.style.transform = `translateY(${((1 - copyIn) * 26).toFixed(2)}px)`;
-      }
-      if (navRef.current) {
-        navRef.current.style.opacity = String(copyIn);
-        navRef.current.style.transform = `translateY(${((1 - copyIn) * -12).toFixed(2)}px)`;
-      }
+      leafRefs.current.forEach((leaf, index) => {
+        if (!leaf) return;
+        const progress = reduced ? 1 : smooth((t - (3.68 + index * 0.09)) / 1.52);
+        const offset = (2 - index) * 100 * (1 - progress);
+        const angle = index < 2 ? -78 : index > 2 ? 78 : 0;
+        const leafExit = reduced ? 1 : smooth((t - 5.62) / 0.42);
+        leaf.style.opacity = String(progress * (1 - leafExit));
+        leaf.style.transform = `translateX(${offset.toFixed(2)}%) translateZ(${(-430 * (1 - progress)).toFixed(2)}px) rotateY(${(angle * (1 - progress)).toFixed(2)}deg)`;
+      });
 
-      rootRef.current?.style.setProperty('--time-progress', String(clamp(t / TOTAL)));
+      const photoIn = reduced ? smooth((t - 0.58) / 0.45) : smooth((t - 5.35) / 0.55);
+      if (finalPhotoRef.current) finalPhotoRef.current.style.opacity = String(photoIn);
+
+      const interfaceIn = reduced ? smooth((t - 0.92) / 0.48) : smooth((t - 6.08) / 0.82);
+      [navRef.current, copyRef.current].forEach((element) => {
+        if (!element) return;
+        element.style.opacity = String(interfaceIn);
+        element.style.transform = `translateY(${((1 - interfaceIn) * 22).toFixed(2)}px)`;
+      });
+
       setTime(t);
     };
 
@@ -112,12 +100,12 @@ export function App() {
       if (!paused) {
         const next = Math.min((now - start) / 1000, TOTAL);
         evaluate(next);
-        if (next < TOTAL) frameRef.current = requestAnimationFrame(loop);
+        if (next < TOTAL) frame.current = requestAnimationFrame(loop);
       }
     };
-    frameRef.current = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(frameRef.current);
-  }, [paused, forceReduced]);
+    frame.current = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(frame.current);
+  }, [paused]);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -127,29 +115,56 @@ export function App() {
         setPaused((value) => !value);
       }
     };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, []);
-
-  useEffect(() => {
     const onPointer = (event: PointerEvent) => {
-      if (time < 6.2 || !heroRef.current) return;
+      if (time < 6.7 || !finalPhotoRef.current) return;
       const x = event.clientX / window.innerWidth - 0.5;
       const y = event.clientY / window.innerHeight - 0.5;
-      heroRef.current.style.setProperty('--pointer-x', `${x * -10}px`);
-      heroRef.current.style.setProperty('--pointer-y', `${y * -7}px`);
+      finalPhotoRef.current.style.setProperty('--drift-x', `${x * -7}px`);
+      finalPhotoRef.current.style.setProperty('--drift-y', `${y * -5}px`);
     };
+    window.addEventListener('keydown', onKey);
     window.addEventListener('pointermove', onPointer, { passive: true });
-    return () => window.removeEventListener('pointermove', onPointer);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('pointermove', onPointer);
+    };
   }, [time]);
 
   return (
     <main className="experience" ref={rootRef}>
-      <div className="hero-image" ref={heroRef} aria-hidden="true" />
-      <div className="hero-grade" aria-hidden="true" />
-      <canvas className="membrane-canvas" ref={canvasRef} aria-hidden="true" />
+      <section className="editorial-stage" aria-label="TTA Designs introduction">
+        <div className="room-frame">
+          <div className="final-photo" ref={finalPhotoRef} aria-hidden="true" />
+          <div className="leaf-set" aria-hidden="true">
+            {Array.from({ length: 5 }, (_, index) => (
+              <div
+                className={`room-leaf leaf-${index + 1}`}
+                key={index}
+                ref={(element) => { leafRefs.current[index] = element; }}
+                style={{ backgroundPosition: `${index * 25}% 50%` }}
+              />
+            ))}
+          </div>
+        </div>
 
-      <div className="transition-seam" ref={seamRef} aria-hidden="true" />
+        <nav className="hero-nav" ref={navRef} aria-label="Primary">
+          <img src="/assets/tta-wordmark-white.png" alt="TTA Designs" />
+          <p>Residential interiors · Lagos</p>
+          <button type="button">Begin a conversation <span aria-hidden="true">↗</span></button>
+        </nav>
+
+        <div className="hero-copy" ref={copyRef}>
+          <p className="chapter">01 — Spaces for living</p>
+          <h1>Spaces shaped<br />around the way<br />life is lived.</h1>
+          <p className="support">Refined in feeling.<br />Considered in use.</p>
+        </div>
+      </section>
+
+      <div className="opening-perspective" aria-hidden="true">
+        <div className="curtain curtain-left" ref={curtainLeftRef} />
+        <div className="curtain curtain-right" ref={curtainRightRef} />
+      </div>
+      <div className="hinge-axis" ref={hingeRef} aria-hidden="true" />
 
       <div className="logo-wrapper" ref={logoRef} aria-label="TTA Designs">
         <img src="/assets/tta-wordmark-white.png" className="logo-layer master-wordmark" ref={masterRef} alt="TTA Designs" />
@@ -160,26 +175,11 @@ export function App() {
         <div className="logo-layer" ref={esignsRef}><img src="/assets/esigns-unified-group.png" alt="" /></div>
       </div>
 
-      <nav className="hero-nav" ref={navRef} aria-label="Primary">
-        <img src="/assets/tta-wordmark-white.png" alt="TTA Designs" />
-        <button type="button">Begin a conversation <span aria-hidden="true">↗</span></button>
-      </nav>
-
-      <section className="hero-copy" ref={heroCopyRef} aria-label="Introduction">
-        <p className="eyebrow">Residential interiors · Lagos</p>
-        <h1>Spaces shaped around<br />the way life is lived.</h1>
-        <div className="hero-meta">
-          <p>Refined in feeling.<br />Considered in use.</p>
-          <span className="scroll-cue">Explore<br /><i /></span>
-        </div>
-      </section>
-
       {debug && (
         <aside className="debug-hud">
-          <span>THE AXIS OPENS</span>
+          <span>HINGED ELEVATION</span>
           <output>{time.toFixed(2)} / {TOTAL.toFixed(2)}</output>
           <button onClick={() => window.location.reload()}>Replay</button>
-          <span>R replay · Space pause</span>
         </aside>
       )}
     </main>
