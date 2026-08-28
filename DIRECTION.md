@@ -1,4 +1,20 @@
-# TTA Concept — Material Registration
+# TTA Concept — The Axis of Decisions
+
+## Current authored vertical slice
+
+The accepted Material Registration opening remains intact, now using the supplied eight-second room film with the approved still as its poster. The first scroll no longer divides the viewport or introduces process imagery immediately. The complete hero travels upward into a quiet typographic breath; only after that reframe does a restrained process-proof composition appear.
+
+The governing argument is: **The atmosphere is the final expression of decisions made much earlier.**
+
+The continuation now completes that argument through a single portfolio procession. The sentence `What was decided becomes what is felt.` is not a standalone section: it is the typographic threshold into five distinct residential moments. One image owns the frame at a time, allowing the work to accumulate without repeating the hero room or becoming a conventional gallery grid.
+
+The practice is shown through two real films—on site and in the completed room—rather than another static project image. The experience closes with a contained warm refraction field behind a selective conversation threshold, then lets that material atmosphere continue beneath a more informative identity footer. The opening remains the primary cinematic peak; later motion is slower and more editorial.
+
+The process background remains a contained custom 2D canvas. The closing threshold adds one isolated custom WebGL material field with no external Canvas UI package: it moves only warm light and refraction, pauses offscreen, caps DPR, and holds a still fallback under reduced motion. All copy and actions remain semantic DOM above it.
+
+---
+
+# Preserved foundation — Material Registration
 
 ## Visual thesis
 
@@ -47,11 +63,11 @@ The first scroll does not dissolve between independent screens. It treats the he
 
 1. The completed room holds long enough to be desired.
 2. The entire hero travels upward while the warm process canvas rises directly beneath it. Neither scene changes opacity.
-3. Four differently proportioned Akoka frames move upward as an editorial project reel.
-4. Their captions explain the sequence: read the room, align the work, refine the surface, and carry it through.
-5. The fixed argument reads: `The finish is what you see. The thinking starts much earlier.`
+3. A warm lacquer field holds the statement: `What feels effortless is decided long before the room is complete.` A grazing light resolves its letters from embossed surface tone into espresso ink.
+4. Four Akoka frames then layer upward inside a restrained evidence window, with slower internal image travel creating depth.
+5. Their captions explain the sequence: read the room, align the work, refine the surface, and carry it through.
 
-The passage is pinned to one viewport and governed by scroll progress. Internal image crops move more slowly than their frames, creating depth that belongs to the photographic sequence rather than decorative parallax. It has no lateral carousel, portal, wipe, crossfade, or second cinematic peak. Mobile preserves the evidence order in a vertical composition. Reduced motion uses discrete image states while retaining the same argument.
+The passage is pinned to one viewport and governed by scroll progress. Internal image crops move more slowly than their frames, creating depth that belongs to the photographic sequence rather than decorative parallax. It has no lateral carousel, centre split, registration seam, portal, wipe, crossfade, or second cinematic peak. Mobile preserves the evidence order in a vertical composition. Reduced motion uses discrete image states while retaining the same argument.
 
 ## Truth boundary
 

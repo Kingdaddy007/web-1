@@ -1,0 +1,881 @@
+.typography-specimen {
+  --typography-specimen-bg: #1c2825;
+  --typography-specimen-bg-deep: #121b19;
+  --typography-specimen-surface: rgba(255, 249, 240, 0.06);
+  --typography-specimen-ink: #f3eee4;
+  --typography-specimen-muted: rgba(243, 238, 228, 0.69);
+  --typography-specimen-faint: rgba(243, 238, 228, 0.42);
+  --typography-specimen-line: rgba(243, 238, 228, 0.22);
+  --typography-specimen-accent: #d7ae88;
+  --typography-specimen-accent-contrast: #1c2825;
+  --typography-specimen-display-family: "Segoe UI", Arial, sans-serif;
+  --typography-specimen-body-family: "Segoe UI", Arial, sans-serif;
+  --typography-specimen-accent-family: "Segoe UI", Arial, sans-serif;
+  --typography-specimen-display-weight: 300;
+  --typography-specimen-display-leading: 0.9;
+  --typography-specimen-display-tracking: -0.075em;
+  --typography-specimen-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 100vh;
+  color: var(--typography-specimen-ink);
+  background: var(--typography-specimen-bg);
+  font-family: var(--typography-specimen-body-family);
+  font-synthesis: none;
+  line-height: 1.5;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+.typography-specimen--humanist {
+  --typography-specimen-display-family: "Candara", "Trebuchet MS", "Segoe UI", Arial, sans-serif;
+  --typography-specimen-body-family: "Segoe UI", Arial, sans-serif;
+  --typography-specimen-accent-family: "Segoe UI", Arial, sans-serif;
+  --typography-specimen-display-weight: 500;
+  --typography-specimen-display-leading: 0.94;
+  --typography-specimen-display-tracking: -0.065em;
+}
+
+.typography-specimen--architectural {
+  --typography-specimen-display-family: "Segoe UI", Arial, sans-serif;
+  --typography-specimen-body-family: "Segoe UI", Arial, sans-serif;
+  --typography-specimen-accent-family: "Bahnschrift", "Arial Narrow", "Segoe UI", sans-serif;
+  --typography-specimen-display-weight: 300;
+  --typography-specimen-display-leading: 0.87;
+  --typography-specimen-display-tracking: -0.082em;
+}
+
+.typography-specimen,
+.typography-specimen * {
+  box-sizing: border-box;
+}
+
+.typography-specimen a {
+  color: inherit;
+}
+
+.typography-specimen p,
+.typography-specimen h1,
+.typography-specimen h2,
+.typography-specimen fieldset {
+  margin: 0;
+}
+
+.typography-specimen__masthead,
+.typography-specimen__controls,
+.typography-specimen__panel-meta,
+.typography-specimen__hero,
+.typography-specimen__process,
+.typography-specimen__practice,
+.typography-specimen__footer {
+  padding-inline: clamp(1.25rem, 5vw, 5.75rem);
+}
+
+.typography-specimen__masthead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+  padding-top: clamp(1.4rem, 3vw, 3rem);
+  padding-bottom: clamp(1.4rem, 3vw, 3rem);
+  border-bottom: 1px solid var(--typography-specimen-line);
+}
+
+.typography-specimen__identity {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.typography-specimen__wordmark,
+.typography-specimen__footer-identity {
+  font-family: var(--typography-specimen-display-family);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+}
+
+.typography-specimen__utility,
+.typography-specimen__panel-kicker,
+.typography-specimen__eyebrow,
+.typography-specimen__section-index,
+.typography-specimen__aside-label,
+.typography-specimen__font-note,
+.typography-specimen__panel-qualities,
+.typography-specimen__footer-meta,
+.typography-specimen__direction-code,
+.typography-specimen__recommended {
+  font-family: var(--typography-specimen-accent-family);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.105em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.typography-specimen__utility {
+  color: var(--typography-specimen-muted);
+}
+
+.typography-specimen__utility--quiet {
+  color: var(--typography-specimen-faint);
+  text-align: right;
+}
+
+.typography-specimen__controls {
+  display: grid;
+  gap: 1.35rem;
+  padding-top: 1rem;
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid var(--typography-specimen-line);
+}
+
+.typography-specimen__switcher {
+  display: grid;
+  gap: 0.7rem;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+}
+
+.typography-specimen__switcher legend {
+  padding: 0;
+  color: var(--typography-specimen-faint);
+  font-family: var(--typography-specimen-accent-family);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.typography-specimen__direction-list {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.typography-specimen__direction {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.25rem auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.7rem;
+  min-height: 2.75rem;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--typography-specimen-line);
+  color: var(--typography-specimen-muted);
+  cursor: pointer;
+  transition: border-color 220ms ease, color 220ms ease, background-color 220ms ease;
+}
+
+.typography-specimen__direction:hover {
+  color: var(--typography-specimen-ink);
+  border-color: var(--typography-specimen-muted);
+}
+
+.typography-specimen__direction:focus-within {
+  outline: 2px solid var(--typography-specimen-accent);
+  outline-offset: 3px;
+}
+
+.typography-specimen__direction.is-active {
+  border-color: var(--typography-specimen-accent);
+  color: var(--typography-specimen-ink);
+  background: var(--typography-specimen-surface);
+}
+
+.typography-specimen__direction input {
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  accent-color: var(--typography-specimen-accent);
+}
+
+.typography-specimen__direction-code {
+  color: var(--typography-specimen-accent);
+}
+
+.typography-specimen__direction-name {
+  min-width: 0;
+  font-family: var(--typography-specimen-display-family);
+  font-size: 0.96rem;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+
+.typography-specimen__recommended {
+  grid-column: 3;
+  color: var(--typography-specimen-accent);
+  font-size: 0.54rem;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.typography-specimen__selection {
+  display: grid;
+  gap: 0.32rem;
+  max-width: 40rem;
+  color: var(--typography-specimen-muted);
+  font-size: 0.92rem;
+  line-height: 1.48;
+}
+
+.typography-specimen__selection span:first-child {
+  color: var(--typography-specimen-ink);
+  font-family: var(--typography-specimen-display-family);
+  font-size: 1.2rem;
+  font-weight: var(--typography-specimen-display-weight);
+  letter-spacing: -0.04em;
+}
+
+.typography-specimen__panel {
+  position: relative;
+  overflow: hidden;
+  background: var(--typography-specimen-bg);
+}
+
+.typography-specimen__panel::before {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  opacity: 0.55;
+  background:
+    linear-gradient(90deg, transparent 0, transparent 49.96%, var(--typography-specimen-line) 50%, transparent 50.04%),
+    radial-gradient(circle at 82% 15%, var(--typography-specimen-surface), transparent 30%);
+}
+
+.typography-specimen__panel-meta,
+.typography-specimen__hero,
+.typography-specimen__process,
+.typography-specimen__practice,
+.typography-specimen__inquiry,
+.typography-specimen__footer {
+  position: relative;
+  z-index: 1;
+}
+
+.typography-specimen__panel-meta {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+  padding-top: 1.15rem;
+  padding-bottom: 1.15rem;
+  border-bottom: 1px solid var(--typography-specimen-line);
+}
+
+.typography-specimen__panel-kicker,
+.typography-specimen__panel-qualities,
+.typography-specimen__font-note {
+  margin: 0;
+}
+
+.typography-specimen__panel-kicker {
+  color: var(--typography-specimen-ink);
+}
+
+.typography-specimen__panel-qualities {
+  margin-top: 0.25rem;
+  color: var(--typography-specimen-faint);
+  font-size: 0.59rem;
+  letter-spacing: 0.08em;
+  text-transform: none;
+}
+
+.typography-specimen__font-note {
+  color: var(--typography-specimen-muted);
+  font-size: 0.59rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-align: right;
+  text-transform: none;
+}
+
+.typography-specimen__hero,
+.typography-specimen__process,
+.typography-specimen__practice {
+  display: grid;
+  gap: 2.25rem;
+  padding-top: clamp(4.6rem, 12vw, 10rem);
+  padding-bottom: clamp(5.2rem, 13vw, 11rem);
+  border-bottom: 1px solid var(--typography-specimen-line);
+}
+
+.typography-specimen__section-index {
+  display: flex;
+  gap: 0.8rem;
+  align-items: baseline;
+  color: var(--typography-specimen-faint);
+}
+
+.typography-specimen__section-index span:first-child {
+  color: var(--typography-specimen-accent);
+}
+
+.typography-specimen__section-index span:last-child {
+  letter-spacing: 0.08em;
+}
+
+.typography-specimen__hero-copy,
+.typography-specimen__process-copy,
+.typography-specimen__practice-copy {
+  min-width: 0;
+}
+
+.typography-specimen__eyebrow {
+  margin-bottom: 1.25rem;
+  color: var(--typography-specimen-accent);
+  font-size: 0.65rem;
+}
+
+.typography-specimen__heading {
+  color: var(--typography-specimen-ink);
+  font-family: var(--typography-specimen-display-family);
+  font-weight: var(--typography-specimen-display-weight);
+  letter-spacing: var(--typography-specimen-display-tracking);
+  line-height: var(--typography-specimen-display-leading);
+  text-wrap: balance;
+}
+
+.typography-specimen__hero-heading {
+  max-width: 100%;
+  font-size: clamp(3.2rem, 12vw, 5.5rem);
+}
+
+.typography-specimen__process-heading,
+.typography-specimen__practice-heading,
+.typography-specimen__inquiry-heading {
+  max-width: 100%;
+  font-size: clamp(2.9rem, 10.5vw, 5rem);
+}
+
+.typography-specimen__process-heading {
+  max-width: 100%;
+}
+
+.typography-specimen__body,
+.typography-specimen__hero-aside p,
+.typography-specimen__process-note p,
+.typography-specimen__practice-aside p,
+.typography-specimen__subtext {
+  color: var(--typography-specimen-muted);
+  font-size: 1rem;
+  line-height: 1.58;
+  text-wrap: pretty;
+}
+
+.typography-specimen__hero-support {
+  max-width: 35rem;
+  margin-top: 1.5rem;
+}
+
+.typography-specimen__hero-aside,
+.typography-specimen__process-note,
+.typography-specimen__practice-aside {
+  max-width: 22rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--typography-specimen-line);
+}
+
+.typography-specimen__aside-label {
+  display: block;
+  margin-bottom: 0.9rem;
+  color: var(--typography-specimen-faint);
+  font-size: 0.59rem;
+}
+
+.typography-specimen__process-caption {
+  margin-top: 1.75rem;
+  color: var(--typography-specimen-muted);
+  font-family: var(--typography-specimen-accent-family);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.11em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.typography-specimen__values {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-top: 2.4rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--typography-specimen-line);
+  color: var(--typography-specimen-muted);
+  font-family: var(--typography-specimen-accent-family);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.typography-specimen__inquiry {
+  position: relative;
+  display: grid;
+  min-height: 34rem;
+  place-items: center;
+  padding-top: clamp(5rem, 13vw, 10rem);
+  padding-bottom: clamp(5rem, 13vw, 10rem);
+  color: var(--typography-specimen-ink);
+  text-align: center;
+}
+
+.typography-specimen__inquiry-field {
+  position: absolute;
+  z-index: 0;
+  inset: 10% 7%;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.typography-specimen__inquiry-field span {
+  position: absolute;
+  display: block;
+  aspect-ratio: 1;
+  border: 1px solid var(--typography-specimen-line);
+  border-radius: 50%;
+  transform: rotate(-13deg) scaleX(1.6);
+}
+
+.typography-specimen__inquiry-field span:nth-child(1) {
+  width: 60%;
+  opacity: 0.75;
+}
+
+.typography-specimen__inquiry-field span:nth-child(2) {
+  width: 38%;
+  opacity: 0.55;
+  transform: rotate(21deg) scaleX(1.35);
+}
+
+.typography-specimen__inquiry-field span:nth-child(3) {
+  width: 17%;
+  border-color: var(--typography-specimen-accent);
+  opacity: 0.75;
+  transform: rotate(-27deg) scaleX(1.1);
+}
+
+.typography-specimen__inquiry-copy {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 60rem);
+}
+
+.typography-specimen__inquiry-heading {
+  max-width: 14ch;
+  margin-inline: auto;
+}
+
+.typography-specimen__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2.4rem;
+  min-width: 15.5rem;
+  min-height: 3rem;
+  margin-top: 2.2rem;
+  padding: 0.55rem 0.05rem 0.7rem;
+  border-bottom: 1px solid currentColor;
+  color: var(--typography-specimen-ink);
+  font-family: var(--typography-specimen-accent-family);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  line-height: 1.2;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: gap 260ms var(--typography-specimen-ease), color 220ms ease, border-color 220ms ease;
+}
+
+.typography-specimen__cta:hover {
+  gap: 3.1rem;
+  color: var(--typography-specimen-accent);
+  border-color: var(--typography-specimen-accent);
+}
+
+.typography-specimen__cta:focus-visible,
+.typography-specimen__footer a:focus-visible {
+  outline: 2px solid var(--typography-specimen-accent);
+  outline-offset: 5px;
+}
+
+.typography-specimen__subtext {
+  max-width: 25rem;
+  margin: 1.3rem auto 0;
+  font-size: 0.92rem;
+}
+
+.typography-specimen__footer {
+  padding-top: 1.45rem;
+  padding-bottom: 1.4rem;
+  background: var(--typography-specimen-bg-deep);
+}
+
+.typography-specimen__footer-colophon {
+  display: grid;
+  gap: 1.7rem;
+  padding-bottom: 1.75rem;
+  border-bottom: 1px solid var(--typography-specimen-line);
+}
+
+.typography-specimen__footer-studio,
+.typography-specimen__footer-connect,
+.typography-specimen__footer-utility {
+  display: grid;
+  align-content: start;
+  gap: 0.65rem;
+}
+
+.typography-specimen__footer-label {
+  color: var(--typography-specimen-faint);
+  font-family: var(--typography-specimen-accent-family);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.typography-specimen__footer-address {
+  margin-top: 0.7rem;
+  color: var(--typography-specimen-muted);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.typography-specimen__footer-connect a,
+.typography-specimen__footer-utility a,
+.typography-specimen__footer-social {
+  color: var(--typography-specimen-muted);
+  font-family: var(--typography-specimen-accent-family);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 220ms ease;
+}
+
+.typography-specimen__footer-connect a:hover,
+.typography-specimen__footer-utility a:hover,
+.typography-specimen__footer-social:hover {
+  color: var(--typography-specimen-accent);
+}
+
+.typography-specimen__footer-utility span:last-child {
+  color: var(--typography-specimen-faint);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.typography-specimen__footer-wordmark {
+  padding-top: clamp(4rem, 9vw, 8rem);
+  padding-bottom: clamp(3rem, 7vw, 6rem);
+  color: var(--typography-specimen-ink);
+  font-family: var(--typography-specimen-display-family);
+  font-size: clamp(4rem, 18vw, 15rem);
+  font-weight: var(--typography-specimen-display-weight);
+  letter-spacing: -0.09em;
+  line-height: 0.78;
+  text-align: center;
+}
+
+.typography-specimen__footer-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  align-items: center;
+  color: var(--typography-specimen-faint);
+  font-size: 0.56rem;
+  letter-spacing: 0.07em;
+  text-transform: none;
+}
+
+.typography-specimen__line-set--wide {
+  display: none;
+}
+
+.typography-specimen__line-set {
+  display: block;
+}
+
+.typography-specimen__line-mask {
+  display: block;
+  overflow: hidden;
+  padding-block: 0.06em;
+  margin-block: -0.06em;
+}
+
+.typography-specimen__line-mask > i {
+  display: block;
+  font-style: normal;
+  white-space: nowrap;
+}
+
+.typography-specimen__heading--masked.typography-specimen__heading--observed:not(.is-revealed) .typography-specimen__line-mask > i {
+  opacity: 0;
+  filter: blur(2px);
+  transform: translate3d(0, 105%, 0);
+}
+
+.typography-specimen__heading--masked.typography-specimen__heading--observed.is-revealed .typography-specimen__line-mask > i {
+  animation: typography-specimen-line-reveal 820ms var(--typography-specimen-ease) both;
+}
+
+.typography-specimen__heading--masked.typography-specimen__heading--observed.is-revealed.typography-specimen__hero-heading .typography-specimen__line-mask > i {
+  animation-delay: 80ms;
+}
+
+.typography-specimen__heading--masked.typography-specimen__heading--observed.is-revealed.typography-specimen__hero-heading .typography-specimen__line-mask:nth-child(2) > i {
+  animation-delay: 155ms;
+}
+
+.typography-specimen__heading--masked.typography-specimen__heading--observed.is-revealed.typography-specimen__hero-heading .typography-specimen__line-mask:nth-child(3) > i {
+  animation-delay: 230ms;
+}
+
+.typography-specimen__heading--masked.typography-specimen__heading--observed.is-revealed.typography-specimen__process-heading .typography-specimen__line-mask > i {
+  animation-delay: 180ms;
+}
+
+.typography-specimen__heading--masked.typography-specimen__heading--observed.is-revealed.typography-specimen__process-heading .typography-specimen__line-mask:nth-child(2) > i {
+  animation-delay: 255ms;
+}
+
+.typography-specimen__heading--masked.typography-specimen__heading--observed.is-revealed.typography-specimen__process-heading .typography-specimen__line-mask:nth-child(3) > i {
+  animation-delay: 330ms;
+}
+
+.typography-specimen__heading--masked.typography-specimen__heading--observed.is-revealed.typography-specimen__process-heading .typography-specimen__line-mask:nth-child(4) > i {
+  animation-delay: 405ms;
+}
+
+.typography-specimen__heading--masked.typography-specimen__heading--observed.is-revealed.typography-specimen__process-heading .typography-specimen__line-mask:nth-child(5) > i {
+  animation-delay: 480ms;
+}
+
+.typography-specimen__heading--masked.typography-specimen__heading--observed.is-revealed.typography-specimen__practice-heading .typography-specimen__line-mask > i {
+  animation-delay: 285ms;
+}
+
+.typography-specimen__heading--masked.typography-specimen__heading--observed.is-revealed.typography-specimen__practice-heading .typography-specimen__line-mask:nth-child(2) > i {
+  animation-delay: 360ms;
+}
+
+.typography-specimen__heading--masked.typography-specimen__heading--observed.is-revealed.typography-specimen__practice-heading .typography-specimen__line-mask:nth-child(3) > i {
+  animation-delay: 435ms;
+}
+
+.typography-specimen__heading--masked.typography-specimen__heading--observed.is-revealed.typography-specimen__inquiry-heading .typography-specimen__line-mask > i {
+  animation-delay: 390ms;
+}
+
+.typography-specimen__heading--masked.typography-specimen__heading--observed.is-revealed.typography-specimen__inquiry-heading .typography-specimen__line-mask:nth-child(2) > i {
+  animation-delay: 465ms;
+}
+
+.typography-specimen__heading--masked.typography-specimen__heading--observed.is-revealed.typography-specimen__inquiry-heading .typography-specimen__line-mask:nth-child(3) > i {
+  animation-delay: 540ms;
+}
+
+@keyframes typography-specimen-line-reveal {
+  from {
+    opacity: 0.15;
+    filter: blur(2px);
+    transform: translate3d(0, 105%, 0);
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media (min-width: 44rem) {
+  .typography-specimen__controls {
+    grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.75fr);
+    align-items: end;
+    gap: 2rem;
+  }
+
+  .typography-specimen__direction-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+
+  .typography-specimen__direction {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-content: center;
+    min-height: 3.3rem;
+    padding: 0.65rem 0.8rem;
+  }
+
+  .typography-specimen__direction input {
+    grid-row: span 2;
+  }
+
+  .typography-specimen__recommended {
+    grid-column: 2;
+  }
+
+  .typography-specimen__selection {
+    justify-self: end;
+    text-align: right;
+  }
+
+  .typography-specimen__hero-heading {
+    font-size: clamp(3.2rem, 7vw, 4.75rem);
+  }
+
+  .typography-specimen__process-heading,
+  .typography-specimen__practice-heading,
+  .typography-specimen__inquiry-heading {
+    font-size: clamp(2.8rem, 6vw, 4rem);
+  }
+
+  .typography-specimen__hero,
+  .typography-specimen__process,
+  .typography-specimen__practice {
+    grid-template-columns: minmax(7rem, 0.38fr) minmax(0, 1.65fr) minmax(10rem, 0.62fr);
+    align-items: start;
+    gap: clamp(1.5rem, 3vw, 4rem);
+  }
+
+  .typography-specimen__hero-copy,
+  .typography-specimen__process-copy,
+  .typography-specimen__practice-copy {
+    grid-column: 2;
+  }
+
+  .typography-specimen__hero-aside,
+  .typography-specimen__process-note,
+  .typography-specimen__practice-aside {
+    grid-column: 3;
+    align-self: end;
+    margin-top: clamp(7rem, 17vw, 14rem);
+  }
+
+  .typography-specimen__hero {
+    min-height: min(84svh, 54rem);
+    align-items: end;
+  }
+
+  .typography-specimen__hero-copy {
+    grid-row: 1;
+  }
+
+  .typography-specimen__hero .typography-specimen__section-index {
+    align-self: start;
+  }
+
+  .typography-specimen__hero-aside {
+    margin-top: 0;
+    margin-bottom: 0.2rem;
+  }
+
+  .typography-specimen__process,
+  .typography-specimen__practice {
+    min-height: min(70svh, 48rem);
+    align-items: center;
+  }
+
+  .typography-specimen__process .typography-specimen__section-index,
+  .typography-specimen__practice .typography-specimen__section-index {
+    align-self: start;
+  }
+
+  .typography-specimen__process-copy,
+  .typography-specimen__practice-copy {
+    align-self: center;
+  }
+
+  .typography-specimen__process-note,
+  .typography-specimen__practice-aside {
+    margin-top: 0;
+  }
+
+  .typography-specimen__footer-colophon {
+    grid-template-columns: 1.2fr 0.8fr 0.9fr;
+    align-items: start;
+  }
+
+  .typography-specimen__footer-connect,
+  .typography-specimen__footer-utility {
+    justify-self: end;
+  }
+
+  .typography-specimen__footer-connect {
+    justify-items: start;
+  }
+}
+
+@media (min-width: 68rem) {
+  .typography-specimen__masthead,
+  .typography-specimen__controls,
+  .typography-specimen__panel-meta,
+  .typography-specimen__hero,
+  .typography-specimen__process,
+  .typography-specimen__practice,
+  .typography-specimen__footer {
+    padding-inline: clamp(3rem, 7vw, 8.5rem);
+  }
+
+  .typography-specimen__masthead {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  .typography-specimen__hero-heading {
+    font-size: clamp(5.4rem, 7.2vw, 8.6rem);
+  }
+
+  .typography-specimen__process-heading,
+  .typography-specimen__practice-heading {
+    font-size: clamp(4.2rem, 5.7vw, 7.4rem);
+  }
+
+  .typography-specimen__inquiry-heading {
+    font-size: clamp(4.6rem, 6.2vw, 7.6rem);
+  }
+
+  .typography-specimen__inquiry {
+    min-height: min(78svh, 52rem);
+  }
+}
+
+@media (min-width: 64rem) {
+  .typography-specimen__line-set--wide {
+    display: block;
+  }
+
+  .typography-specimen__line-set--mobile {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .typography-specimen,
+  .typography-specimen * {
+    scroll-behavior: auto !important;
+  }
+
+  .typography-specimen__heading--masked .typography-specimen__line-mask > i {
+    animation: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .typography-specimen__direction,
+  .typography-specimen__cta,
+  .typography-specimen__footer-connect a,
+  .typography-specimen__footer-utility a,
+  .typography-specimen__footer-social {
+    transition: none !important;
+  }
+}
