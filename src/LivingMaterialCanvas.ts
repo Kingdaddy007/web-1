@@ -110,11 +110,7 @@ export class LivingMaterialCanvas {
     const height = Math.max(this.canvas.clientHeight, 1);
     const context = this.context;
     const travel = this.reducedMotion ? 0 : Math.sin(time * 0.17) * 0.5 + 0.5;
-    const scrollLight = this.progress * 0.42;
-    const interludeIn = smooth((this.progress - 0.015) / 0.09);
-    const interludeOut = smooth((this.progress - 0.22) / 0.1);
-    const interludePresence = interludeIn * (1 - interludeOut);
-    const grazingTravel = smooth((this.progress - 0.035) / 0.2);
+    const scrollLight = smooth(this.progress);
 
     context.clearRect(0, 0, width, height);
 
@@ -126,31 +122,31 @@ export class LivingMaterialCanvas {
     context.fillStyle = base;
     context.fillRect(0, 0, width, height);
 
-    const glowX = width * (0.2 + travel * 0.55 + (this.pointerX - 0.5) * 0.04);
-    const glowY = height * (0.18 + scrollLight + (this.pointerY - 0.5) * 0.03);
-    const glow = context.createRadialGradient(glowX, glowY, 0, glowX, glowY, Math.max(width, height) * 0.72);
-    glow.addColorStop(0, 'rgba(255, 243, 220, .58)');
-    glow.addColorStop(0.34, 'rgba(244, 217, 185, .24)');
+    const glowX = width * (0.17 + travel * 0.44 + scrollLight * 0.12 + (this.pointerX - 0.5) * 0.035);
+    const glowY = height * (0.3 + scrollLight * 0.22 + (this.pointerY - 0.5) * 0.025);
+    const glow = context.createRadialGradient(glowX, glowY, 0, glowX, glowY, Math.max(width, height) * 0.78);
+    glow.addColorStop(0, 'rgba(255, 243, 220, .52)');
+    glow.addColorStop(0.36, 'rgba(244, 217, 185, .2)');
     glow.addColorStop(1, 'rgba(110, 69, 43, 0)');
     context.fillStyle = glow;
     context.fillRect(0, 0, width, height);
 
     context.save();
     context.globalCompositeOperation = 'screen';
-    context.globalAlpha = 0.58 * interludePresence;
-    const grazingX = width * (-0.08 + grazingTravel * 1.16 + (this.pointerX - 0.5) * 0.025);
-    const grazing = context.createRadialGradient(grazingX, height * 0.52, 0, grazingX, height * 0.52, Math.max(width * 0.18, 150));
-    grazing.addColorStop(0, 'rgba(255, 250, 235, .72)');
-    grazing.addColorStop(0.22, 'rgba(255, 236, 205, .34)');
-    grazing.addColorStop(0.62, 'rgba(240, 204, 166, .08)');
-    grazing.addColorStop(1, 'rgba(255, 240, 214, 0)');
-    context.fillStyle = grazing;
+    context.globalAlpha = 0.22;
+    const bodyX = width * (-0.08 + travel * 1.02 + scrollLight * 0.08);
+    const body = context.createRadialGradient(bodyX, height * 0.56, 0, bodyX, height * 0.56, Math.max(width * 0.28, 240));
+    body.addColorStop(0, 'rgba(255, 250, 235, .68)');
+    body.addColorStop(0.28, 'rgba(255, 236, 205, .28)');
+    body.addColorStop(0.7, 'rgba(240, 204, 166, .05)');
+    body.addColorStop(1, 'rgba(255, 240, 214, 0)');
+    context.fillStyle = body;
     context.fillRect(0, 0, width, height);
     context.restore();
 
     context.save();
     context.globalCompositeOperation = 'soft-light';
-    context.globalAlpha = 0.22 + interludePresence * 0.16;
+    context.globalAlpha = 0.24;
     const lacquer = context.createLinearGradient(0, 0, 0, height);
     lacquer.addColorStop(0, 'rgba(255, 250, 237, .56)');
     lacquer.addColorStop(0.11, 'rgba(255, 242, 220, .12)');
@@ -170,40 +166,6 @@ export class LivingMaterialCanvas {
     ribbon.addColorStop(1, 'rgba(255, 250, 237, 0)');
     context.fillStyle = ribbon;
     context.fillRect(0, 0, width * 0.48, height * 1.7);
-    context.restore();
-
-    context.save();
-    context.globalAlpha = 0.1 + interludePresence * 0.05;
-    context.strokeStyle = 'rgba(255, 244, 225, .72)';
-    context.lineWidth = 1;
-    for (let row = 1; row <= 2; row += 1) {
-      const y = height * (0.08 + row * 0.055);
-      const reflection = context.createLinearGradient(0, y, width, y);
-      reflection.addColorStop(0, 'rgba(255, 245, 228, 0)');
-      reflection.addColorStop(0.18, 'rgba(255, 245, 228, .24)');
-      reflection.addColorStop(0.5, 'rgba(255, 249, 238, .62)');
-      reflection.addColorStop(0.82, 'rgba(255, 245, 228, .24)');
-      reflection.addColorStop(1, 'rgba(255, 245, 228, 0)');
-      context.strokeStyle = reflection;
-      context.beginPath();
-      context.moveTo(width * 0.08, y);
-      context.lineTo(width * 0.92, y);
-      context.stroke();
-    }
-    context.restore();
-
-    context.save();
-    context.globalAlpha = 0.055;
-    context.strokeStyle = '#6d4936';
-    context.lineWidth = 1;
-    const spacing = Math.max(width / 6, 180);
-    const offset = (this.progress * spacing * 0.75) % spacing;
-    for (let x = -spacing + offset; x < width + spacing; x += spacing) {
-      context.beginPath();
-      context.moveTo(Math.round(x) + 0.5, 0);
-      context.lineTo(Math.round(x) + 0.5, height);
-      context.stroke();
-    }
     context.restore();
 
     const pattern = context.createPattern(this.noiseTile, 'repeat');

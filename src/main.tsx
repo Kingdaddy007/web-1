@@ -8,10 +8,7 @@ const prototype = new URLSearchParams(window.location.search).get('prototype');
 async function renderExperience() {
   let experience = <App />;
 
-  if (prototype === 'continuity') {
-    const { HeroProcessContinuity } = await import('./prototypes/HeroProcessContinuity');
-    experience = <HeroProcessContinuity />;
-  } else if (prototype === 'typography') {
+  if (prototype === 'typography') {
     const { TypographySpecimen } = await import('./prototypes/TypographySpecimen');
     experience = <TypographySpecimen />;
   }

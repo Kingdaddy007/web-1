@@ -1,12 +1,12 @@
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { getHeroVerticalFocus } from './framing';
 import { LivingMaterialCanvas } from './LivingMaterialCanvas';
 import { InquiryMaterialCanvas } from './InquiryMaterialCanvas';
+import { RhythmMaterialCanvas } from './RhythmMaterialCanvas';
 import { renderApprovedLogoFrame, type LogoLayers } from './logoTimeline';
 
 const TOTAL = 7.15;
 const LOGO_AXIS = 855 / 2172;
-const INTERLUDE_TEXT = 'What feels effortless is decided long before the room is complete.';
 
 const clamp = (value: number, min = 0, max = 1) => Math.max(min, Math.min(max, value));
 const smooth = (value: number) => {
@@ -51,30 +51,62 @@ const PROCESS_STAGES = [
 ] as const;
 
 const WORK_STUDIES = [
-  { title: 'A room for arriving', note: 'Warm architecture · Living', image: '/assets/residential-living-arrival.jpg', alt: 'A warm contemporary living room by TTA Designs' },
-  { title: 'A softer enclosure', note: 'Light · Rest · Bedroom', image: '/assets/residential-bedroom-arrival.jpg', alt: 'A bright layered bedroom interior by TTA Designs' },
-  { title: 'Comfort at close range', note: 'Texture · Curve · Detail', image: '/assets/residential-sofa-detail.jpg', alt: 'A curved sofa and material detail in a TTA Designs residence' },
-  { title: 'Designed to be lived in', note: 'Conversation · Human scale', image: '/assets/residential-table-detail.jpg', alt: 'People inhabiting a completed TTA Designs living room' },
-  { title: 'Atmosphere, resolved', note: 'Residence · Lagos', image: '/assets/residential-living-wide.jpg', alt: 'A completed residential living room in use' },
+  {
+    kicker: 'Living / Akoka',
+    title: 'One room, held together.',
+    titleLines: ['One room,', 'held together.'],
+    note: 'Light · Proportion · Use',
+    description: 'The ceiling, lacquer, movement path and furniture read as one quiet composition.',
+    image: '/assets/tta-living-cinematic-master-v1.png',
+    detail: '/assets/tta-wall-macro-v1.jpeg',
+    alt: 'Completed warm lacquer living room by TTA Designs',
+  },
+  {
+    kicker: 'Material / Living',
+    title: 'Warmth without excess.',
+    titleLines: ['Warmth', 'without excess.'],
+    note: 'Lacquer · Reflection · Detail',
+    description: 'Gloss is used as reflected light rather than decoration, giving the room depth without noise.',
+    image: '/assets/residential-living-arrival.jpg',
+    detail: '/assets/residential-sofa-detail.jpg',
+    alt: 'Warm contemporary living room and material details by TTA Designs',
+  },
+  {
+    kicker: 'Private / Rest',
+    title: 'A softer enclosure.',
+    titleLines: ['A softer', 'enclosure.'],
+    note: 'Light · Rest · Bedroom',
+    description: 'A restrained palette lets comfort, scale and morning light carry the atmosphere.',
+    image: '/assets/residential-bedroom-arrival.jpg',
+    detail: '/assets/residential-table-detail.jpg',
+    alt: 'Bright layered bedroom interior by TTA Designs',
+  },
 ] as const;
 
 export function App() {
   const rootRef = useRef<HTMLElement>(null);
   const storyStageRef = useRef<HTMLElement>(null);
-  const portfolioStageRef = useRef<HTMLElement>(null);
+  const livedUseChapterRef = useRef<HTMLElement>(null);
   const practiceChapterRef = useRef<HTMLElement>(null);
+  const inquiryChapterRef = useRef<HTMLElement>(null);
+  const rhythmBridgeRef = useRef<HTMLElement>(null);
+  const rhythmCanvasRef = useRef<HTMLCanvasElement>(null);
+  const rhythmCanvasControllerRef = useRef<RhythmMaterialCanvas | null>(null);
   const inquiryCanvasRef = useRef<HTMLCanvasElement>(null);
+  const inquiryCanvasControllerRef = useRef<InquiryMaterialCanvas | null>(null);
   const footerRef = useRef<HTMLElement>(null);
-  const practiceVideoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  const livedUseVideoRef = useRef<HTMLVideoElement>(null);
+  const practiceVideoRef = useRef<HTMLVideoElement>(null);
   const heroSceneRef = useRef<HTMLDivElement>(null);
   const processSceneRef = useRef<HTMLElement>(null);
-  const interludeRef = useRef<HTMLDivElement>(null);
   const proofSceneRef = useRef<HTMLDivElement>(null);
+  const decisionStageRef = useRef<HTMLDivElement>(null);
   const materialCanvasRef = useRef<HTMLCanvasElement>(null);
   const materialCanvasControllerRef = useRef<LivingMaterialCanvas | null>(null);
   const processMediaRefs = useRef<(HTMLDivElement | null)[]>([]);
   const processImageRefs = useRef<(HTMLImageElement | null)[]>([]);
   const processCopyRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const projectRefs = useRef<(HTMLElement | null)[]>([]);
 
   const macroRef = useRef<HTMLDivElement>(null);
   const materialLightRef = useRef<HTMLDivElement>(null);
@@ -98,7 +130,6 @@ export function App() {
   const [time, setTime] = useState(0);
   const [paused, setPaused] = useState(false);
   const [activeStage, setActiveStage] = useState(0);
-  const [activeWork, setActiveWork] = useState(0);
   const params = useMemo(() => new URLSearchParams(window.location.search), []);
   const debug = params.get('debug') === '1';
   const forceReduced = params.get('reduced') === '1';
@@ -133,34 +164,68 @@ export function App() {
     const canvas = materialCanvasRef.current;
     if (!canvas) return;
     const reducedMotion = forceReduced || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const controller = new LivingMaterialCanvas(canvas, { reducedMotion });
-    materialCanvasControllerRef.current = controller;
-    return () => {
-      controller.destroy();
+    try {
+      const controller = new LivingMaterialCanvas(canvas, { reducedMotion });
+      materialCanvasControllerRef.current = controller;
+      return () => {
+        controller.destroy();
+        materialCanvasControllerRef.current = null;
+      };
+    } catch {
+      canvas.hidden = true;
       materialCanvasControllerRef.current = null;
-    };
+    }
   }, [forceReduced]);
 
   useEffect(() => {
     const canvas = inquiryCanvasRef.current;
     if (!canvas) return;
     const reducedMotion = forceReduced || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const controller = new InquiryMaterialCanvas(canvas, reducedMotion);
-    return () => controller.destroy();
+    try {
+      const controller = new InquiryMaterialCanvas(canvas, reducedMotion);
+      inquiryCanvasControllerRef.current = controller;
+      return () => {
+        controller.destroy();
+        inquiryCanvasControllerRef.current = null;
+      };
+    } catch {
+      canvas.hidden = true;
+      inquiryCanvasControllerRef.current = null;
+    }
   }, [forceReduced]);
 
   useEffect(() => {
-    const videos = practiceVideoRefs.current.filter(Boolean) as HTMLVideoElement[];
-    const section = practiceChapterRef.current;
-    if (!section || videos.length === 0) return;
-    const observer = new IntersectionObserver(([entry]) => {
-      videos.forEach((video) => {
+    const canvas = rhythmCanvasRef.current;
+    if (!canvas) return;
+    const reducedMotion = forceReduced || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    try {
+      const controller = new RhythmMaterialCanvas(canvas, { reducedMotion });
+      rhythmCanvasControllerRef.current = controller;
+      return () => {
+        controller.destroy();
+        rhythmCanvasControllerRef.current = null;
+      };
+    } catch {
+      canvas.hidden = true;
+      rhythmCanvasControllerRef.current = null;
+    }
+  }, [forceReduced]);
+
+  useEffect(() => {
+    const entries = [
+      { section: livedUseChapterRef.current, video: livedUseVideoRef.current },
+      { section: practiceChapterRef.current, video: practiceVideoRef.current },
+    ].filter((entry): entry is { section: HTMLElement; video: HTMLVideoElement } => Boolean(entry.section && entry.video));
+    if (entries.length === 0) return;
+    const observers = entries.map(({ section, video }) => {
+      const observer = new IntersectionObserver(([entry]) => {
         if (entry.isIntersecting) void video.play().catch(() => undefined);
         else video.pause();
-      });
-    }, { threshold: 0.12 });
-    observer.observe(section);
-    return () => observer.disconnect();
+      }, { threshold: 0.12 });
+      observer.observe(section);
+      return observer;
+    });
+    return () => observers.forEach((observer) => observer.disconnect());
   }, []);
 
   useEffect(() => {
@@ -296,59 +361,61 @@ export function App() {
 
     const renderScroll = (rawProgress: number) => {
       const progress = clamp(rawProgress);
-      const handoff = reduced ? (progress >= 0.14 ? 1 : 0) : smooth(progress / 0.18);
+      const handoff = reduced ? (progress >= 0.13 ? 1 : 0) : smooth(progress / 0.16);
       const processProgress = clamp((progress - 0.12) / 0.88);
-      const interludeIn = reduced ? Number(processProgress > 0.01) : smooth((processProgress - 0.015) / 0.09);
-      const interludeOut = reduced ? Number(processProgress > 0.28) : smooth((processProgress - 0.22) / 0.1);
-      const interludePresence = interludeIn * (1 - interludeOut);
-      const proofIn = reduced ? Number(processProgress >= 0.3) : smooth((processProgress - 0.27) / 0.13);
-      const proofProgress = clamp((processProgress - 0.34) / 0.66);
+      const processY = reduced ? (handoff ? 0 : 100) : mix(100, 0, handoff);
+      const introOut = reduced ? Number(processProgress > 0.18) : smooth((processProgress - 0.12) / 0.1);
+      const stageCopyIn = reduced ? 1 : smooth((processProgress - 0.14) / 0.1);
+      const proofProgress = clamp((processProgress - 0.14) / 0.86);
+      const evidenceArrival = reduced ? 1 : smooth((processProgress - 0.015) / 0.16);
       materialCanvasControllerRef.current?.setProgress(processProgress);
-      rootRef.current?.style.setProperty('--process-interface-opacity', String(proofIn));
-
-      if (interludeRef.current) {
-        interludeRef.current.style.opacity = String(interludePresence);
-        interludeRef.current.style.transform = `translate3d(0, ${mix(28, -20, interludeOut).toFixed(2)}px, 0)`;
-        interludeRef.current.style.visibility = interludePresence <= 0.001 ? 'hidden' : 'visible';
-        interludeRef.current.style.setProperty('--type-progress', String(reduced ? 1 : processProgress));
-      }
+      rootRef.current?.style.setProperty('--process-interface-opacity', '1');
+      rootRef.current?.style.setProperty('--process-intro-presence', String(1 - introOut));
+      rootRef.current?.style.setProperty('--process-stage-copy-in', String(stageCopyIn));
       if (proofSceneRef.current) {
-        proofSceneRef.current.style.opacity = String(proofIn);
-        proofSceneRef.current.style.transform = `translate3d(0, ${mix(12, 0, proofIn).toFixed(2)}vh, 0)`;
-        proofSceneRef.current.style.visibility = proofIn <= 0.001 ? 'hidden' : 'visible';
+        proofSceneRef.current.style.opacity = '1';
+        proofSceneRef.current.style.transform = 'none';
+        proofSceneRef.current.style.visibility = 'visible';
       }
 
       if (processSceneRef.current) {
-        const processY = reduced ? (handoff ? 0 : 100) : mix(100, 0, handoff);
         processSceneRef.current.style.transform = `translate3d(0, ${processY.toFixed(3)}%, 0)`;
       }
+      if (decisionStageRef.current) {
+        const evidenceY = mix(26, 0, evidenceArrival);
+        const evidenceScale = mix(.955, 1, evidenceArrival);
+        decisionStageRef.current.style.transform = `translate3d(0, ${evidenceY.toFixed(3)}vh, 0) scale(${evidenceScale.toFixed(4)})`;
+      }
       if (heroSceneRef.current) {
-        const heroScale = mix(1, 1.025, handoff);
-        const heroY = reduced ? (handoff ? -100 : 0) : mix(0, -24, handoff);
-        heroSceneRef.current.style.transform = `translate3d(0, ${heroY.toFixed(3)}vh, 0) scale(${heroScale.toFixed(4)})`;
+        const heroY = reduced ? (handoff ? -100 : 0) : mix(0, -100, handoff);
+        heroSceneRef.current.style.transform = `translate3d(0, ${heroY.toFixed(3)}vh, 0)`;
+        heroSceneRef.current.style.visibility = handoff > 0.998 ? 'hidden' : 'visible';
       }
       if (heroCopyRef.current) {
-        heroCopyRef.current.style.setProperty('--hero-copy-scroll-y', `${(-handoff * 8).toFixed(2)}vh`);
-        heroCopyRef.current.style.setProperty('--hero-copy-scroll-opacity', String(1 - smooth(handoff / 0.72)));
+        const copyLeave = reduced ? handoff : smooth(progress / 0.07);
+        heroCopyRef.current.style.setProperty('--hero-copy-scroll-y', `${(-copyLeave * 6).toFixed(2)}vh`);
+        heroCopyRef.current.style.setProperty('--hero-copy-scroll-opacity', String(1 - copyLeave));
       }
 
       const scaled = proofProgress * PROCESS_STAGES.length;
       const currentIndex = Math.min(PROCESS_STAGES.length - 1, Math.floor(scaled));
       processMediaRefs.current.forEach((media, index) => {
         if (!media) return;
-        const start = index === 0 ? 0 : index / PROCESS_STAGES.length - 0.055;
-        const reveal = index === 0 ? 1 : (reduced ? Number(proofProgress >= start) : smooth((proofProgress - start) / 0.105));
-        const panelY = index === 0 ? 0 : mix(102, 0, reveal);
-        media.style.transform = `translate3d(0, ${panelY.toFixed(3)}%, 0)`;
+        const start = index === 0 ? 0 : index / PROCESS_STAGES.length - 0.035;
+        const reveal = index === 0 ? 1 : (reduced ? Number(proofProgress >= start) : smooth((proofProgress - start) / 0.095));
+        media.style.clipPath = index === 0 ? 'inset(0 0 0 0)' : `inset(0 ${(100 - reveal * 100).toFixed(3)}% 0 0)`;
+        media.style.setProperty('--register-progress', String(reveal));
+        media.style.transform = 'none';
         media.style.opacity = String(index === 0 || reveal > 0.001 ? 1 : 0);
         media.style.zIndex = String(10 + index);
 
         const image = processImageRefs.current[index];
         if (image) {
           const life = clamp((proofProgress - index * 0.25) / 0.34);
-          const translate = reduced ? 0 : mix(-3.8, 3.8, life);
-          const scale = reduced ? 1.045 : mix(1.075, 1.035, life);
-          image.style.transform = `translate3d(0, ${translate.toFixed(2)}%, 0) scale(${scale.toFixed(4)})`;
+          const translate = reduced ? 0 : mix(-2.8, 1.2, life);
+          const registrationOffset = index === 0 ? 0 : mix(-3.2, 0, reveal);
+          const scale = reduced ? 1.035 : mix(1.055, 1.025, life);
+          image.style.transform = `translate3d(${registrationOffset.toFixed(2)}%, ${translate.toFixed(2)}%, 0) scale(${scale.toFixed(4)})`;
         }
       });
 
@@ -360,8 +427,9 @@ export function App() {
       processCopyRefs.current.forEach((copy, index) => {
         if (!copy) return;
         const isActive = index === stageIndex;
-        copy.style.opacity = isActive ? '1' : '0';
-        copy.style.transform = `translate3d(0, ${isActive ? 0 : index < stageIndex ? -22 : 22}px, 0)`;
+        const visibleOpacity = isActive ? (index === 0 ? stageCopyIn : 1) : 0;
+        copy.style.opacity = String(visibleOpacity);
+        copy.style.transform = `translate3d(${isActive ? 0 : index < stageIndex ? -18 : 18}px, 0, 0)`;
         copy.style.visibility = isActive ? 'visible' : 'hidden';
       });
 
@@ -412,10 +480,12 @@ export function App() {
   }, [forceReduced, params]);
 
   useEffect(() => {
-    const resolved = portfolioStageRef.current;
+    const livedUse = livedUseChapterRef.current;
+    const rhythmBridge = rhythmBridgeRef.current;
     const practice = practiceChapterRef.current;
+    const inquiry = inquiryChapterRef.current;
     const footer = footerRef.current;
-    if (!resolved || !practice || !footer) return;
+    if (!livedUse || !rhythmBridge || !practice || !inquiry || !footer) return;
 
     const reduced = forceReduced || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let frame = 0;
@@ -423,19 +493,60 @@ export function App() {
     const update = () => {
       frame = 0;
       const viewport = Math.max(window.innerHeight, 1);
-      const resolvedRect = resolved.getBoundingClientRect();
+      const livedUseRect = livedUse.getBoundingClientRect();
+      const rhythmBridgeRect = rhythmBridge.getBoundingClientRect();
       const practiceRect = practice.getBoundingClientRect();
+      const inquiryRect = inquiry.getBoundingClientRect();
       const footerRect = footer.getBoundingClientRect();
-      const scrollable = Math.max(resolved.offsetHeight - viewport, 1);
-      const resolvedProgress = reduced ? 1 : clamp(-resolvedRect.top / scrollable);
+      const livedUseProgress = reduced ? 1 : clamp((viewport - livedUseRect.top) / (viewport + livedUseRect.height));
+      const rhythmBridgeProgress = reduced ? 1 : clamp((viewport - rhythmBridgeRect.top) / (viewport + rhythmBridgeRect.height));
       const practiceProgress = reduced ? 1 : clamp((viewport - practiceRect.top) / (viewport + practiceRect.height));
-      rootRef.current?.style.setProperty('--resolved-progress', String(resolvedProgress));
+      const inquiryProgress = reduced ? 1 : clamp((viewport - inquiryRect.top) / (viewport + inquiryRect.height));
+      rootRef.current?.style.setProperty('--lived-use-progress', String(livedUseProgress));
+      const livedTitleProgress = reduced ? 1 : smooth((livedUseProgress - .04) / .3);
+      const livedSupportProgress = reduced ? 1 : smooth((livedUseProgress - .18) / .28);
+      rootRef.current?.style.setProperty('--lived-title-progress', String(livedTitleProgress));
+      rootRef.current?.style.setProperty('--lived-support-progress', String(livedSupportProgress));
+      const bridgeFocus = reduced ? 1 : smooth((rhythmBridgeProgress - .08) / .46);
+      rootRef.current?.style.setProperty('--bridge-focus', String(bridgeFocus));
+      rootRef.current?.style.setProperty('--bridge-blur', `${mix(6, 0, bridgeFocus).toFixed(2)}px`);
+      rootRef.current?.style.setProperty('--bridge-tracking', `${mix(.035, 0, bridgeFocus).toFixed(4)}em`);
+      rhythmCanvasControllerRef.current?.setProgress(rhythmBridgeProgress);
       rootRef.current?.style.setProperty('--practice-progress', String(practiceProgress));
+      const practiceTitleProgress = reduced ? 1 : smooth((practiceProgress - .03) / .3);
+      const practiceSecondLineProgress = reduced ? 1 : smooth((practiceProgress - .11) / .3);
+      const practiceSupportProgress = reduced ? 1 : smooth((practiceProgress - .22) / .28);
+      rootRef.current?.style.setProperty('--practice-title-progress', String(practiceTitleProgress));
+      rootRef.current?.style.setProperty('--practice-title-second-progress', String(practiceSecondLineProgress));
+      rootRef.current?.style.setProperty('--practice-support-progress', String(practiceSupportProgress));
+      rootRef.current?.style.setProperty('--inquiry-progress', String(inquiryProgress));
+      inquiryCanvasControllerRef.current?.setProgress(inquiryProgress);
       const footerProgress = reduced ? 1 : clamp((viewport - footerRect.top) / (viewport * .72));
       rootRef.current?.style.setProperty('--footer-progress', String(footerProgress));
-      const workProgress = clamp((resolvedProgress - .18) / .82);
-      const nextWork = Math.min(WORK_STUDIES.length - 1, Math.floor(workProgress * WORK_STUDIES.length));
-      setActiveWork((current) => current === nextWork ? current : nextWork);
+      rootRef.current?.style.setProperty('--footer-reveal', `${((1 - footerProgress) * 100).toFixed(2)}%`);
+
+      projectRefs.current.forEach((project, index) => {
+        if (!project) return;
+        const rect = project.getBoundingClientRect();
+        const journey = clamp((viewport - rect.top) / (viewport + rect.height));
+        const typeReveal = reduced ? 1 : smooth((journey - .015) / .22);
+        const copyReveal = reduced ? 1 : smooth((journey - .025) / .24);
+        const reveal = reduced ? 1 : smooth((journey - .1) / .36);
+        const detailReveal = reduced ? 1 : smooth((journey - .26) / .24);
+        const exit = reduced ? 0 : smooth((journey - .7) / .22);
+        const direction = index % 2 === 0 ? 1 : -1;
+        project.style.setProperty('--project-media-x', `${(direction * (mix(11, 0, reveal) - exit * 4)).toFixed(3)}vw`);
+        project.style.setProperty('--project-media-y', `${(mix(7, 0, reveal) - exit * 5).toFixed(3)}vh`);
+        project.style.setProperty('--project-clip-block', `${(mix(12, 0, reveal) + exit * 4).toFixed(3)}%`);
+        project.style.setProperty('--project-clip-inline', `${(mix(22, 0, reveal) + exit * 3).toFixed(3)}%`);
+        project.style.setProperty('--project-image-scale', String(mix(1.12, 1.015, reveal) + exit * .025));
+        project.style.setProperty('--project-copy-y', `${(mix(32, 0, copyReveal) - exit * 16).toFixed(2)}px`);
+        project.style.setProperty('--project-copy-opacity', String(copyReveal * (1 - exit * .34)));
+        project.style.setProperty('--project-type-progress', String(typeReveal));
+        project.style.setProperty('--project-support-progress', String(reduced ? 1 : smooth((journey - .13) / .24)));
+        project.style.setProperty('--project-detail-y', `${mix(54, 0, detailReveal).toFixed(2)}px`);
+        project.style.setProperty('--project-detail-rotation', `${(direction * mix(2.6, 0, detailReveal)).toFixed(3)}deg`);
+      });
     };
 
     const queue = () => {
@@ -501,47 +612,25 @@ export function App() {
             <div className="material-fallback" aria-hidden="true" />
             <div className="process-atmosphere" aria-hidden="true" />
 
-            <div className="process-interlude" ref={interludeRef}>
-              <p>Before the finish</p>
-              <h2 aria-label={INTERLUDE_TEXT}>
-                {INTERLUDE_TEXT.split(' ').map((word, wordIndex, words) => {
-                  const priorCharacters = words.slice(0, wordIndex).reduce((total, item) => total + item.length, 0);
-                  return (
-                    <span className="interlude-word" aria-hidden="true" key={`${word}-${wordIndex}`}>
-                      {Array.from(word).map((character, characterIndex) => {
-                        const letterIndex = priorCharacters + characterIndex;
-                        const sequence = letterIndex / Math.max(INTERLUDE_TEXT.replaceAll(' ', '').length - 1, 1);
-                        return (
-                          <span
-                            className="interlude-letter"
-                            style={{ '--letter-delay': 0.035 + sequence * 0.105 } as CSSProperties}
-                            key={`${character}-${characterIndex}`}
-                          >
-                            {character}
-                          </span>
-                        );
-                      })}
-                    </span>
-                  );
-                })}
-              </h2>
-              <span>Structure · Movement · Light · Use</span>
-            </div>
-
             <div className="proof-scene" ref={proofSceneRef}>
               <header className="process-header">
-                <img src="/assets/tta-wordmark-white.png" alt="TTA Designs" />
                 <p id="process-title">From the first decision</p>
                 <span>Project Akoka · Process study</span>
               </header>
 
-              <div className="decision-stage" aria-live="polite">
+              <div className="decision-stage" ref={decisionStageRef} aria-live="polite">
                 {PROCESS_STAGES.map((stage, index) => (
                   <div className="decision-media" key={stage.number} ref={(element) => { processMediaRefs.current[index] = element; }} aria-hidden={activeStage !== index}>
                     <img src={stage.image} alt={stage.alt} ref={(element) => { processImageRefs.current[index] = element; }} />
                     <span className="decision-grade" aria-hidden="true" />
                   </div>
                 ))}
+              </div>
+
+              <div className="process-proposition">
+                <p>Before the finish</p>
+                <h2>The room is decided while change is still possible.</h2>
+                <span>Layout, light, movement and services are resolved before the finish conceals them.</span>
               </div>
 
               <div className="decision-copy-stack">
@@ -559,57 +648,80 @@ export function App() {
         </div>
       </section>
 
-      <section className="portfolio-stage" id="work" ref={portfolioStageRef} aria-labelledby="portfolio-title">
-        <div className="portfolio-experience">
-          <div className="portfolio-bridge">
-            <p>From decision to atmosphere</p>
-            <h2 id="portfolio-title" className="cinematic-heading">
-              <span><i>What was decided</i></span>
-              <span><i>becomes what is felt.</i></span>
-            </h2>
-            <small>Selected residential work</small>
-          </div>
+      <section className="portfolio-stage" id="work" aria-labelledby="portfolio-title">
+        <div className="project-constellations">
+          {WORK_STUDIES.map((work, index) => (
+            <article className={`project-constellation project-constellation--${index + 1}`} key={work.image} ref={(element) => { projectRefs.current[index] = element; }}>
+              <div className="project-copy">
+                {index === 0 && (
+                  <div className="portfolio-thesis">
+                    <p>Selected residences</p>
+                    <h2 id="portfolio-title" aria-label="What was decided becomes what is felt.">
+                      <span className="type-line" aria-hidden="true"><i>What was decided</i></span>
+                      <span className="type-line" aria-hidden="true"><i>becomes what is felt.</i></span>
+                    </h2>
+                  </div>
+                )}
+                <p>{work.kicker}</p>
+                <h3 aria-label={work.title}>
+                  {work.titleLines.map((line) => <span className="type-line" aria-hidden="true" key={line}><i>{line}</i></span>)}
+                </h3>
+                <small>{work.description}</small>
+                <span>{work.note}</span>
+              </div>
+              <figure className="project-main">
+                <img src={work.image} alt={work.alt} loading={index === 0 ? 'eager' : 'lazy'} />
+                <figcaption>{String(index + 1).padStart(2, '0')} / {String(WORK_STUDIES.length).padStart(2, '0')}</figcaption>
+              </figure>
+              <figure className="project-detail" aria-hidden="true">
+                <img src={work.detail} alt="" loading="lazy" />
+              </figure>
+            </article>
+          ))}
+        </div>
+      </section>
 
-          <div className="work-procession" aria-live="polite">
-            <div className="work-copy">
-              <p>Selected atmosphere</p>
-              <h3>{WORK_STUDIES[activeWork].title}</h3>
-              <span>{WORK_STUDIES[activeWork].note}</span>
-            </div>
-            <div className="work-frames">
-              {WORK_STUDIES.map((work, index) => (
-                <figure className={`work-frame ${index === activeWork ? 'is-active' : ''} ${index < activeWork ? 'is-before' : ''}`} key={work.image}>
-                  <img src={work.image} alt={work.alt} loading={index < 2 ? 'eager' : 'lazy'} />
-                </figure>
-              ))}
-            </div>
-            <div className="work-progress" aria-hidden="true"><i style={{ transform: `scaleX(${(activeWork + 1) / WORK_STUDIES.length})` }} /></div>
-          </div>
+      <section className="lived-use-chapter" ref={livedUseChapterRef} aria-labelledby="lived-use-title">
+        <figure className="lived-use-film">
+          <video ref={livedUseVideoRef} src="/assets/residential-lagos-portrait.mp4" poster="/assets/residential-living-wide.jpg" muted loop playsInline preload="metadata" />
+          <span aria-hidden="true" />
+        </figure>
+        <div className="lived-use-copy">
+          <p>A room in use</p>
+          <h2 id="lived-use-title" aria-label="The photograph is not the final test.">
+            <span className="type-line" aria-hidden="true"><i>The photograph</i></span>
+            <span className="type-line" aria-hidden="true"><i>is not the</i></span>
+            <span className="type-line" aria-hidden="true"><i>final test.</i></span>
+          </h2>
+          <span>A room becomes complete in movement, conversation, rest and the ordinary life it was designed to hold.</span>
+        </div>
+      </section>
+
+      <section className="rhythm-bridge" ref={rhythmBridgeRef} aria-labelledby="rhythm-bridge-title">
+        <canvas className="rhythm-material-canvas" ref={rhythmCanvasRef} aria-hidden="true" />
+        <span className="rhythm-material-fallback" aria-hidden="true" />
+        <div className="rhythm-bridge-copy">
+          <p>Behind the calm</p>
+          <h2 id="rhythm-bridge-title" aria-label="What feels effortless is carried through every decision."><span aria-hidden="true">What feels effortless</span><span aria-hidden="true">is carried through every decision.</span></h2>
         </div>
       </section>
 
       <section className="practice-chapter" id="practice" ref={practiceChapterRef} aria-labelledby="practice-title">
+        <figure className="practice-film practice-film--full">
+          <video ref={practiceVideoRef} src="/assets/project-akoka-process-portrait.mp4" poster="/assets/akoka-site-conversation-wide-clean-v1.png" muted loop playsInline preload="metadata" />
+          <span aria-hidden="true" />
+        </figure>
         <div className="practice-copy">
-          <p>The practice</p>
-          <h2 id="practice-title" className="cinematic-heading"><span><i>The eye stays</i></span><span><i>close to the work.</i></span></h2>
+          <p>Present through the process</p>
+          <h2 id="practice-title" className="cinematic-heading practice-title" aria-label="The eye stays close to the work."><span aria-hidden="true"><i>The eye stays</i></span><span aria-hidden="true"><i>close to the work.</i></span></h2>
           <span>From early site decisions to the final placement of light, furniture and art, the atmosphere is resolved through attention at every scale.</span>
           <div className="practice-values"><span>Function</span><span>Flow</span><span>Feeling</span></div>
-        </div>
-        <div className="practice-films">
-          <figure className="practice-film practice-film--site">
-            <video ref={(element) => { practiceVideoRefs.current[0] = element; }} src="/assets/project-akoka-process-portrait.mp4" poster="/assets/akoka-site-conversation.jpg" muted loop playsInline preload="metadata" />
-            <figcaption>On site</figcaption>
-          </figure>
-          <figure className="practice-film practice-film--room">
-            <video ref={(element) => { practiceVideoRefs.current[1] = element; }} src="/assets/residential-lagos-portrait.mp4" poster="/assets/residential-living-arrival.jpg" muted loop playsInline preload="metadata" />
-            <figcaption>In the room</figcaption>
-          </figure>
         </div>
       </section>
 
       <div className="closing-stage">
         <canvas className="inquiry-material" ref={inquiryCanvasRef} aria-hidden="true" />
-        <section className="inquiry-chapter" id="inquiry" aria-labelledby="inquiry-title">
+        <section className="inquiry-chapter" id="inquiry" ref={inquiryChapterRef} aria-labelledby="inquiry-title">
           <div className="inquiry-copy">
             <p>For a considered residence</p>
             <h2 id="inquiry-title" className="cinematic-heading"><span><i>Let’s begin with the way</i></span><span><i>you want to live.</i></span></h2>
@@ -623,12 +735,12 @@ export function App() {
 
         <footer className="site-footer" ref={footerRef}>
           <div className="footer-topline">
-            <div><p>TTA Designs</p><span>Residential and commercial interiors<br />Lagos, Nigeria</span></div>
-            <nav aria-label="Footer"><a href="#work">Work</a><a href="#practice">Practice</a><a href="#inquiry">Inquiry</a></nav>
-            <a className="footer-social" href="https://www.instagram.com/ttadesigns/" target="_blank" rel="noreferrer">Instagram ↗</a>
+            <div className="footer-column"><p>Studio</p><span>Residential and commercial interiors<br />Lagos, Nigeria</span></div>
+            <div className="footer-column"><p>Connect</p><a href="https://www.instagram.com/ttadesigns/" target="_blank" rel="noreferrer">Instagram ↗</a><a href="#inquiry">Project inquiry ↗</a></div>
+            <div className="footer-column"><p>Utility</p><a href="#top">Back to top ↑</a><span>Private cinematic concept</span></div>
           </div>
           <a className="footer-wordmark" href="#top" aria-label="TTA Designs — back to top"><img src="/assets/tta-wordmark-white.png" alt="TTA Designs" /></a>
-          <div className="footer-meta"><span>Private cinematic concept</span><span>Spaces shaped around the way life is lived.</span><a href="#top">Back to top ↑</a></div>
+          <div className="footer-meta"><span>Spaces shaped around the way life is lived.</span><span>© TTA Designs</span></div>
         </footer>
       </div>
 

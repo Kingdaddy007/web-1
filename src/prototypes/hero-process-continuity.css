@@ -9,6 +9,15 @@
   --continuity-warm: #b88465;
   --continuity-light: #fff0d9;
   --continuity-progress: 0;
+  --arrival-room-opacity: 1;
+  --arrival-room-y: 0%;
+  --arrival-room-scale: 1;
+  --arrival-macro-opacity: 0;
+  --arrival-macro-scale: 1;
+  --arrival-light-opacity: 0;
+  --arrival-light-x: -34%;
+  --arrival-grade-opacity: 1;
+  --arrival-copy-opacity: 1;
   --hero-focus-y: 50%;
   --hero-primary-opacity: 1;
   --hero-primary-x: 0vw;
@@ -75,10 +84,11 @@
   min-height: 88svh;
   overflow: hidden;
   color: #fff8ec;
-  background: #4d3528 url('/assets/tta-living-cinematic-master-v1.png') center / cover no-repeat;
+  background: #4d3528;
 }
 
 .hero-process-continuity__hero-media,
+.hero-process-continuity__arrival-material,
 .hero-process-continuity__hero-grade,
 .hero-process-continuity__datum,
 .hero-process-continuity__process-material {
@@ -91,9 +101,10 @@
 
 .hero-process-continuity__hero-media {
   overflow: hidden;
-  transform: translate3d(var(--room-x), var(--room-y), 0) scale(var(--room-scale));
+  opacity: var(--arrival-room-opacity);
+  transform: translate3d(var(--room-x), calc(var(--room-y) + var(--arrival-room-y)), 0) scale(calc(var(--room-scale) * var(--arrival-room-scale)));
   transform-origin: 50% 30%;
-  will-change: transform;
+  will-change: opacity, transform;
 }
 
 .hero-process-continuity__hero-media video {
@@ -105,10 +116,85 @@
 }
 
 .hero-process-continuity__hero-grade {
-  z-index: 2;
+  z-index: 3;
+  opacity: var(--arrival-grade-opacity);
   background:
     linear-gradient(180deg, rgba(10, 7, 4, .18), transparent 33%, rgba(12, 8, 5, .69) 100%),
     linear-gradient(90deg, rgba(15, 9, 5, .3), transparent 52%);
+}
+
+.hero-process-continuity__arrival-material {
+  z-index: 2;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 58% 72% at 50% 45%, rgba(255, 225, 185, .46), transparent 70%),
+    #a87556;
+  opacity: var(--arrival-macro-opacity);
+  will-change: opacity;
+}
+
+.hero-process-continuity__arrival-material img {
+  position: absolute;
+  inset: -8%;
+  width: 116%;
+  height: 116%;
+  object-fit: cover;
+  filter: saturate(.75) sepia(.16) contrast(1.04) brightness(.86);
+  transform: scale(var(--arrival-macro-scale));
+  will-change: transform;
+}
+
+.hero-process-continuity__arrival-light {
+  position: absolute;
+  top: -14%;
+  left: -10%;
+  width: 120%;
+  height: 138%;
+  background: radial-gradient(ellipse 13% 88% at 50% 50%, rgba(255, 238, 211, .32), rgba(255, 224, 184, .08) 36%, transparent 72%);
+  mix-blend-mode: screen;
+  opacity: var(--arrival-light-opacity);
+  transform: translate3d(var(--arrival-light-x), 0, 0);
+  will-change: opacity, transform;
+}
+
+.hero-process-continuity__arrival-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(56, 31, 17, .06), rgba(38, 21, 12, .2));
+}
+
+.hero-process-continuity__logo {
+  position: absolute;
+  z-index: 4;
+  top: 48%;
+  left: 50%;
+  width: min(800px, 82vw);
+  aspect-ratio: 2172 / 724;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  will-change: left, top, transform, opacity;
+}
+
+.hero-process-continuity__logo-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity, transform, clip-path;
+}
+
+.hero-process-continuity__logo-layer img,
+.hero-process-continuity__logo-master {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.hero-process-continuity__logo-master {
+  z-index: 10;
 }
 
 .hero-process-continuity__datum {
@@ -122,10 +208,12 @@
 
 .hero-process-continuity__hero-copy {
   position: absolute;
-  z-index: 4;
+  z-index: 5;
   left: clamp(24px, 7vw, 108px);
   bottom: clamp(30px, 7vh, 76px);
   width: min(560px, 44vw);
+  opacity: var(--arrival-copy-opacity);
+  will-change: opacity;
 }
 
 .hero-process-continuity__hero-primary,

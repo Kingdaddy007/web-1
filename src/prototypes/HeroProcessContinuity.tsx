@@ -1,6 +1,10 @@
-import { useEffect, useId, useRef } from 'react';
+import { useEffect, useId, useLayoutEffect, useRef } from 'react';
 import { getHeroVerticalFocus } from '../framing';
+import { renderApprovedLogoFrame, type LogoLayers } from '../logoTimeline';
 import './hero-process-continuity.css';
+
+const OPENING_TOTAL = 7.15;
+const LOGO_AXIS = 855 / 2172;
 
 const clamp = (value: number, min = 0, max = 1) => Math.max(min, Math.min(max, value));
 const smooth = (value: number) => {
@@ -30,10 +34,76 @@ export function HeroProcessContinuity() {
   const processRef = useRef<HTMLElement>(null);
   const evidenceRef = useRef<HTMLElement>(null);
   const heroVideoRef = useRef<HTMLVideoElement>(null);
+  const logoRef = useRef<HTMLDivElement>(null);
+  const masterRef = useRef<HTMLImageElement>(null);
+  const axisRef = useRef<HTMLDivElement>(null);
+  const dStemRef = useRef<HTMLDivElement>(null);
+  const dBowlRef = useRef<HTMLDivElement>(null);
+  const ttaRef = useRef<HTMLDivElement>(null);
+  const esignsRef = useRef<HTMLDivElement>(null);
+  const heroGradeRef = useRef<HTMLDivElement>(null);
+  const heroCopyRef = useRef<HTMLDivElement>(null);
   const id = useId().replaceAll(':', '');
   const heroTitleId = `${id}-hero-title`;
   const processTitleId = `${id}-process-title`;
   const evidenceTitleId = `${id}-evidence-title`;
+
+  useLayoutEffect(() => {
+    const root = rootRef.current;
+    const logo = logoRef.current;
+    const heroGrade = heroGradeRef.current;
+    const heroCopy = heroCopyRef.current;
+    const layers: LogoLayers | null = masterRef.current && axisRef.current && dStemRef.current && dBowlRef.current && ttaRef.current && esignsRef.current
+      ? { master: masterRef.current, axis: axisRef.current, dStem: dStemRef.current, dBowl: dBowlRef.current, tta: ttaRef.current, esigns: esignsRef.current }
+      : null;
+    if (!root || !logo || !heroGrade || !heroCopy || !layers || typeof window === 'undefined') return;
+
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      || new URLSearchParams(window.location.search).get('reduced') === '1';
+    let frame = 0;
+    const start = performance.now();
+
+    const evaluate = (time: number) => {
+      const t = Math.min(time, OPENING_TOTAL);
+      renderApprovedLogoFrame(Math.min(t, 3.05), layers, reduced);
+
+      const registration = reduced ? 1 : smooth((t - 3.32) / 1.84);
+      const cameraEase = smooth(registration);
+      const roomIn = reduced ? 1 : smooth(registration / 0.22);
+      const macroOut = reduced ? 1 : smooth((registration - 0.035) / 0.24);
+      const cameraScale = reduced ? 1 : Math.exp(mix(Math.log(6.15), 0, cameraEase));
+      const cameraY = reduced ? 0 : mix(2.2, 0, cameraEase);
+
+      root.style.setProperty('--arrival-room-opacity', String(roomIn));
+      root.style.setProperty('--arrival-room-scale', cameraScale.toFixed(4));
+      root.style.setProperty('--arrival-room-y', `${cameraY.toFixed(2)}%`);
+      root.style.setProperty('--arrival-macro-opacity', String(1 - macroOut));
+      root.style.setProperty('--arrival-macro-scale', (1.018 - registration * 0.018).toFixed(4));
+      root.style.setProperty('--arrival-light-opacity', String((1 - macroOut) * 0.34));
+      root.style.setProperty('--arrival-light-x', `${mix(-34, 34, smooth(clamp(t / 3.05))).toFixed(2)}%`);
+      root.style.setProperty('--arrival-grade-opacity', String(smooth((registration - 0.56) / 0.34)));
+
+      const initialAxisCorrection = logo.offsetWidth * (0.5 - LOGO_AXIS);
+      const logoRelease = reduced ? 1 : smooth((registration - 0.7) / 0.26);
+      logo.style.left = `calc(50% + ${(initialAxisCorrection * (1 - cameraEase)).toFixed(2)}px)`;
+      logo.style.top = `${mix(48, 46.2, cameraEase).toFixed(2)}%`;
+      logo.style.transform = `translate(-50%, -50%) scale(${mix(1, 0.265, cameraEase).toFixed(4)})`;
+      logo.style.opacity = String(1 - logoRelease);
+      logo.style.visibility = logoRelease >= 0.999 ? 'hidden' : 'visible';
+
+      heroGrade.style.opacity = String(smooth((registration - 0.56) / 0.34));
+      const interfaceIn = reduced ? 1 : smooth((t - 5.44) / 0.72);
+      heroCopy.style.setProperty('--arrival-copy-opacity', String(interfaceIn));
+
+      if (t < OPENING_TOTAL && !reduced) {
+        frame = window.requestAnimationFrame((now) => evaluate((now - start) / 1000));
+      }
+    };
+
+    evaluate(reduced || window.scrollY > 12 ? OPENING_TOTAL : 0);
+
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -205,10 +275,22 @@ export function HeroProcessContinuity() {
                 disablePictureInPicture
               />
             </div>
+            <div className="hero-process-continuity__arrival-material" aria-hidden="true">
+              <img src="/assets/tta-wall-macro-v1.jpeg" alt="" />
+              <span className="hero-process-continuity__arrival-light" />
+              <span className="hero-process-continuity__arrival-shade" />
+            </div>
+            <div className="hero-process-continuity__logo" ref={logoRef} aria-hidden="true">
+              <img src="/assets/tta-wordmark-white.png" className="hero-process-continuity__logo-layer hero-process-continuity__logo-master" ref={masterRef} alt="" />
+              <div className="hero-process-continuity__logo-layer" ref={axisRef}><img src="/assets/axis-line.png" alt="" /></div>
+              <div className="hero-process-continuity__logo-layer" ref={dStemRef}><img src="/assets/d-stem.png" alt="" /></div>
+              <div className="hero-process-continuity__logo-layer" ref={dBowlRef}><img src="/assets/d-bowl.png" alt="" /></div>
+              <div className="hero-process-continuity__logo-layer" ref={ttaRef}><img src="/assets/tta-unified-group.png" alt="" /></div>
+              <div className="hero-process-continuity__logo-layer" ref={esignsRef}><img src="/assets/esigns-unified-group.png" alt="" /></div>
+            </div>
             <div className="hero-process-continuity__hero-grade" aria-hidden="true" />
-            <span className="hero-process-continuity__datum" aria-hidden="true" />
 
-            <div className="hero-process-continuity__hero-copy">
+            <div className="hero-process-continuity__hero-copy" ref={heroCopyRef}>
               <div className="hero-process-continuity__hero-primary">
                 <p>Refined in feeling · Considered in use</p>
                 <h1 id={heroTitleId}>Designed around<br />the way life is lived.</h1>

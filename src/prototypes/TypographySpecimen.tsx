@@ -88,7 +88,7 @@ function MaskedHeading({
   );
 }
 
-export function TypographySpecimen() {
+export function TypographySpecimen({ integrated = false }: { integrated?: boolean } = {}) {
   const [directionId, setDirectionId] = useState<DirectionId>('editorial');
   const panelRef = useRef<HTMLElement>(null);
   const specimenId = useId().replaceAll(':', '');
@@ -135,123 +135,133 @@ export function TypographySpecimen() {
 
   return (
     <section
-      className={`typography-specimen typography-specimen--${directionId}`}
+      className={`typography-specimen typography-specimen--${directionId}${integrated ? ' typography-specimen--integrated' : ''}`}
       aria-label="TTA Designs typography specimen"
     >
-      <header className="typography-specimen__masthead">
-        <div className="typography-specimen__identity">
-          <p className="typography-specimen__wordmark">TTA Designs</p>
-          <p className="typography-specimen__utility">Typography specimen · Revision pass 02</p>
-        </div>
-        <p className="typography-specimen__utility typography-specimen__utility--quiet">Real content / no webfonts loaded</p>
-      </header>
-
-      <div className="typography-specimen__controls">
-        <fieldset className="typography-specimen__switcher">
-          <legend id={directionGroupId}>Compare directions</legend>
-          <div className="typography-specimen__direction-list">
-            {DIRECTIONS.map((option) => {
-              const inputId = `${specimenId}-${option.id}`;
-              const isActive = option.id === directionId;
-
-              return (
-                <label
-                  className={`typography-specimen__direction${isActive ? ' is-active' : ''}`}
-                  htmlFor={inputId}
-                  key={option.id}
-                >
-                  <input
-                    id={inputId}
-                    type="radio"
-                    name={directionGroupId}
-                    value={option.id}
-                    checked={isActive}
-                    onChange={() => setDirectionId(option.id)}
-                    aria-controls={panelId}
-                  />
-                  <span className="typography-specimen__direction-code">{option.code}</span>
-                  <span className="typography-specimen__direction-name">{option.name}</span>
-                  {option.recommended && <span className="typography-specimen__recommended">Recommended</span>}
-                </label>
-              );
-            })}
+      {!integrated && (
+        <header className="typography-specimen__masthead">
+          <div className="typography-specimen__identity">
+            <p className="typography-specimen__wordmark">TTA Designs</p>
+            <p className="typography-specimen__utility">Typography specimen · Revision pass 02</p>
           </div>
-        </fieldset>
+          <p className="typography-specimen__utility typography-specimen__utility--quiet">Real content / no webfonts loaded</p>
+        </header>
+      )}
 
-        <p className="typography-specimen__selection" aria-live="polite">
-          <span>{activeDirection.qualities}</span>
-          <span>{activeDirection.detail}</span>
-        </p>
-      </div>
+      {!integrated && (
+        <div className="typography-specimen__controls">
+          <fieldset className="typography-specimen__switcher">
+            <legend id={directionGroupId}>Compare directions</legend>
+            <div className="typography-specimen__direction-list">
+              {DIRECTIONS.map((option) => {
+                const inputId = `${specimenId}-${option.id}`;
+                const isActive = option.id === directionId;
+
+                return (
+                  <label
+                    className={`typography-specimen__direction${isActive ? ' is-active' : ''}`}
+                    htmlFor={inputId}
+                    key={option.id}
+                  >
+                    <input
+                      id={inputId}
+                      type="radio"
+                      name={directionGroupId}
+                      value={option.id}
+                      checked={isActive}
+                      onChange={() => setDirectionId(option.id)}
+                      aria-controls={panelId}
+                    />
+                    <span className="typography-specimen__direction-code">{option.code}</span>
+                    <span className="typography-specimen__direction-name">{option.name}</span>
+                    {option.recommended && <span className="typography-specimen__recommended">Recommended</span>}
+                  </label>
+                );
+              })}
+            </div>
+          </fieldset>
+
+          <p className="typography-specimen__selection" aria-live="polite">
+            <span>{activeDirection.qualities}</span>
+            <span>{activeDirection.detail}</span>
+          </p>
+        </div>
+      )}
 
       <article
         className="typography-specimen__panel"
         id={panelId}
         key={directionId}
         ref={panelRef}
-        aria-labelledby={panelTitleId}
+        aria-labelledby={integrated ? practiceTitleId : panelTitleId}
       >
-        <header className="typography-specimen__panel-meta">
-          <div>
-            <p className="typography-specimen__panel-kicker" id={panelTitleId}>
-              {activeDirection.code} / {activeDirection.name}
+        {!integrated && (
+          <header className="typography-specimen__panel-meta">
+            <div>
+              <p className="typography-specimen__panel-kicker" id={panelTitleId}>
+                {activeDirection.code} / {activeDirection.name}
+              </p>
+              <p className="typography-specimen__panel-qualities">{activeDirection.qualities}</p>
+            </div>
+            <p className="typography-specimen__font-note">
+              Display stand-in: {activeDirection.displayFamily}
+              <br />
+              Supporting text: {activeDirection.supportFamily}
             </p>
-            <p className="typography-specimen__panel-qualities">{activeDirection.qualities}</p>
-          </div>
-          <p className="typography-specimen__font-note">
-            Display stand-in: {activeDirection.displayFamily}
-            <br />
-            Supporting text: {activeDirection.supportFamily}
-          </p>
-        </header>
+          </header>
+        )}
 
-        <section className="typography-specimen__hero" aria-labelledby={heroTitleId}>
-          <div className="typography-specimen__section-index">
-            <span>01</span>
-            <span>Arrival</span>
-          </div>
-          <div className="typography-specimen__hero-copy">
-            <p className="typography-specimen__eyebrow">Refined in feeling · Considered in use</p>
-            <MaskedHeading
-              as="h1"
-              className="typography-specimen__hero-heading"
-              id={heroTitleId}
-              label={HERO_LABEL}
-              wideLines={['Designed around', 'the way life is', 'lived.']}
-              mobileLines={['Designed around', 'the way life', 'is lived.']}
-            />
-            <p className="typography-specimen__body typography-specimen__hero-support">
-              Refined interiors shaped by movement, comfort, and the decisions that make everything else work.
-            </p>
-          </div>
-          <aside className="typography-specimen__hero-aside" aria-label="Hero type role">
-            <span className="typography-specimen__aside-label">Hero heading</span>
-            <p>Atmospheric scale with a composed desktop hold and a shorter mobile cadence.</p>
-          </aside>
-        </section>
+        {!integrated && (
+          <section className="typography-specimen__hero" aria-labelledby={heroTitleId}>
+            <div className="typography-specimen__section-index">
+              <span>01</span>
+              <span>Arrival</span>
+            </div>
+            <div className="typography-specimen__hero-copy">
+              <p className="typography-specimen__eyebrow">Refined in feeling · Considered in use</p>
+              <MaskedHeading
+                as="h1"
+                className="typography-specimen__hero-heading"
+                id={heroTitleId}
+                label={HERO_LABEL}
+                wideLines={['Designed around', 'the way life is', 'lived.']}
+                mobileLines={['Designed around', 'the way life', 'is lived.']}
+              />
+              <p className="typography-specimen__body typography-specimen__hero-support">
+                Refined interiors shaped by movement, comfort, and the decisions that make everything else work.
+              </p>
+            </div>
+            <aside className="typography-specimen__hero-aside" aria-label="Hero type role">
+              <span className="typography-specimen__aside-label">Hero heading</span>
+              <p>Atmospheric scale with a composed desktop hold and a shorter mobile cadence.</p>
+            </aside>
+          </section>
+        )}
 
-        <section className="typography-specimen__process" aria-labelledby={processTitleId}>
-          <div className="typography-specimen__section-index">
-            <span>02</span>
-            <span>Process</span>
-          </div>
-          <div className="typography-specimen__process-copy">
-            <p className="typography-specimen__eyebrow">Before the finish</p>
-            <MaskedHeading
-              as="h2"
-              className="typography-specimen__process-heading"
-              id={processTitleId}
-              label={PROCESS_PROPOSITION}
-              wideLines={['What feels effortless', 'is decided long', 'before the room is', 'complete.']}
-              mobileLines={['What feels', 'effortless is', 'decided long', 'before the room is', 'complete.']}
-            />
-            <p className="typography-specimen__process-caption">Structure · Movement · Light · Use</p>
-          </div>
-          <div className="typography-specimen__process-note">
-            <span className="typography-specimen__aside-label">Process proposition</span>
-            <p>Large enough to carry the argument, quiet enough to leave the evidence in charge.</p>
-          </div>
-        </section>
+        {!integrated && (
+          <section className="typography-specimen__process" aria-labelledby={processTitleId}>
+            <div className="typography-specimen__section-index">
+              <span>02</span>
+              <span>Process</span>
+            </div>
+            <div className="typography-specimen__process-copy">
+              <p className="typography-specimen__eyebrow">Before the finish</p>
+              <MaskedHeading
+                as="h2"
+                className="typography-specimen__process-heading"
+                id={processTitleId}
+                label={PROCESS_PROPOSITION}
+                wideLines={['What feels effortless', 'is decided long', 'before the room is', 'complete.']}
+                mobileLines={['What feels', 'effortless is', 'decided long', 'before the room is', 'complete.']}
+              />
+              <p className="typography-specimen__process-caption">Structure · Movement · Light · Use</p>
+            </div>
+            <div className="typography-specimen__process-note">
+              <span className="typography-specimen__aside-label">Process proposition</span>
+              <p>Large enough to carry the argument, quiet enough to leave the evidence in charge.</p>
+            </div>
+          </section>
+        )}
 
         <section className="typography-specimen__practice" aria-labelledby={practiceTitleId}>
           <div className="typography-specimen__section-index">
