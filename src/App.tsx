@@ -918,9 +918,6 @@ export function App() {
           <p className="founder-credit"><strong>Tolu Ajayi</strong><span>Founder &amp; Creative Director</span></p>
           <h2 id="founder-title" aria-label="A considered room begins with a considered eye."><span aria-hidden="true"><i>A considered room</i></span><span aria-hidden="true"><i>begins with a considered eye.</i></span></h2>
           <span>Her practice starts with how a space will move, feel and hold everyday life. That attention remains present from the first site conversation to the final placement of light, furniture and art.</span>
-          <div className="founder-values" aria-label="Function, flow and feeling">
-            {['Function', 'Flow', 'Feeling'].map((value, index) => <span style={{ '--value-order': index } as CSSProperties} key={value}>{value}</span>)}
-          </div>
         </div>
         <figure className="founder-portrait">
           <img src="/assets/tolu-ajayi-founder-portrait.jpg" alt="Tolu Ajayi, founder and creative director of TTA Designs, standing in a completed interior" loading="lazy" />
@@ -938,7 +935,6 @@ export function App() {
           <p>Present through the process</p>
           <h2 id="practice-title" className="cinematic-heading practice-title" aria-label="The eye stays close to the work."><span aria-hidden="true"><i>The eye stays</i></span><span aria-hidden="true"><i>close to the work.</i></span></h2>
           <span>From early site decisions to the final placement of light, furniture and art, the atmosphere is resolved through attention at every scale.</span>
-          <div className="practice-values"><span>Function</span><span>Flow</span><span>Feeling</span></div>
         </div>
       </section>
 
