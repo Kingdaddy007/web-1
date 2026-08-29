@@ -57,7 +57,7 @@ const WORK_STUDIES = [
     title: 'One room, one rhythm.',
     titleLines: ['One room,', 'one rhythm.'],
     note: 'Continuity · Light · Flow',
-    description: 'The living and dining areas read as one composition through mirrored depth, warm light and an uninterrupted path.',
+    description: 'Mirrored wall planes, warm recessed lighting and an open circulation path unify the living and dining areas into one seamless space.',
     image: '/assets/ogba-living-overview-wide-v2.png',
     alt: 'Connected living and dining composition with a mirrored wall and warm layered lighting at the Ogba residence by TTA Designs',
   },
@@ -65,17 +65,17 @@ const WORK_STUDIES = [
     kicker: 'Ogba / Media wall',
     title: 'A quieter focal point.',
     titleLines: ['A quieter', 'focal point.'],
-    note: 'Stone · Reflection · Restraint',
-    description: 'Stone, reflection and a low dark console give the television wall presence without allowing it to dominate the room.',
+    note: 'Stone · Proportion · Restraint',
+    description: 'Textured stone cladding and a low-profile dark console give the television wall presence while keeping the overall room calm and balanced.',
     image: '/assets/ogba-living-wall-wide-v2.png',
     alt: 'Stone-clad television wall with a low dark console and reflected ceiling light at the Ogba residence by TTA Designs',
   },
   {
-    kicker: 'Ogba / Dining detail',
-    title: 'Light gathers here.',
-    titleLines: ['Light gathers', 'here.'],
-    note: 'Light · Reflection · Intimacy',
-    description: 'A warm pool of light brings the table into focus while mirrored planes extend the intimacy of the setting.',
+    kicker: 'Ogba / Dining setting',
+    title: 'Intimacy at the table.',
+    titleLines: ['Intimacy at', 'the table.'],
+    note: 'Pendant · Reflection · Ambiance',
+    description: 'A dedicated warm floor lamp anchors the dining table, while mirrored grid walls expand the natural light and evening ambiance.',
     image: '/assets/ogba-dining-detail-wide-v2.png',
     alt: 'Dining table set beneath a warm floor lamp with curtains and mirrored reflections at the Ogba residence by TTA Designs',
   },
@@ -863,26 +863,20 @@ export function App() {
           <div className="project-constellations">
             {WORK_STUDIES.map((work, index) => (
               <article className={`project-constellation project-constellation--${index + 1}`} key={work.image} ref={(element) => { projectRefs.current[index] = element; }}>
+                <div className="project-copy">
+                  <p>{work.kicker} · {String(index + 1).padStart(2, '0')} / {String(WORK_STUDIES.length).padStart(2, '0')}</p>
+                  <h3 aria-label={work.title}>
+                    {work.titleLines.map((line) => <span className="type-line" aria-hidden="true" key={line}><i>{line}</i></span>)}
+                  </h3>
+                  <small>{work.description}</small>
+                  <span>{work.note}</span>
+                </div>
                 <figure className="project-main">
                   <span className="project-ambient" style={{ backgroundImage: `url(${work.image})` }} aria-hidden="true" />
                   <img src={work.image} alt={work.alt} loading={index === 0 ? 'eager' : 'lazy'} />
                   <span className="project-light" aria-hidden="true" />
                   <figcaption>{String(index + 1).padStart(2, '0')} / {String(WORK_STUDIES.length).padStart(2, '0')}</figcaption>
                 </figure>
-                <div className="project-copy">
-                  <div className="datum-col-primary">
-                    <p>{work.kicker} · {String(index + 1).padStart(2, '0')} / {String(WORK_STUDIES.length).padStart(2, '0')}</p>
-                    <h3 aria-label={work.title}>
-                      {work.titleLines.map((line) => <span className="type-line" aria-hidden="true" key={line}><i>{line}</i></span>)}
-                    </h3>
-                  </div>
-                  <div className="datum-col-secondary">
-                    <small>{work.description}</small>
-                  </div>
-                  <div className="datum-col-tertiary">
-                    <span>{work.note}</span>
-                  </div>
-                </div>
               </article>
             ))}
           </div>
