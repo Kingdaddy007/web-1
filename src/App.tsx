@@ -645,8 +645,11 @@ export function App() {
           smooth((portfolioProgress - .38) / .15),
           smooth((portfolioProgress - .67) / .15),
         ];
-        const copyStarts = [.16, .46, .75];
-        const copyEnds = [.39, .69, .97];
+        // Let each caption arrive with its image instead of finishing after the
+        // panel has already settled. The copy still clears before the next
+        // residence enters, preserving one readable focal point at a time.
+        const copyStarts = [.105, .405, .695];
+        const copyEnds = [.365, .665, .955];
 
         portfolioStage.style.setProperty('--residence-progress', String(portfolioProgress));
         portfolioStage.style.setProperty('--residence-entry', String(entryProgress));
@@ -660,10 +663,10 @@ export function App() {
           if (!project) return;
           const panelReveal = panelReveals[index] ?? 0;
           const nextPanelReveal = panelReveals[index + 1] ?? 0;
-          const incomingCopy = smooth((portfolioProgress - copyStarts[index]) / .14);
+          const incomingCopy = smooth((portfolioProgress - copyStarts[index]) / .11);
           const outgoingCopy = index === WORK_STUDIES.length - 1
             ? smooth((portfolioProgress - .95) / .05)
-            : smooth((portfolioProgress - copyEnds[index]) / .08);
+            : smooth((portfolioProgress - copyEnds[index]) / .075);
           const copyOpacity = incomingCopy * (1 - outgoingCopy);
           const supportReveal = smooth((incomingCopy - .48) / .48) * (1 - outgoingCopy);
 
