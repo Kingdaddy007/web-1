@@ -571,12 +571,13 @@ export function App() {
       const practiceProgress = reduced ? 1 : clamp((viewport - practiceRect.top) / (viewport + practiceRect.height));
       const inquiryProgress = reduced ? 1 : clamp((viewport - inquiryRect.top) / (viewport + inquiryRect.height));
       const lifeIntroIn = desktopLifeStory ? smooth(clamp(lifeStoryProgress / 0.16)) : 1;
-      const lifeIntroOut = desktopLifeStory ? smooth((lifeStoryProgress - 0.28) / 0.10) : 0;
-      const lifeVideoIn = desktopLifeStory ? smooth((lifeStoryProgress - 0.24) / 0.14) : 1;
-      const lifeProofIn = desktopLifeStory ? smooth((lifeStoryProgress - 0.32) / 0.14) : 1;
-      const lifeProofOut = desktopLifeStory ? smooth((lifeStoryProgress - 0.62) / 0.10) : 0;
-      const lifeVideoOut = desktopLifeStory ? smooth((lifeStoryProgress - 0.64) / 0.12) : 0;
-      const lifeCodaIn = desktopLifeStory ? smooth((lifeStoryProgress - 0.70) / 0.14) : 1;
+      const lifeIntroOut = desktopLifeStory ? smooth((lifeStoryProgress - 0.26) / 0.10) : 0;
+      const lifeVideoIn = desktopLifeStory ? smooth((lifeStoryProgress - 0.22) / 0.14) : 1;
+      const lifeProofIn = desktopLifeStory ? smooth((lifeStoryProgress - 0.30) / 0.14) : 1;
+      const lifeProofOut = desktopLifeStory ? smooth((lifeStoryProgress - 0.58) / 0.10) : 0;
+      const lifeVideoOut = desktopLifeStory ? smooth((lifeStoryProgress - 0.60) / 0.12) : 0;
+      const lifeCodaIn = desktopLifeStory ? smooth((lifeStoryProgress - 0.68) / 0.14) : 1;
+      const lifeCodaOut = desktopLifeStory ? smooth((lifeStoryProgress - 0.90) / 0.10) : 0;
       rootRef.current?.style.setProperty('--life-story-progress', String(lifeStoryProgress));
       rootRef.current?.style.setProperty('--life-intro-in', String(lifeIntroIn));
       rootRef.current?.style.setProperty('--life-intro-out', String(lifeIntroOut));
@@ -585,6 +586,7 @@ export function App() {
       rootRef.current?.style.setProperty('--life-proof-in', String(lifeProofIn));
       rootRef.current?.style.setProperty('--life-proof-out', String(lifeProofOut));
       rootRef.current?.style.setProperty('--life-coda-in', String(lifeCodaIn));
+      rootRef.current?.style.setProperty('--life-coda-out', String(lifeCodaOut));
       const sectionPresence = (rect: DOMRect) => {
         const enter = smooth((viewport - rect.top) / Math.max(viewport * .45, 1));
         const leave = smooth((viewport * .15 - rect.bottom) / Math.max(viewport * .45, 1));
@@ -903,7 +905,10 @@ export function App() {
           </div>
 
           <div className="life-story-coda">
-            <h2><span>A room holds together</span><span>when every choice is seen as one.</span></h2>
+            <h2 aria-label="A room holds together when every choice is seen as one.">
+              <span className="type-line" aria-hidden="true"><i>A room holds together</i></span>
+              <span className="type-line" aria-hidden="true"><i>when every choice is seen as one.</i></span>
+            </h2>
           </div>
         </div>
       </section>
