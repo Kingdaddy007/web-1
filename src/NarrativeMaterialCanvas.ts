@@ -57,7 +57,7 @@ const fragmentShader = /* glsl */ `
   void main() {
     vec2 aspect = vec2(uResolution.x / max(uResolution.y, 1.0), 1.0);
     vec2 point = (vUv - 0.5) * aspect;
-    float time = uTime * 0.12;
+    float time = uTime * 0.24;
     float scroll = uProgress * 0.62;
 
     // Two independently drifting noise fields bend the light without making

@@ -13,7 +13,7 @@
     left: 50%;
     width: min(80vw, 1180px);
     text-align: center;
-    transform: translate3d(-50%, calc(-50% - 4svh - var(--residence-prologue-leave, 0) * 34px), 0);
+    transform: translate3d(-50%, calc(-50% - var(--residence-prologue-leave, 0) * 34px), 0);
     filter: blur(calc(var(--residence-prologue-leave, 0) * 7px));
   }
 
@@ -253,6 +253,11 @@
   line-height: 1.6;
 }
 
+.project-copy h3 .type-line {
+  padding-bottom: .18em;
+  margin-bottom: -.18em;
+}
+
 /* Residence proof is held inside one bright gallery frame. The surrounding
    material field remains visible, and every panel travels in the same direction. */
 @media (min-width: 961px) {
@@ -305,7 +310,7 @@
 
   .project-copy,
   .project-constellation:nth-child(even) .project-copy {
-    bottom: clamp(56px, 9vh, 92px);
+    bottom: clamp(96px, 15vh, 148px);
     left: clamp(58px, 8vw, 144px);
     width: min(34vw, 540px);
     max-width: 540px;
@@ -315,8 +320,13 @@
   .project-copy h3 {
     max-width: 11.5ch;
     font-size: clamp(48px, 4.8vw, 82px);
-    line-height: .91;
+    line-height: .96;
     text-wrap: balance;
+  }
+
+  .project-copy h3 .type-line {
+    padding-bottom: .18em;
+    margin-bottom: -.18em;
   }
 
   .project-copy small {
@@ -862,10 +872,6 @@
 
 /* Final optical and readability polish. Kept last so the review adjustments
    remain authoritative over the earlier revision layers. */
-@media (min-width: 961px) {
-  .residence-prologue { top: 46%; }
-}
-
 .residence-prologue > p,
 .practice-copy > p { color: rgba(247, 239, 227, .72); }
 
