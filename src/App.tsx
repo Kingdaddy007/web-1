@@ -334,7 +334,9 @@ export function App() {
       }
 
       if (logoRef.current) {
-        const initialAxisCorrection = logoRef.current.offsetWidth * (0.5 - LOGO_AXIS);
+        const rawAxisCorrection = logoRef.current.offsetWidth * (0.5 - LOGO_AXIS);
+        const maxCorrection = Math.max(0, (window.innerWidth - logoRef.current.offsetWidth) * 0.44);
+        const initialAxisCorrection = Math.min(rawAxisCorrection, maxCorrection);
         const logoRelease = reduced ? Number(registration >= 0.9) : smooth((registration - 0.7) / 0.26);
         logoRef.current.style.left = `calc(50% + ${(initialAxisCorrection * (1 - cameraEase)).toFixed(2)}px)`;
         logoRef.current.style.top = `${mix(48, 46.2, cameraEase).toFixed(2)}%`;
@@ -655,18 +657,31 @@ export function App() {
         projectRefs.current.forEach((project, index) => {
           if (!project) return;
           const panelReveal = panelReveals[index] ?? 0;
+          const nextPanelReveal = panelReveals[index + 1] ?? 0;
           const incomingCopy = smooth((portfolioProgress - copyStarts[index]) / .14);
           const outgoingCopy = index === WORK_STUDIES.length - 1
-            ? exitProgress
+            ? smooth((portfolioProgress - .95) / .05)
             : smooth((portfolioProgress - copyEnds[index]) / .08);
           const copyOpacity = incomingCopy * (1 - outgoingCopy);
           const supportReveal = smooth((incomingCopy - .48) / .48) * (1 - outgoingCopy);
 
+          const isFullyCovered = nextPanelReveal >= 0.998;
+          const isStarted = index === 0 ? true : panelReveal > 0.001;
+          const badgeOpacity = index === 0
+            ? (1 - (panelReveals[1] ?? 0))
+            : index === 1
+            ? ((panelReveals[1] ?? 0) * (1 - (panelReveals[2] ?? 0)))
+            : (panelReveals[2] ?? 0);
+
+          project.style.opacity = isFullyCovered ? '0' : '1';
+          project.style.visibility = isFullyCovered || !isStarted ? 'hidden' : 'visible';
+          project.style.pointerEvents = isFullyCovered || !isStarted ? 'none' : 'auto';
+          project.style.setProperty('--project-badge-opacity', String(clamp(badgeOpacity)));
           project.style.setProperty('--residence-panel-reveal', String(panelReveal));
           project.style.setProperty('--project-light-cut', `${(panelReveal * 100).toFixed(3)}%`);
           project.style.setProperty('--project-light-reveal', String(panelReveal));
           project.style.setProperty('--project-light-intensity', String(Math.sin(panelReveal * Math.PI)));
-          project.style.setProperty('--project-exit-shadow', String(index === WORK_STUDIES.length - 1 ? exitProgress : 0));
+          project.style.setProperty('--project-exit-shadow', '0');
           project.style.setProperty('--residence-image-opacity', '1');
           project.style.setProperty('--project-media-x', '0vw');
           project.style.setProperty('--project-media-y', '0vh');

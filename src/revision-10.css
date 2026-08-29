@@ -196,7 +196,7 @@
 
 .founder-portrait img {
   object-fit: cover;
-  object-position: 50% 50%;
+  object-position: 50% 16%;
 }
 
 .project-copy > p {
@@ -218,9 +218,9 @@
 
 .process-proposition > span {
   max-width: 44ch;
-  color: rgba(43, 29, 21, .76);
+  color: rgba(43, 29, 21, .84);
   font-size: clamp(15px, 1.08vw, 17px);
-  font-weight: 520;
+  font-weight: 540;
   line-height: 1.62;
 }
 
@@ -275,7 +275,12 @@
     background: #8e8178;
     box-shadow: 0 32px 96px rgba(22, 16, 13, .24);
     clip-path: none;
-    transform: translate3d(calc(-50% + (1 - var(--residence-panel-reveal, 0)) * 102vw - var(--project-exit-shadow, 0) * 8vw), -50%, 0);
+    transform: translate3d(calc(-50% + (1 - var(--residence-panel-reveal, 0)) * 102vw), -50%, 0);
+  }
+
+  .project-main figcaption {
+    opacity: var(--project-badge-opacity, 1);
+    transition: opacity 0.2s ease;
   }
 
   .project-ambient { display: none; }
@@ -298,8 +303,7 @@
   .project-main::after {
     background:
       linear-gradient(90deg, rgba(17, 12, 10, .64) 0%, rgba(17, 12, 10, .4) 24%, rgba(17, 12, 10, .08) 54%, transparent 72%),
-      linear-gradient(180deg, transparent 58%, rgba(13, 9, 7, .16)),
-      rgba(14, 8, 6, calc(var(--project-exit-shadow, 0) * .72));
+      linear-gradient(180deg, transparent 58%, rgba(13, 9, 7, .16));
   }
 
   .project-light,
@@ -492,20 +496,34 @@
   top: 50%;
   left: 50%;
   width: min(84vw, 1160px);
+  padding-top: clamp(20px, 3vh, 40px);
   opacity: var(--life-coda-in, 1);
   filter: blur(calc((1 - var(--life-coda-in, 1)) * 8px));
-  transform: translate3d(-50%, calc(-50% + (1 - var(--life-coda-in, 1)) * 5svh), 0);
+  transform: translate3d(-50%, calc(-50% + (1 - var(--life-coda-in, 1)) * 3svh), 0);
 }
 
 .life-story-coda h2 {
-  font-size: clamp(64px, 8.4vw, 132px);
-  line-height: .86;
+  font-size: clamp(54px, 7.4vw, 120px);
+  line-height: .92;
+  padding-top: .12em;
 }
 
 .life-story-coda h2 span:last-child {
   width: max-content;
   max-width: 100%;
   margin-left: auto;
+}
+
+.life-story::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 14vh;
+  background: linear-gradient(180deg, transparent, rgba(173, 129, 93, .35));
+  pointer-events: none;
+  z-index: 6;
 }
 
 .practice-film--full video {
@@ -614,6 +632,7 @@
   position: fixed;
   z-index: 120;
   inset: 0;
+  overflow: hidden;
   visibility: hidden;
   pointer-events: none;
 }
@@ -867,6 +886,175 @@
 .is-reduced-motion .residence-prologue-note {
   opacity: 1 !important;
   filter: none !important;
+  transform: none !important;
+}
+
+@media (max-width: 600px) {
+  .logo-wrapper {
+    width: min(340px, 86vw);
+    max-width: 86vw;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-stage {
+    min-height: auto !important;
+    height: auto !important;
+    padding: 80px clamp(24px, 5vw, 76px) 100px !important;
+    background: #d8c2aa !important;
+    overflow: hidden !important;
+  }
+  
+  .residence-procession {
+    position: relative !important;
+    top: auto !important;
+    height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 80px !important;
+  }
+  
+  .residence-prologue {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+    width: 100% !important;
+    max-width: 900px !important;
+    margin: 0 auto !important;
+    text-align: center !important;
+  }
+
+  .project-constellations {
+    position: relative !important;
+    inset: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 90px !important;
+    width: 100% !important;
+  }
+
+  .project-constellation {
+    position: relative !important;
+    inset: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 24px !important;
+    width: 100% !important;
+    max-width: 1080px !important;
+    margin: 0 auto !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .project-main,
+  .project-constellation:nth-child(even) .project-main,
+  .project-constellation--2 .project-main,
+  .project-constellation--3 .project-main {
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 16 / 9 !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  .project-copy,
+  .project-constellation:nth-child(even) .project-copy {
+    position: relative !important;
+    bottom: auto !important;
+    left: auto !important;
+    width: 100% !important;
+    max-width: 600px !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+.is-reduced-motion .portfolio-stage {
+  min-height: auto !important;
+  height: auto !important;
+  padding: 80px clamp(24px, 5vw, 76px) 100px !important;
+  background: #d8c2aa !important;
+  overflow: hidden !important;
+}
+
+.is-reduced-motion .residence-procession {
+  position: relative !important;
+  top: auto !important;
+  height: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 80px !important;
+}
+
+.is-reduced-motion .residence-prologue {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  transform: none !important;
+  filter: none !important;
+  opacity: 1 !important;
+  width: 100% !important;
+  max-width: 900px !important;
+  margin: 0 auto !important;
+  text-align: center !important;
+}
+
+.is-reduced-motion .project-constellations {
+  position: relative !important;
+  inset: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 90px !important;
+  width: 100% !important;
+}
+
+.is-reduced-motion .project-constellation {
+  position: relative !important;
+  inset: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 24px !important;
+  width: 100% !important;
+  max-width: 1080px !important;
+  margin: 0 auto !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+.is-reduced-motion .project-main,
+.is-reduced-motion .project-constellation:nth-child(even) .project-main,
+.is-reduced-motion .project-constellation--2 .project-main,
+.is-reduced-motion .project-constellation--3 .project-main {
+  position: relative !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 16 / 9 !important;
+  transform: none !important;
+  opacity: 1 !important;
+}
+
+.is-reduced-motion .project-copy,
+.is-reduced-motion .project-constellation:nth-child(even) .project-copy {
+  position: relative !important;
+  bottom: auto !important;
+  left: auto !important;
+  width: 100% !important;
+  max-width: 600px !important;
+  opacity: 1 !important;
   transform: none !important;
 }
 
