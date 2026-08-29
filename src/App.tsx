@@ -72,8 +72,8 @@ const WORK_STUDIES = [
   },
   {
     kicker: 'Ogba / Dining setting',
-    title: 'Intimacy at the table.',
-    titleLines: ['Intimacy at', 'the table.'],
+    title: 'Light gathers here.',
+    titleLines: ['Light gathers', 'here.'],
     note: 'Pendant · Reflection · Ambiance',
     description: 'A dedicated warm floor lamp anchors the dining table, while mirrored grid walls expand the natural light and evening ambiance.',
     image: '/assets/ogba-dining-detail-wide-v2.png',
