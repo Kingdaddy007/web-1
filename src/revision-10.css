@@ -360,33 +360,30 @@
   .project-constellation--2 .project-main,
   .project-constellation--3 .project-main {
     top: 50%;
-    right: clamp(28px, 4.5vw, 68px);
+    right: auto;
     bottom: auto;
-    left: auto;
-    width: min(60vw, calc(80svh * 16 / 9), 920px);
-    height: auto;
-    max-height: 80svh;
-    aspect-ratio: 16 / 9;
+    left: 50%;
+    width: 90vw;
+    height: 82svh;
     border: 1px solid rgba(255, 247, 235, .26);
     background: #8e8178;
-    box-shadow: 0 32px 96px rgba(22, 16, 13, .26);
+    box-shadow: 0 32px 96px rgba(22, 16, 13, .24);
     clip-path: none;
-    transform: translate3d(calc((1 - var(--residence-panel-reveal, 0)) * 102vw), calc(-50% - var(--project-exit-lift, 0) * 12vh), 0);
+    transform: translate3d(calc(-50% + (1 - var(--residence-panel-reveal, 0)) * 102vw), calc(-50% - var(--project-exit-lift, 0) * 12vh), 0);
   }
 
   .project-main figcaption {
     position: absolute;
-    bottom: 18px;
-    right: 22px;
+    bottom: 22px;
+    right: 28px;
     font-family: var(--notation-face);
     font-size: 10px;
     font-weight: 760;
     letter-spacing: .16em;
-    color: rgba(255, 247, 235, .9);
-    background: rgba(22, 16, 13, .45);
-    padding: 4px 10px;
-    border-radius: 2px;
-    backdrop-filter: blur(4px);
+    color: rgba(255, 247, 235, .88);
+    opacity: var(--project-badge-opacity, 1);
+    transition: opacity 0.2s ease;
+    z-index: 10;
     display: block;
   }
 
@@ -401,12 +398,22 @@
     min-width: 0;
     height: 100%;
     object-fit: cover;
-    object-position: 50% 50%;
+    object-position: 50% 38%;
     filter: blur(calc((1 - var(--project-light-reveal, 1)) * 1.5px)) saturate(.94) contrast(1.015) brightness(calc(.94 + var(--project-light-reveal, 1) * .08));
   }
 
+  .project-constellation--3 .project-main > img { object-position: 50% 25%; }
+
   .project-main::after {
-    display: none;
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, rgba(17, 12, 10, .74) 0%, rgba(17, 12, 10, .52) 28%, rgba(17, 12, 10, .14) 58%, transparent 75%),
+      linear-gradient(180deg, transparent 40%, rgba(13, 9, 7, .48) 100%);
+    pointer-events: none;
+    z-index: 2;
+    display: block;
   }
 
   .project-light,
@@ -418,16 +425,16 @@
   .project-copy,
   .project-constellation:nth-child(even) .project-copy {
     position: absolute;
-    top: 50%;
-    left: clamp(32px, 5.5vw, 84px);
-    bottom: auto;
-    width: min(30vw, 440px);
-    max-width: 440px;
-    transform: translate3d(0, calc(-50% + (1 - var(--project-copy-opacity, 1)) * 14px), 0);
+    bottom: clamp(64px, 12vh, 120px);
+    left: clamp(48px, 7vw, 110px);
+    top: auto;
+    width: min(38vw, 540px);
+    max-width: 540px;
+    transform: translate3d(0, calc((1 - var(--project-copy-opacity, 1)) * 16px), 0);
     opacity: var(--project-copy-opacity, 1);
     display: flex;
     flex-direction: column;
-    gap: clamp(14px, 2vh, 22px);
+    gap: 12px;
     border-top: none;
     padding-top: 0;
     z-index: 25;
@@ -438,21 +445,22 @@
   .project-copy p {
     font-family: var(--notation-face);
     font-size: 10px;
-    font-weight: 760;
+    font-weight: 780;
     letter-spacing: .16em;
     text-transform: uppercase;
-    color: rgba(43, 29, 21, .68);
-    margin: 0;
+    color: rgba(247, 239, 227, .76);
+    margin: 0 0 2px;
   }
 
   .project-copy h3 {
     margin: 0;
     font-family: var(--display-face);
-    font-size: clamp(38px, 3.8vw, 60px);
+    font-size: clamp(48px, 4.8vw, 82px);
     font-weight: 300;
-    line-height: .98;
+    line-height: .96;
     letter-spacing: -.035em;
-    color: #2b1d15;
+    color: #fffaf4;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
   }
 
   .project-copy h3 .type-line {
@@ -463,11 +471,13 @@
   .project-copy small {
     display: block;
     font-family: var(--text-face);
-    font-size: clamp(14px, 1.05vw, 16px);
-    font-weight: 520;
-    line-height: 1.68;
-    color: rgba(43, 29, 21, .88) !important;
-    max-width: 42ch;
+    font-size: clamp(14px, 1.02vw, 16px);
+    font-weight: 500;
+    line-height: 1.65;
+    color: rgba(247, 239, 227, .92) !important;
+    max-width: 44ch;
+    margin-top: 6px;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
   }
 
   .project-copy span {
@@ -477,8 +487,8 @@
     font-weight: 740;
     letter-spacing: .16em;
     text-transform: uppercase;
-    color: rgba(173, 129, 93, .92) !important;
-    margin-top: 4px;
+    color: rgba(247, 239, 227, .72) !important;
+    margin-top: 6px;
   }
 }
 
