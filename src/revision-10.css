@@ -275,7 +275,7 @@
     background: #8e8178;
     box-shadow: 0 32px 96px rgba(22, 16, 13, .24);
     clip-path: none;
-    transform: translate3d(calc(-50% + (1 - var(--residence-panel-reveal, 0)) * 102vw), -50%, 0);
+    transform: translate3d(calc(-50% + (1 - var(--residence-panel-reveal, 0)) * 102vw), calc(-50% - var(--project-exit-lift, 0) * 12vh), 0);
   }
 
   .project-main figcaption {
@@ -346,7 +346,7 @@
   height: 330svh;
   margin-block: -1px;
   color: #f8f0e5;
-  background: transparent;
+  background: transparent !important;
 }
 
 .life-story-frame {
@@ -355,17 +355,11 @@
   height: 100svh;
   overflow: hidden;
   isolation: isolate;
+  background: transparent !important;
 }
 
 .life-story-frame::before {
-  content: '';
-  position: absolute;
-  z-index: 0;
-  inset: 0;
-  background:
-    linear-gradient(180deg, rgba(24, 21, 19, .1), transparent 28%, transparent 72%, rgba(20, 17, 15, .2)),
-    radial-gradient(ellipse 72% 96% at 72% 50%, transparent 20%, rgba(20, 17, 15, .16));
-  pointer-events: none;
+  display: none !important;
 }
 
 .life-story-intro,
@@ -403,21 +397,22 @@
 .life-story-coda h2 span { display: block; }
 
 .life-story-intro h2 span:first-child {
-  transform: translate3d(calc((1 - var(--life-intro-in, 1)) * -7vw), 0, 0);
+  transform: translate3d(calc((1 - var(--life-intro-in, 1)) * -5vw), 0, 0);
 }
 
 .life-story-intro h2 span:last-child {
-  transform: translate3d(calc((1 - var(--life-intro-in, 1)) * 7vw), 0, 0);
+  transform: translate3d(calc((1 - var(--life-intro-in, 1)) * 5vw), 0, 0);
 }
 
 .life-story-intro p {
   max-width: 47ch;
   margin: 28px auto 0;
-  color: rgba(248, 240, 229, .78);
+  color: rgba(248, 240, 229, .84);
   font-size: clamp(16px, 1.18vw, 18px);
   font-weight: 520;
   line-height: 1.65;
-  opacity: clamp(0, calc((var(--life-intro-in, 1) - .52) * 2.1), 1);
+  opacity: clamp(0, calc((var(--life-intro-in, 1) - .4) * 1.67), 1);
+  transform: translate3d(0, calc((1 - var(--life-intro-in, 1)) * 16px), 0);
 }
 
 .life-story-film {
@@ -429,11 +424,12 @@
   height: 84svh;
   margin: 0;
   overflow: hidden;
-  background: #76665b;
-  box-shadow: 0 38px 110px rgba(10, 7, 6, .3);
+  background: transparent;
+  box-shadow: 0 38px 110px rgba(10, 7, 6, calc(var(--life-video-in, 1) * .3));
+  opacity: var(--life-video-in, 1);
   clip-path: inset(calc(var(--life-video-out, 0) * 100%) 0 0 calc((1 - var(--life-video-in, 1)) * 100%));
   transform: translate3d(calc((1 - var(--life-video-in, 1)) * 9vw), calc(var(--life-video-out, 0) * -5svh), 0) scale(calc(.975 + var(--life-video-in, 1) * .025));
-  will-change: clip-path, transform;
+  will-change: clip-path, transform, opacity;
 }
 
 .life-story-film video {

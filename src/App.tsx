@@ -570,13 +570,13 @@ export function App() {
       const lifeStoryProgress = desktopLifeStory ? clamp(-lifeStoryRect.top / lifeStoryDistance) : 1;
       const practiceProgress = reduced ? 1 : clamp((viewport - practiceRect.top) / (viewport + practiceRect.height));
       const inquiryProgress = reduced ? 1 : clamp((viewport - inquiryRect.top) / (viewport + inquiryRect.height));
-      const lifeIntroIn = desktopLifeStory ? smooth(visibleEntry(lifeStory, .94, .5)) : 1;
-      const lifeIntroOut = desktopLifeStory ? smooth((lifeStoryProgress - .23) / .1) : 0;
-      const lifeVideoIn = desktopLifeStory ? smooth((lifeStoryProgress - .16) / .16) : 1;
-      const lifeProofIn = desktopLifeStory ? smooth((lifeStoryProgress - .3) / .14) : 1;
-      const lifeProofOut = desktopLifeStory ? smooth((lifeStoryProgress - .61) / .12) : 0;
-      const lifeVideoOut = desktopLifeStory ? smooth((lifeStoryProgress - .64) / .14) : 0;
-      const lifeCodaIn = desktopLifeStory ? smooth((lifeStoryProgress - .7) / .14) : 1;
+      const lifeIntroIn = desktopLifeStory ? smooth(clamp(lifeStoryProgress / 0.16)) : 1;
+      const lifeIntroOut = desktopLifeStory ? smooth((lifeStoryProgress - 0.28) / 0.10) : 0;
+      const lifeVideoIn = desktopLifeStory ? smooth((lifeStoryProgress - 0.24) / 0.14) : 1;
+      const lifeProofIn = desktopLifeStory ? smooth((lifeStoryProgress - 0.32) / 0.14) : 1;
+      const lifeProofOut = desktopLifeStory ? smooth((lifeStoryProgress - 0.62) / 0.10) : 0;
+      const lifeVideoOut = desktopLifeStory ? smooth((lifeStoryProgress - 0.64) / 0.12) : 0;
+      const lifeCodaIn = desktopLifeStory ? smooth((lifeStoryProgress - 0.70) / 0.14) : 1;
       rootRef.current?.style.setProperty('--life-story-progress', String(lifeStoryProgress));
       rootRef.current?.style.setProperty('--life-intro-in', String(lifeIntroIn));
       rootRef.current?.style.setProperty('--life-intro-out', String(lifeIntroOut));
@@ -673,10 +673,13 @@ export function App() {
             ? ((panelReveals[1] ?? 0) * (1 - (panelReveals[2] ?? 0)))
             : (panelReveals[2] ?? 0);
 
-          project.style.opacity = isFullyCovered ? '0' : '1';
+          const exitLift = index === WORK_STUDIES.length - 1 ? exitProgress : 0;
+
+          project.style.opacity = isFullyCovered ? '0' : String(1 - exitLift * 0.45);
           project.style.visibility = isFullyCovered || !isStarted ? 'hidden' : 'visible';
           project.style.pointerEvents = isFullyCovered || !isStarted ? 'none' : 'auto';
           project.style.setProperty('--project-badge-opacity', String(clamp(badgeOpacity)));
+          project.style.setProperty('--project-exit-lift', String(exitLift));
           project.style.setProperty('--residence-panel-reveal', String(panelReveal));
           project.style.setProperty('--project-light-cut', `${(panelReveal * 100).toFixed(3)}%`);
           project.style.setProperty('--project-light-reveal', String(panelReveal));
