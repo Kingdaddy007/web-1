@@ -79,6 +79,24 @@ const WORK_STUDIES = [
     image: '/assets/ogba-dining-detail-wide-v2.png',
     alt: 'Dining table set beneath a warm floor lamp with curtains and mirrored reflections at the Ogba residence by TTA Designs',
   },
+  {
+    kicker: 'OLCDA / Executive office',
+    title: 'One office, several ways to meet.',
+    titleLines: ['One office,', 'several ways to meet.'],
+    note: 'Focus · Meeting · Comfort',
+    description: 'A private executive office combines a formal meeting table with a softer seating area, balancing focused work, conversation and comfort.',
+    image: '/assets/olcda-shared-workplace-wide-v1.png',
+    alt: 'Private executive office with a cream sofa, conference table and brown meeting chairs at Project OLCDA by TTA Designs',
+  },
+  {
+    kicker: 'Residence / Lounge detail',
+    title: 'A softer place to pause.',
+    titleLines: ['A softer place', 'to pause.'],
+    note: 'Curve · Lamplight · Comfort',
+    description: 'Curved seating, warm lamplight and a restrained cluster of dark accents make this compact corner feel settled and intimate.',
+    image: '/assets/residential-sofa-corner-wide-v1.png',
+    alt: 'Curved cream sofa with rust cushions, a floor lamp and a black coffee table in an intimate residential lounge by TTA Designs',
+  },
 ] as const;
 
 export function App() {
@@ -640,16 +658,17 @@ export function App() {
         const exitProgress = smooth((portfolioProgress - .9) / .1);
         const prologueLeave = smooth((portfolioProgress - .055) / .085);
         const prologueOpacity = entryProgress * (1 - prologueLeave);
-        const panelReveals = [
-          smooth((portfolioProgress - .08) / .15),
-          smooth((portfolioProgress - .38) / .15),
-          smooth((portfolioProgress - .67) / .15),
-        ];
+        const panelCount = WORK_STUDIES.length;
+        const firstPanelStart = .08;
+        const lastPanelStart = .78;
+        const panelStep = panelCount > 1 ? (lastPanelStart - firstPanelStart) / (panelCount - 1) : 0;
+        const panelStarts = WORK_STUDIES.map((_, index) => firstPanelStart + panelStep * index);
+        const panelReveals = panelStarts.map((start) => smooth((portfolioProgress - start) / .12));
         // Let each caption arrive with its image instead of finishing after the
         // panel has already settled. The copy still clears before the next
         // residence enters, preserving one readable focal point at a time.
-        const copyStarts = [.105, .405, .695];
-        const copyEnds = [.365, .665, .955];
+        const copyStarts = panelStarts.map((start) => start + .025);
+        const copyEnds = panelStarts.map((_, index) => panelStarts[index + 1] == null ? .955 : panelStarts[index + 1] - .025);
 
         portfolioStage.style.setProperty('--residence-progress', String(portfolioProgress));
         portfolioStage.style.setProperty('--residence-entry', String(entryProgress));
@@ -663,20 +682,15 @@ export function App() {
           if (!project) return;
           const panelReveal = panelReveals[index] ?? 0;
           const nextPanelReveal = panelReveals[index + 1] ?? 0;
-          const incomingCopy = smooth((portfolioProgress - copyStarts[index]) / .11);
-          const outgoingCopy = index === WORK_STUDIES.length - 1
-            ? smooth((portfolioProgress - .95) / .05)
-            : smooth((portfolioProgress - copyEnds[index]) / .075);
+          const incomingCopy = smooth((portfolioProgress - copyStarts[index]) / .1);
+          const outgoingCopy = smooth((portfolioProgress - copyEnds[index]) / .06);
           const copyOpacity = incomingCopy * (1 - outgoingCopy);
           const supportReveal = smooth((incomingCopy - .48) / .48) * (1 - outgoingCopy);
 
           const isFullyCovered = nextPanelReveal >= 0.998;
           const isStarted = index === 0 ? true : panelReveal > 0.001;
-          const badgeOpacity = index === 0
-            ? (1 - (panelReveals[1] ?? 0))
-            : index === 1
-            ? ((panelReveals[1] ?? 0) * (1 - (panelReveals[2] ?? 0)))
-            : (panelReveals[2] ?? 0);
+          const panelPresence = index === 0 ? 1 : panelReveal;
+          const badgeOpacity = panelPresence * (1 - nextPanelReveal);
 
           const exitLift = index === WORK_STUDIES.length - 1 ? exitProgress : 0;
 
@@ -860,14 +874,14 @@ export function App() {
               <span className="type-line" aria-hidden="true"><i>Every decision</i></span>
               <span className="type-line" aria-hidden="true"><i>leaves an atmosphere.</i></span>
             </h2>
-            <span className="residence-prologue-note">One residence, seen through three connected moments.</span>
+            <span className="residence-prologue-note">Selected spaces, seen through five connected moments.</span>
           </div>
 
           <div className="project-constellations">
             {WORK_STUDIES.map((work, index) => (
               <article className={`project-constellation project-constellation--${index + 1}`} key={work.image} ref={(element) => { projectRefs.current[index] = element; }}>
                 <div className="project-copy">
-                  <p>{work.kicker} · {String(index + 1).padStart(2, '0')} / {String(WORK_STUDIES.length).padStart(2, '0')}</p>
+                  <p>{work.kicker}</p>
                   <h3 aria-label={work.title}>
                     {work.titleLines.map((line) => <span className="type-line" aria-hidden="true" key={line}><i>{line}</i></span>)}
                   </h3>

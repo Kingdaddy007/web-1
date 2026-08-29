@@ -4,6 +4,8 @@
 }
 
 @media (min-width: 961px) {
+  .portfolio-stage { height: 605svh; }
+
   .portfolio-stage,
   .residence-procession {
     background: transparent !important;
