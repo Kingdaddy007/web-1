@@ -2,6 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
 import './styles.css';
+import './revision-10.css';
 
 const prototype = new URLSearchParams(window.location.search).get('prototype');
 

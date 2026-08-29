@@ -87,8 +87,8 @@ export class RhythmMaterialCanvas {
       const centerY = height * (0.44 + Math.cos(phase * 0.72) * 0.15);
       const radius = Math.max(width * (0.22 + index * 0.025), height * 0.7);
       const light = context.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
-      light.addColorStop(0, `rgba(244, 190, 143, ${0.105 + index * 0.018})`);
-      light.addColorStop(0.32, 'rgba(171, 101, 65, .065)');
+      light.addColorStop(0, `rgba(255, 199, 151, ${0.17 + index * 0.022})`);
+      light.addColorStop(0.32, 'rgba(188, 105, 65, .11)');
       light.addColorStop(1, 'rgba(63, 27, 17, 0)');
       context.fillStyle = light;
       context.fillRect(0, 0, width, height);
@@ -97,15 +97,15 @@ export class RhythmMaterialCanvas {
 
     context.save();
     context.globalCompositeOperation = 'screen';
-    context.globalAlpha = 0.46;
+    context.globalAlpha = 0.82;
     for (let index = 0; index < 3; index += 1) {
       const phase = drift * (1 + index * 0.11) + index * 1.8;
       const x = width * (-0.18 + index * 0.42 + Math.sin(phase) * 0.075 + scroll * 0.055);
       const band = context.createLinearGradient(x, 0, x + width * 0.34, height);
       band.addColorStop(0, 'rgba(255, 226, 190, 0)');
-      band.addColorStop(0.43, 'rgba(255, 215, 171, .075)');
-      band.addColorStop(0.5, 'rgba(255, 234, 204, .18)');
-      band.addColorStop(0.57, 'rgba(192, 119, 77, .06)');
+      band.addColorStop(0.43, 'rgba(255, 215, 171, .12)');
+      band.addColorStop(0.5, 'rgba(255, 239, 211, .34)');
+      band.addColorStop(0.57, 'rgba(203, 123, 77, .11)');
       band.addColorStop(1, 'rgba(126, 67, 43, 0)');
       context.fillStyle = band;
       context.fillRect(x - width * 0.16, -height * 0.22, width * 0.56, height * 1.44);
@@ -114,7 +114,7 @@ export class RhythmMaterialCanvas {
 
     const focusX = width * (0.5 + Math.sin(drift * 0.66) * 0.06);
     const focus = context.createRadialGradient(focusX, height * 0.52, 0, focusX, height * 0.52, Math.max(width, height) * 0.62);
-    focus.addColorStop(0, `rgba(255, 223, 187, ${0.035 + scroll * 0.035})`);
+    focus.addColorStop(0, `rgba(255, 223, 187, ${0.065 + scroll * 0.07})`);
     focus.addColorStop(0.48, 'rgba(114, 57, 35, .02)');
     focus.addColorStop(1, 'rgba(5, 3, 2, .5)');
     context.fillStyle = focus;
