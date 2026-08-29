@@ -863,20 +863,26 @@ export function App() {
           <div className="project-constellations">
             {WORK_STUDIES.map((work, index) => (
               <article className={`project-constellation project-constellation--${index + 1}`} key={work.image} ref={(element) => { projectRefs.current[index] = element; }}>
-                <div className="project-copy">
-                  <p>{work.kicker}</p>
-                  <h3 aria-label={work.title}>
-                    {work.titleLines.map((line) => <span className="type-line" aria-hidden="true" key={line}><i>{line}</i></span>)}
-                  </h3>
-                  <small>{work.description}</small>
-                  <span>{work.note}</span>
-                </div>
                 <figure className="project-main">
                   <span className="project-ambient" style={{ backgroundImage: `url(${work.image})` }} aria-hidden="true" />
                   <img src={work.image} alt={work.alt} loading={index === 0 ? 'eager' : 'lazy'} />
                   <span className="project-light" aria-hidden="true" />
                   <figcaption>{String(index + 1).padStart(2, '0')} / {String(WORK_STUDIES.length).padStart(2, '0')}</figcaption>
                 </figure>
+                <div className="project-copy">
+                  <div className="datum-col-primary">
+                    <p>{work.kicker} · {String(index + 1).padStart(2, '0')} / {String(WORK_STUDIES.length).padStart(2, '0')}</p>
+                    <h3 aria-label={work.title}>
+                      {work.titleLines.map((line) => <span className="type-line" aria-hidden="true" key={line}><i>{line}</i></span>)}
+                    </h3>
+                  </div>
+                  <div className="datum-col-secondary">
+                    <small>{work.description}</small>
+                  </div>
+                  <div className="datum-col-tertiary">
+                    <span>{work.note}</span>
+                  </div>
+                </div>
               </article>
             ))}
           </div>
