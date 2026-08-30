@@ -8,10 +8,11 @@ The site has a credible authored thesis: atmosphere is presented as the result o
 
 ### Must Fix
 
-1. **Restore one spatial thesis.** The portfolio claimed to be one connected residence study but included an unrelated executive office and a generic lounge. Five equally weighted panels also made the sequence feel like a repeated component demo. The procession is now three connected Ogba moments, and its scroll length is reduced from `605svh` to `405svh`.
+1. **Preserve the approved portfolio breadth.** The alternate pass incorrectly treated the procession as an Ogba-only residence study and removed two user-approved images. The corrected procession restores all five considered moments: three connected Ogba views, the OLCDA executive office, and a quieter residential lounge detail. Its scroll length remains `605svh` so every study receives a complete reveal and readable hold.
 2. **Repair the mobile reading layer.** White caption overrides landed on a light portfolio surface, while the life-story grid expanded to min-content width and clipped its largest lines. Project copy now uses deliberate dark typographic color, the life-story grid can shrink, all headline lines wrap inside the viewport, and the page no longer pans horizontally at 390 × 844.
 3. **Make reduced motion a complete static composition.** System and explicit reduced modes now pause all three videos at frame zero, collapse animated transitions, preserve a static inquiry material field, and use dark portfolio typography on the light fallback surface.
 4. **Make inquiry interaction ready for keyboard and touch.** Opening the dialog now moves focus into it, Tab is contained within the sheet, Escape closes it, focus returns to the originating button, and the Close control has a 44 px target.
+5. **Reset procession state across breakpoints.** Leaving the pinned desktop sequence for the mobile document flow now clears inline opacity, visibility, pointer, badge, and exit state so later studies cannot remain hidden after a resize or orientation change.
 
 ### Should Fix
 
@@ -26,7 +27,8 @@ The site has a credible authored thesis: atmosphere is presented as the result o
 
 - Inspected the implemented page as a continuous sequence at 1440 × 900 and 390 × 844 in the in-app browser.
 - Verified normal motion, system `prefers-reduced-motion: reduce`, and the explicit `?reduced=1` route.
-- Confirmed three connected project panels, desktop sticky pinning, mobile document width equal to client width, loaded imagery, active life/practice video playback in normal mode, and all videos paused at `0` in both reduced modes.
+- Confirmed five project panels, desktop sticky pinning, mobile document width equal to client width, loaded imagery, active life/practice video playback in normal mode, and all videos paused at `0` in both reduced modes.
+- Verified a live desktop-to-mobile breakpoint change keeps all five studies visible and restores normal document-flow interaction state.
 - Verified inquiry focus entry, forward and reverse Tab wrapping, Escape close, focus return, full-width mobile containment, and the 44 px Close target.
 - Browser console: no errors or warnings during desktop, mobile, inquiry, or reduced-motion passes.
 - `git diff --check`: clean apart from expected line-ending notices.

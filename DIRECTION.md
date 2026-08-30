@@ -6,7 +6,7 @@ The accepted Material Registration opening remains intact, now using the supplie
 
 The governing argument is: **The atmosphere is the final expression of decisions made much earlier.**
 
-The continuation now completes that argument through a single portfolio procession. The sentence `What was decided becomes what is felt.` is not a standalone section: it is the typographic threshold into three connected moments from the Ogba residence. One image owns the frame at a time, allowing the work to accumulate as one coherent spatial study without repeating the hero room or becoming a conventional gallery grid.
+The continuation now completes that argument through a single portfolio procession. The sentence `What was decided becomes what is felt.` is not a standalone section: it is the typographic threshold into five considered interior moments across the Ogba residence, the OLCDA executive office, and a quieter residential lounge detail. One image owns the frame at a time, allowing the work to accumulate as a study of TTA Designs' judgement across different spatial needs without repeating the hero room or becoming a conventional gallery grid. These five approved studies are intentional project proof and must not be reduced to an Ogba-only sequence without explicit approval.
 
 The practice is shown through two real films—on site and in the completed room—rather than another static project image. The experience closes with a contained warm refraction field behind a selective conversation threshold, then lets that material atmosphere continue beneath a more informative identity footer. The opening remains the primary cinematic peak; later motion is slower and more editorial.
 

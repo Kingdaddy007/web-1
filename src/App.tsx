@@ -79,6 +79,24 @@ const WORK_STUDIES = [
     image: '/assets/ogba-dining-detail-wide-v2.png',
     alt: 'Dining table set beneath a warm floor lamp with curtains and mirrored reflections at the Ogba residence by TTA Designs',
   },
+  {
+    kicker: 'OLCDA / Executive office',
+    title: 'One office, several ways to meet.',
+    titleLines: ['One office,', 'several ways to meet.'],
+    note: 'Focus · Meeting · Comfort',
+    description: 'A private executive office combines a formal meeting table with a softer seating area, balancing focused work, conversation and comfort.',
+    image: '/assets/olcda-shared-workplace-wide-v1.png',
+    alt: 'Private executive office with a cream sofa, conference table and brown meeting chairs at Project OLCDA by TTA Designs',
+  },
+  {
+    kicker: 'Residence / Lounge detail',
+    title: 'A softer place to pause.',
+    titleLines: ['A softer place', 'to pause.'],
+    note: 'Curve · Lamplight · Comfort',
+    description: 'Curved seating, warm lamplight and a restrained cluster of dark accents make this compact corner feel settled and intimate.',
+    image: '/assets/residential-sofa-corner-wide-v1.png',
+    alt: 'Curved cream sofa with rust cushions, a floor lamp and a black coffee table in an intimate residential lounge by TTA Designs',
+  },
 ] as const;
 
 export function App() {
@@ -750,6 +768,11 @@ export function App() {
         portfolioStage.style.setProperty('--residence-line-opacity', '0');
         projectRefs.current.forEach((project) => {
           if (!project) return;
+          project.style.opacity = '1';
+          project.style.visibility = 'visible';
+          project.style.pointerEvents = 'auto';
+          project.style.setProperty('--project-badge-opacity', '1');
+          project.style.setProperty('--project-exit-lift', '0');
           project.style.setProperty('--project-light-cut', '100%');
           project.style.setProperty('--project-light-reveal', '1');
           project.style.setProperty('--project-light-intensity', '0');
@@ -896,7 +919,7 @@ export function App() {
               <span className="type-line" aria-hidden="true"><i>Every decision</i></span>
               <span className="type-line" aria-hidden="true"><i>leaves an atmosphere.</i></span>
             </h2>
-            <span className="residence-prologue-note">One residence, seen through three connected moments.</span>
+            <span className="residence-prologue-note">Selected spaces, seen through five considered moments.</span>
           </div>
 
           <div className="project-constellations">
