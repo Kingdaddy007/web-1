@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type FormEvent } from 'react';
 import { getHeroVerticalFocus } from './framing';
 import { LivingMaterialCanvas } from './LivingMaterialCanvas';
-import { InquiryMaterialCanvas } from './InquiryMaterialCanvas';
 import { NarrativeMaterialCanvas } from './NarrativeMaterialCanvas';
 import { renderApprovedLogoFrame, type LogoLayers } from './logoTimeline';
 
@@ -19,35 +18,63 @@ const PROCESS_STATEMENT_WORDS = ['A', 'room', 'feels', 'effortless', 'when', 'ev
 const PROCESS_STAGES = [
   {
     number: '01',
-    phase: 'Begin with use',
-    title: 'Begin with how you live',
-    description: 'Movement, routines and the way people gather give the room its first direction.',
+    phase: 'Discovery · On-site consultation',
+    title: 'Discover the way it should live',
+    description: 'We listen first, then read the space—its movement, light, routines and potential—before deciding its direction.',
     image: '/assets/akoka-site-ceiling-open-wide-clean-v1.png',
     alt: 'TTA Designs supervising the exposed ceiling structure and services during work in progress at Project Akoka',
   },
   {
     number: '02',
-    phase: 'Resolve the plan',
-    title: 'Resolve the room together',
-    description: 'Proportion, circulation and practical needs are settled while the space can still respond.',
+    phase: 'Design',
+    title: 'Define the direction',
+    description: 'Planning, visual language, materials and key selections are resolved as one clear design before execution begins.',
     image: '/assets/akoka-site-conversation-wide-clean-v1.png',
     alt: 'TTA Designs reviewing spatial decisions with the site team at Project Akoka',
   },
   {
     number: '03',
-    phase: 'Test the atmosphere',
-    title: 'Let light test the finish',
-    description: 'Colour, texture and finish are judged in the light they will actually live in.',
+    phase: 'Execution',
+    title: 'Carry the vision through',
+    description: 'Site coordination and close supervision keep every practical decision aligned with the approved intention.',
     image: '/assets/akoka-site-painting-wide-clean-v1.png',
     alt: 'Wall and surface finishes being refined under natural and architectural light at Project Akoka',
   },
   {
     number: '04',
-    phase: 'Complete the intention',
-    title: 'Carry the idea through',
-    description: 'Furniture, lighting and art complete the same intention established from the start.',
+    phase: 'Styling · Handover',
+    title: 'Complete and hand over',
+    description: 'Furniture, art and the final layer are placed with care, then the finished space is ready to be lived in.',
     image: '/assets/akoka-site-installation-wide-clean-v1.png',
     alt: 'Resolved living room installation with integrated lighting and a deep green seating composition at Project Akoka',
+  },
+] as const;
+
+const SERVICES = [
+  {
+    number: '01',
+    title: 'Full-Service Interior Design',
+    description: 'Complete direction, procurement, project management and installation—from the first conversation to the finished space.',
+  },
+  {
+    number: '02',
+    title: 'Design Consultation',
+    description: 'Expert clarity for a home, workplace or project before commitment, with the space assessed and its direction made clear.',
+  },
+  {
+    number: '03',
+    title: 'Design Concept',
+    description: 'Space planning, visual direction and selections made coherent before anything is purchased, placed or built.',
+  },
+  {
+    number: '04',
+    title: 'Styling & Finishing',
+    description: 'The final layer of art, textiles, objects and placement that gives a room warmth, personality and completion.',
+  },
+  {
+    number: '05',
+    title: 'Remodeling & Renovation',
+    description: 'Structural change, material decisions and project coordination carried through as one considered design intent.',
   },
 ] as const;
 
@@ -106,11 +133,10 @@ export function App() {
   const lifeStoryRef = useRef<HTMLElement>(null);
   const founderChapterRef = useRef<HTMLElement>(null);
   const practiceChapterRef = useRef<HTMLElement>(null);
+  const servicesChapterRef = useRef<HTMLElement>(null);
   const inquiryChapterRef = useRef<HTMLElement>(null);
   const narrativeCanvasRef = useRef<HTMLCanvasElement>(null);
   const narrativeCanvasControllerRef = useRef<NarrativeMaterialCanvas | null>(null);
-  const inquiryCanvasRef = useRef<HTMLCanvasElement>(null);
-  const inquiryCanvasControllerRef = useRef<InquiryMaterialCanvas | null>(null);
   const footerRef = useRef<HTMLElement>(null);
   const livedUseVideoRef = useRef<HTMLVideoElement>(null);
   const practiceVideoRef = useRef<HTMLVideoElement>(null);
@@ -124,6 +150,7 @@ export function App() {
   const processImageRefs = useRef<(HTMLImageElement | null)[]>([]);
   const processCopyRefs = useRef<(HTMLDivElement | null)[]>([]);
   const projectRefs = useRef<(HTMLElement | null)[]>([]);
+  const serviceItemRefs = useRef<(HTMLLIElement | null)[]>([]);
 
   const macroRef = useRef<HTMLDivElement>(null);
   const materialLightRef = useRef<HTMLDivElement>(null);
@@ -196,23 +223,6 @@ export function App() {
     } catch {
       canvas.hidden = true;
       materialCanvasControllerRef.current = null;
-    }
-  }, [forceReduced]);
-
-  useEffect(() => {
-    const canvas = inquiryCanvasRef.current;
-    if (!canvas) return;
-    const reducedMotion = forceReduced || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    try {
-      const controller = new InquiryMaterialCanvas(canvas, reducedMotion);
-      inquiryCanvasControllerRef.current = controller;
-      return () => {
-        controller.destroy();
-        inquiryCanvasControllerRef.current = null;
-      };
-    } catch {
-      canvas.hidden = true;
-      inquiryCanvasControllerRef.current = null;
     }
   }, [forceReduced]);
 
@@ -304,6 +314,7 @@ export function App() {
       `Phone: ${String(data.get('phone') ?? '') || 'Not provided'}`,
       `Project location: ${String(data.get('location') ?? '')}`,
       `Space: ${String(data.get('space') ?? '')}`,
+      `Service: ${String(data.get('service') ?? '')}`,
       `Project stage: ${String(data.get('stage') ?? '')}`,
       `Desired start: ${String(data.get('start') ?? '') || 'Not specified'}`,
       `Budget range: ${String(data.get('budget') ?? '') || 'Not specified'}`,
@@ -336,6 +347,62 @@ export function App() {
     }, { threshold: 0.01 });
     observer.observe(stage);
     return () => observer.disconnect();
+  }, [forceReduced]);
+
+  useEffect(() => {
+    const chapter = servicesChapterRef.current;
+    if (!chapter) return;
+    const reduced = forceReduced || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let frame = 0;
+
+    const update = () => {
+      frame = 0;
+      const viewport = Math.max(window.innerHeight, 1);
+      const rect = chapter.getBoundingClientRect();
+      const desktop = !reduced && window.innerWidth > 960;
+      const entry = reduced ? 1 : smooth((viewport * .9 - rect.top) / (viewport * .72));
+      const distance = Math.max(chapter.offsetHeight - viewport, 1);
+      const progress = desktop ? clamp(-rect.top / distance) : 1;
+      const scaledProgress = progress * (SERVICES.length - 1);
+      const activeBase = Math.min(SERVICES.length - 2, Math.floor(scaledProgress));
+      const localProgress = scaledProgress - activeBase;
+      const activeFloat = progress >= 1
+        ? SERVICES.length - 1
+        : activeBase + smooth((localProgress - .22) / .56);
+      const exit = desktop ? smooth((progress - .82) / .14) : 0;
+      const chapterVisible = rect.top < viewport && rect.bottom > 0;
+
+      chapter.style.setProperty('--services-entry', String(entry));
+      chapter.style.setProperty('--services-progress', String(progress));
+      chapter.style.setProperty('--services-axis-progress', String(desktop ? clamp(progress * 1.08 + .08) : 1));
+      chapter.style.setProperty('--services-exit', String(exit));
+
+      serviceItemRefs.current.forEach((item, index) => {
+        if (!item) return;
+        const offset = desktop ? index - activeFloat : 0;
+        const presence = desktop ? clamp(1 - Math.abs(offset) * .74) : 1;
+        const description = desktop ? smooth((presence - .68) / .32) : 1;
+        item.style.setProperty('--service-offset', String(offset));
+        item.style.setProperty('--service-presence', String(presence));
+        item.style.setProperty('--service-description', String(description));
+        if (desktop && chapterVisible && Math.abs(offset) < .5) item.setAttribute('aria-current', 'step');
+        else item.removeAttribute('aria-current');
+      });
+    };
+
+    const queue = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener('scroll', queue, { passive: true });
+    window.addEventListener('resize', queue, { passive: true });
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', queue);
+      window.removeEventListener('resize', queue);
+    };
   }, [forceReduced]);
 
   useEffect(() => {
@@ -598,9 +665,10 @@ export function App() {
     const lifeStory = lifeStoryRef.current;
     const founder = founderChapterRef.current;
     const practice = practiceChapterRef.current;
+    const services = servicesChapterRef.current;
     const inquiry = inquiryChapterRef.current;
     const footer = footerRef.current;
-    if (!portfolioStage || !lifeStory || !founder || !practice || !inquiry || !footer) return;
+    if (!portfolioStage || !lifeStory || !founder || !practice || !services || !inquiry || !footer) return;
 
     const reduced = forceReduced || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const founderCopy = founder.querySelector<HTMLElement>('.founder-copy') ?? founder;
@@ -618,6 +686,7 @@ export function App() {
       const lifeStoryRect = lifeStory.getBoundingClientRect();
       const founderRect = founder.getBoundingClientRect();
       const practiceRect = practice.getBoundingClientRect();
+      const servicesRect = services.getBoundingClientRect();
       const inquiryRect = inquiry.getBoundingClientRect();
       const footerRect = footer.getBoundingClientRect();
       const portfolioRect = portfolioStage.getBoundingClientRect();
@@ -655,13 +724,18 @@ export function App() {
       };
       const portfolioField = sectionPresence(portfolioRect);
       const lifeField = sectionPresence(lifeStoryRect);
+      const servicesField = sectionPresence(servicesRect);
       const inquiryField = sectionPresence(inquiryRect);
       const footerField = sectionPresence(footerRect);
-      const narrativeIntensity = reduced ? 1 : Math.max(portfolioField, lifeField, inquiryField, footerField);
-      const closingField = Math.max(inquiryField, footerField);
-      const narrativePhase = closingField > .12 ? .42 : lifeField > .12 ? 1.35 : 0;
+      const narrativeIntensity = reduced ? 1 : Math.max(portfolioField, lifeField, servicesField, inquiryField, footerField);
+      const closingField = Math.max(servicesField, inquiryField, footerField);
+      const servicesProgress = clamp(-servicesRect.top / Math.max(services.offsetHeight - viewport, 1));
+      const closingPhase = mix(.78, .42, smooth(inquiryProgress / .72));
+      const narrativePhase = closingField > .12 ? closingPhase : lifeField > .12 ? 1.35 : 0;
       const narrativeProgress = closingField > .12
-        ? clamp((viewport - inquiryRect.top) / Math.max(inquiryRect.height + footerRect.height, 1))
+        ? servicesField > inquiryField
+          ? servicesProgress
+          : clamp((viewport - inquiryRect.top) / Math.max(inquiryRect.height + footerRect.height, 1))
         : lifeField > .12 ? lifeStoryProgress : portfolioProgress;
       rootRef.current?.style.setProperty('--narrative-field-opacity', String(narrativeIntensity));
       narrativeCanvasControllerRef.current?.setState(narrativeProgress, narrativePhase, narrativeIntensity);
@@ -691,7 +765,6 @@ export function App() {
       rootRef.current?.style.setProperty('--practice-title-second-progress', String(practiceSecondLineProgress));
       rootRef.current?.style.setProperty('--practice-support-progress', String(practiceSupportProgress));
       rootRef.current?.style.setProperty('--inquiry-progress', String(inquiryProgress));
-      inquiryCanvasControllerRef.current?.setProgress(inquiryProgress);
       const footerProgress = reduced ? 1 : clamp((viewport - footerRect.top) / (viewport * .72));
       rootRef.current?.style.setProperty('--footer-progress', String(footerProgress));
       rootRef.current?.style.setProperty('--footer-reveal', `${((1 - footerProgress) * 100).toFixed(2)}%`);
@@ -737,12 +810,15 @@ export function App() {
 
           const exitLift = index === WORK_STUDIES.length - 1 ? exitProgress : 0;
 
+          project.style.zIndex = String(index + 3);
           project.style.opacity = isFullyCovered ? '0' : String(1 - exitLift * 0.45);
           project.style.visibility = isFullyCovered || !isStarted ? 'hidden' : 'visible';
           project.style.pointerEvents = isFullyCovered || !isStarted ? 'none' : 'auto';
           project.style.setProperty('--project-badge-opacity', String(clamp(badgeOpacity)));
           project.style.setProperty('--project-exit-lift', String(exitLift));
           project.style.setProperty('--residence-panel-reveal', String(panelReveal));
+          project.style.setProperty('--residence-panel-clip', `${((1 - panelReveal) * 100).toFixed(3)}%`);
+          project.style.setProperty('--residence-image-shift', `${mix(-1.8, 0, panelReveal).toFixed(3)}%`);
           project.style.setProperty('--project-light-cut', `${(panelReveal * 100).toFixed(3)}%`);
           project.style.setProperty('--project-light-reveal', String(panelReveal));
           project.style.setProperty('--project-light-intensity', String(Math.sin(panelReveal * Math.PI)));
@@ -776,6 +852,8 @@ export function App() {
           project.style.pointerEvents = 'auto';
           project.style.setProperty('--project-badge-opacity', '1');
           project.style.setProperty('--project-exit-lift', '0');
+          project.style.setProperty('--residence-panel-clip', '0%');
+          project.style.setProperty('--residence-image-shift', '0%');
           project.style.setProperty('--project-light-cut', '100%');
           project.style.setProperty('--project-light-reveal', '1');
           project.style.setProperty('--project-light-intensity', '0');
@@ -864,7 +942,7 @@ export function App() {
 
             <nav className="hero-nav" ref={navRef} aria-label="Primary">
               <img src="/assets/tta-wordmark-white.png" alt="TTA Designs" />
-              <span>Residential interiors · Lagos</span>
+              <span>Residential &amp; commercial interiors · Lagos</span>
             </nav>
 
             <section className="hero-copy" ref={heroCopyRef} aria-label="Introduction">
@@ -922,7 +1000,7 @@ export function App() {
               <span className="type-line" aria-hidden="true"><i>Every decision</i></span>
               <span className="type-line" aria-hidden="true"><i>leaves an atmosphere.</i></span>
             </h2>
-            <span className="residence-prologue-note">Selected spaces, seen through five considered moments.</span>
+            <span className="residence-prologue-note">Selected residential and commercial spaces, seen through five considered moments.</span>
           </div>
 
           <div className="project-constellations">
@@ -982,7 +1060,12 @@ export function App() {
         <div className="founder-copy">
           <p className="founder-credit"><strong>Tolu Ajayi</strong><span>Founder &amp; Creative Director</span></p>
           <h2 id="founder-title" aria-label="A considered room begins with a considered eye."><span aria-hidden="true"><i>A considered room</i></span><span aria-hidden="true"><i>begins with a considered eye.</i></span></h2>
-          <span>Her practice starts with how a space will move, feel and hold everyday life. That attention remains present from the first site conversation to the final placement of light, furniture and art.</span>
+          <span>Her practice begins by understanding how a space needs to live, work or be experienced. That attention remains present from the first site conversation to the final placement of light, furniture and art.</span>
+          <div className="founder-values" aria-label="TTA Designs principles">
+            <span style={{ '--value-order': 0 } as CSSProperties}>Timeless in judgement</span>
+            <span style={{ '--value-order': 1 } as CSSProperties}>Exacting in execution</span>
+            <span style={{ '--value-order': 2 } as CSSProperties}>Personal in experience</span>
+          </div>
         </div>
         <figure className="founder-portrait">
           <img src="/assets/tolu-ajayi-founder-portrait.jpg" alt="Tolu Ajayi, founder and creative director of TTA Designs, standing in a completed interior" loading="lazy" />
@@ -1003,24 +1086,45 @@ export function App() {
         </div>
       </section>
 
+      <section className="services-chapter" id="services" ref={servicesChapterRef} aria-labelledby="services-title">
+        <div className="services-stage">
+          <div className="services-heading">
+            <p>Ways to work with TTA</p>
+            <h2 id="services-title">One standard of attention.<br />Five ways to begin.</h2>
+          </div>
+          <span className="services-axis" aria-hidden="true" />
+          <ol className="services-index">
+            {SERVICES.map((service, index) => (
+              <li key={service.number} ref={(element) => { serviceItemRefs.current[index] = element; }}>
+                <span className="service-number">{service.number}</span>
+                <div>
+                  <h3>{service.title}</h3>
+                  <p>{service.description}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+          <p className="services-handover">From first conversation<br />to final handover.</p>
+        </div>
+      </section>
+
       <div className="closing-stage">
-        <canvas className="inquiry-material" ref={inquiryCanvasRef} aria-hidden="true" />
         <section className="inquiry-chapter" id="inquiry" ref={inquiryChapterRef} aria-labelledby="inquiry-title">
           <div className="inquiry-copy">
-            <p>For a considered residence</p>
+            <p>For a considered home, workplace or creative space</p>
             <h2 id="inquiry-title" className="cinematic-heading"><span><i>Let’s begin with the way</i></span><span><i>you want to live.</i></span></h2>
             <button ref={inquiryTriggerRef} className="inquiry-link" type="button" onClick={() => { setInquiryStatus(''); setInquiryOpen(true); }}>
               <span className="moving-label"><i>Begin a conversation</i><i aria-hidden="true">Begin a conversation</i></span>
               <b aria-hidden="true">↗</b>
             </button>
-            <small id="inquiry-note">Share the room, location and life the project needs to support.</small>
+            <small id="inquiry-note">Share the space, location and what the project needs to make possible.</small>
           </div>
         </section>
 
         <footer className="site-footer" ref={footerRef}>
           <div className="footer-topline">
             <div className="footer-column"><p>Studio</p><span>Residential and commercial interiors<br />Lagos, Nigeria</span></div>
-            <div className="footer-column"><p>Connect</p><a href="https://www.instagram.com/ttadesigns/" target="_blank" rel="noreferrer">Instagram ↗</a><a href="#inquiry">Project inquiry ↗</a></div>
+            <div className="footer-column"><p>Connect</p><a href="mailto:ttadesignsng@gmail.com">ttadesignsng@gmail.com ↗</a><a href="tel:+2348144581080">+234 814 458 1080</a><a href="https://www.instagram.com/ttadesigns/" target="_blank" rel="noreferrer">Instagram ↗</a></div>
           </div>
           <a className="footer-wordmark" href="#top" aria-label="TTA Designs — back to top"><img src="/assets/tta-wordmark-white.png" alt="TTA Designs" /></a>
           <div className="footer-meta"><span>Spaces shaped around the way life is lived.</span><span>Private cinematic concept · © TTA Designs</span><span>Made by Bevamped</span></div>
@@ -1040,12 +1144,14 @@ export function App() {
             <label><span>Phone <i>optional</i></span><input name="phone" type="tel" autoComplete="tel" /></label>
             <label><span>Project location</span><input name="location" required /></label>
             <label><span>Space</span><select name="space" required defaultValue=""><option value="" disabled>Select the space</option><option>Full residence</option><option>Living and dining</option><option>Bedroom</option><option>Commercial interior</option><option>Other</option></select></label>
+            <label><span>Service</span><select name="service" required defaultValue=""><option value="" disabled>Select the service</option>{SERVICES.map((service) => <option key={service.number}>{service.title}</option>)}</select></label>
             <label><span>Project stage</span><select name="stage" required defaultValue=""><option value="" disabled>Select the stage</option><option>Exploring possibilities</option><option>Planning or drawings</option><option>Construction in progress</option><option>Furnishing and finishing</option></select></label>
             <label><span>Desired start <i>optional</i></span><input name="start" placeholder="Month or timeframe" /></label>
             <label><span>Budget range <i>optional</i></span><input name="budget" placeholder="A range is enough" /></label>
             <label className="inquiry-panel-message"><span>What should this space make possible?</span><textarea name="message" rows={5} required /></label>
             <div className="inquiry-panel-actions">
               <button type="submit">Copy project brief</button>
+              <a href="mailto:ttadesignsng@gmail.com">Email TTA ↗</a>
               <a href="https://www.instagram.com/ttadesigns/" target="_blank" rel="noreferrer">Continue on Instagram ↗</a>
             </div>
             <p className="inquiry-panel-status" role="status">{inquiryStatus || 'Your information stays in this browser until you choose to copy it.'}</p>

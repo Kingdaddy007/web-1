@@ -12,6 +12,12 @@ The practice is shown through two real films—on site and in the completed room
 
 The process background remains a contained custom 2D canvas. The closing threshold adds one isolated custom WebGL material field with no external Canvas UI package: it moves only warm light and refraction, pauses offscreen, caps DPR, and holds a still fallback under reduced motion. All copy and actions remain semantic DOM above it.
 
+## Studio truth pass — published portfolio context
+
+TTA Designs' published 2026 portfolio confirms that the studio works across residential and commercial interiors, offers five defined service entry points, and carries projects through Discovery, On-site Consultation, Design, Execution, Styling, and Handover. The website now groups that six-step process into the existing four cinematic acts so the argument remains concise.
+
+The five approved project studies remain intact. A new service chapter follows the founder-led practice proof and precedes inquiry. It is a typographic commission index—not a card grid, tab system, carousel, or second portfolio. Five service names resolve along one registration axis and lead directly to a broader inquiry for homes, workplaces, and creative spaces. The opening remains the primary cinematic peak.
+
 ---
 
 # Preserved foundation — Material Registration

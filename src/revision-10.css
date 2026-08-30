@@ -354,9 +354,31 @@
   margin-bottom: -.18em;
 }
 
-/* Residence proof is held inside one bright gallery frame. The surrounding
-   material field remains visible, and every panel travels in the same direction. */
+/* Residence proof is held inside one bright gallery frame. Each new room opens
+   through a vertical cinematic window, so reverse scroll closes the same
+   aperture instead of exposing horizontal panels underneath one another. */
 @media (min-width: 961px) {
+  .project-constellation,
+  .project-constellation:nth-child(even) {
+    clip-path: inset(var(--residence-panel-clip, 100%) 0 0 0);
+    will-change: clip-path;
+  }
+
+  .project-constellation::after {
+    content: '';
+    position: absolute;
+    z-index: 32;
+    top: var(--residence-panel-clip, 100%);
+    right: 5vw;
+    left: 5vw;
+    height: 12vh;
+    opacity: calc(var(--project-light-intensity, 0) * .42);
+    background: linear-gradient(180deg, transparent, rgba(255, 238, 214, .22) 48%, transparent);
+    filter: blur(10px);
+    transform: translate3d(0, -50%, 0);
+    pointer-events: none;
+  }
+
   .project-main,
   .project-constellation:nth-child(even) .project-main,
   .project-constellation--2 .project-main,
@@ -370,8 +392,8 @@
     border: 1px solid rgba(255, 247, 235, .26);
     background: #241914;
     box-shadow: 0 32px 96px rgba(22, 16, 13, .24);
-    clip-path: none;
-    transform: translate3d(calc(-50% + (1 - var(--residence-panel-reveal, 0)) * 102vw), calc(-50% - var(--project-exit-lift, 0) * 12vh), 0);
+    clip-path: none !important;
+    transform: translate3d(-50%, calc(-50% - var(--project-exit-lift, 0) * 12vh), 0);
   }
 
   .project-main figcaption {
@@ -402,6 +424,9 @@
     object-fit: contain;
     object-position: right center;
     filter: blur(calc((1 - var(--project-light-reveal, 1)) * 1.5px)) saturate(.94) contrast(1.015) brightness(calc(.94 + var(--project-light-reveal, 1) * .08));
+    transform: translate3d(0, var(--residence-image-shift, 0%), 0) scale(1.018);
+    transform-origin: center;
+    will-change: transform, filter;
   }
 
   .project-constellation--3 .project-main > img { object-position: right center; }
@@ -411,8 +436,8 @@
     position: absolute;
     inset: 0;
     background:
-      linear-gradient(90deg, rgba(17, 12, 10, .92) 0%, rgba(17, 12, 10, .82) 22%, rgba(17, 12, 10, .48) 35%, rgba(17, 12, 10, .08) 51%, transparent 62%),
-      linear-gradient(180deg, transparent 66%, rgba(13, 9, 7, .2) 100%);
+      linear-gradient(90deg, rgba(17, 12, 10, .62) 0%, rgba(17, 12, 10, .4) 22%, rgba(17, 12, 10, .13) 38%, transparent 54%),
+      linear-gradient(180deg, transparent 74%, rgba(13, 9, 7, .12) 100%);
     pointer-events: none;
     z-index: 2;
     display: block;
@@ -730,29 +755,25 @@
   right: 0;
   left: 0;
   height: 100svh;
-  background: #a47b5c;
+  background: transparent;
   pointer-events: none;
 }
 
-.inquiry-material {
-  z-index: 1;
-  top: 0;
-  right: 0;
-  bottom: auto;
-  left: 0;
-  display: block !important;
-  width: 100%;
-  height: 100svh;
-  opacity: 1;
+.inquiry-chapter {
+  z-index: 2;
+  color: #f7efe3;
 }
-
-.inquiry-chapter { z-index: 2; }
 
 .inquiry-chapter::before {
-  background:
-    radial-gradient(circle at 50% 44%, rgba(255, 244, 226, .14), transparent 26%),
-    linear-gradient(180deg, rgba(20, 13, 10, .08), rgba(20, 13, 10, .24));
+  background: transparent;
 }
+
+.inquiry-copy > p { color: rgba(247, 239, 227, .72) !important; }
+.inquiry-copy .cinematic-heading {
+  color: #f7efe3 !important;
+  text-shadow: 0 2px 34px rgba(4, 3, 3, .3) !important;
+}
+.inquiry-copy small { color: rgba(247, 239, 227, .74) !important; }
 
 .inquiry-link {
   display: inline-flex;
@@ -763,9 +784,9 @@
   margin-top: 48px;
   appearance: none;
   border: 0;
-  border-bottom: 1px solid rgba(36, 21, 15, .72);
+  border-bottom: 1px solid rgba(247, 239, 227, .72);
   padding: 17px 0 14px;
-  color: #24150f;
+  color: #f7efe3;
   background: transparent;
   font: inherit;
   font-family: var(--notation-face);
@@ -775,6 +796,10 @@
   text-align: left;
   text-transform: uppercase;
   cursor: pointer;
+}
+
+.inquiry-link:focus-visible {
+  outline-color: rgba(247, 239, 227, .84);
 }
 
 .site-footer {

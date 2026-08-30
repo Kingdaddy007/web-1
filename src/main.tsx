@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { App } from './App';
 import './styles.css';
 import './revision-10.css';
+import './studio-truth.css';
 
 const prototype = new URLSearchParams(window.location.search).get('prototype');
 
