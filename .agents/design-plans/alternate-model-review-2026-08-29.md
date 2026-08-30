@@ -1,44 +1,37 @@
-# Alternate Model Review — 2026-08-29
+# Alternate Model Review — 2026-08-30
 
-## Objective
+## Verdict
 
-Perform an independent last-mile creative and technical review and polish of the TTA Designs cinematic website on branch `review/alternate-model-pass-2026-08-29`.
+The site has a credible authored thesis: atmosphere is presented as the result of prior decisions, and the opening earns attention through registration before yielding to the room. The strongest work was already present in the opening, the process proposition, the founder chapter, and the restrained practice proof. The main weakness was not a lack of spectacle; it was drift. The portfolio stopped behaving like one spatial argument, mobile typography lost its intended color and measure, and reduced motion exposed an unfinished fallback.
 
-## Evidence & Inspection Summary
+## Highest-leverage audit
 
-A cold-scroll inspection in headless Chrome across Desktop (1440x900), Mobile (390x844), and Reduced Motion modes identified the following defects:
+### Must Fix
 
-1. **Residence Procession — Slide 3 Copy Premature Fade & Counter Collision**:
-   - Slide 3 (*"Light gathers here"*) copy left the stage too early due to an aggressive `exitProgress` curve starting at `portfolioProgress = 0.90`.
-   - Slide counter badges (`figcaption`: `01 / 03`, `02 / 03`, `03 / 03`) overlapped because all slide containers remained visible in the pinned frame without active slide occlusion.
-2. **Mobile (390px) — Hero Logo Overflow**:
-   - The rightmost character of the logo wordmark (`S` in `DESIGNS`) clipped on 390px viewports during the logo timeline due to `LOGO_AXIS` translation.
-3. **Reduced-Motion Mode — Horizontal Overflow (2260px)**:
-   - On desktop with reduced motion, `.project-main` retained `90vw` width and absolute horizontal offsets (`left: 40vw`, `left: 67vw`), creating horizontal overflow.
-4. **Life Story — Coda Ascender Clipping**:
-   - `.life-story-coda h2` top ascenders (*"A room holds together..."*) clipped at the top of the viewport due to tight line height and vertical translation without top clearance.
-5. **Founder Portrait — Head Crop**:
-   - On desktop viewports, `.founder-portrait img` cropped the top of Tolu Ajayi's head with `object-position: 50% 50%`.
-6. **Inquiry Panel Drawer — Container Overflow**:
-   - When closed, the transformed sheet could contribute to document overflow if not clipped by its modal container.
+1. **Restore one spatial thesis.** The portfolio claimed to be one connected residence study but included an unrelated executive office and a generic lounge. Five equally weighted panels also made the sequence feel like a repeated component demo. The procession is now three connected Ogba moments, and its scroll length is reduced from `605svh` to `405svh`.
+2. **Repair the mobile reading layer.** White caption overrides landed on a light portfolio surface, while the life-story grid expanded to min-content width and clipped its largest lines. Project copy now uses deliberate dark typographic color, the life-story grid can shrink, all headline lines wrap inside the viewport, and the page no longer pans horizontally at 390 × 844.
+3. **Make reduced motion a complete static composition.** System and explicit reduced modes now pause all three videos at frame zero, collapse animated transitions, preserve a static inquiry material field, and use dark portfolio typography on the light fallback surface.
+4. **Make inquiry interaction ready for keyboard and touch.** Opening the dialog now moves focus into it, Tab is contained within the sheet, Escape closes it, focus returns to the originating button, and the Close control has a 44 px target.
 
-## Improvements Implemented
+### Should Fix
 
-1. **Residence Procession Timing & Badge Isolation**:
-   - Extended Residence 03 hold range up to `0.96` before fade-out.
-   - Tied `figcaption` opacity and slide occlusion to individual panel reveal progress.
-2. **Mobile Logo Sizing & Position Protection**:
-   - Added responsive constraints for `.logo-wrapper` on screens under 480px.
-3. **Reduced Motion Layout Repair**:
-   - Normalized `.portfolio-stage`, `.project-constellation`, and `.project-main` in reduced motion mode into clean, centered vertical document flow.
-4. **Typographic & Portrait Framing Polish**:
-   - Adjusted `.life-story-coda` box model to prevent ascender clipping.
-   - Refined `.founder-portrait img` `object-position` to `50% 16%` for head and eye preservation.
-   - Strengthened proposition subtext legibility.
-5. **Inquiry Drawer Containment**:
-   - Added `overflow: hidden` to `.inquiry-panel` to prevent viewport scroll leakage.
+1. **Remove the portfolio-to-life dead zone.** The final residence previously faded early, then the next chapter waited below the fold. The last caption now holds to the release, the portfolio exits only at its final edge, and the life-story thesis begins entering before the section reaches the viewport top.
 
-## Verification
+### Could Improve
 
-- `npm run build` passes with zero errors.
-- Visual inspection confirms smooth procession hold, single counter badge per slide, preserved founder portrait framing, clean mobile logo fit, and 0 horizontal overflow across all modes.
+1. **Replace the clipboard-to-Instagram handoff when a verified inquiry channel exists.** The current path is honest and functional, but still asks the prospect to carry the brief between interfaces. No unverified email address, endpoint, or third-party form was invented in this pass.
+2. **Commission a consistent image grade or new photography.** The code now protects crop and hierarchy, but variations in source lighting, sharpness, and color temperature still limit how fully the three residence frames can read as one editorial shoot.
+
+## Evidence
+
+- Inspected the implemented page as a continuous sequence at 1440 × 900 and 390 × 844 in the in-app browser.
+- Verified normal motion, system `prefers-reduced-motion: reduce`, and the explicit `?reduced=1` route.
+- Confirmed three connected project panels, desktop sticky pinning, mobile document width equal to client width, loaded imagery, active life/practice video playback in normal mode, and all videos paused at `0` in both reduced modes.
+- Verified inquiry focus entry, forward and reverse Tab wrapping, Escape close, focus return, full-width mobile containment, and the 44 px Close target.
+- Browser console: no errors or warnings during desktop, mobile, inquiry, or reduced-motion passes.
+- `git diff --check`: clean apart from expected line-ending notices.
+- `npm run build`: passed (`tsc -b && vite build`).
+
+## Residual uncertainty
+
+This pass verifies the local implementation and production bundle, not a deployed production URL, analytics, form delivery, or real-device GPU/media behavior. The local asset set does not establish final image licensing or photography provenance.

@@ -79,24 +79,6 @@ const WORK_STUDIES = [
     image: '/assets/ogba-dining-detail-wide-v2.png',
     alt: 'Dining table set beneath a warm floor lamp with curtains and mirrored reflections at the Ogba residence by TTA Designs',
   },
-  {
-    kicker: 'OLCDA / Executive office',
-    title: 'One office, several ways to meet.',
-    titleLines: ['One office,', 'several ways to meet.'],
-    note: 'Focus · Meeting · Comfort',
-    description: 'A private executive office combines a formal meeting table with a softer seating area, balancing focused work, conversation and comfort.',
-    image: '/assets/olcda-shared-workplace-wide-v1.png',
-    alt: 'Private executive office with a cream sofa, conference table and brown meeting chairs at Project OLCDA by TTA Designs',
-  },
-  {
-    kicker: 'Residence / Lounge detail',
-    title: 'A softer place to pause.',
-    titleLines: ['A softer place', 'to pause.'],
-    note: 'Curve · Lamplight · Comfort',
-    description: 'Curved seating, warm lamplight and a restrained cluster of dark accents make this compact corner feel settled and intimate.',
-    image: '/assets/residential-sofa-corner-wide-v1.png',
-    alt: 'Curved cream sofa with rust cushions, a floor lamp and a black coffee table in an intimate residential lounge by TTA Designs',
-  },
 ] as const;
 
 export function App() {
@@ -140,6 +122,9 @@ export function App() {
   const heroGradeRef = useRef<HTMLDivElement>(null);
   const heroCopyRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLElement>(null);
+  const inquiryTriggerRef = useRef<HTMLButtonElement>(null);
+  const inquirySheetRef = useRef<HTMLDivElement>(null);
+  const inquiryCloseRef = useRef<HTMLButtonElement>(null);
 
   const frameRef = useRef(0);
   const elapsedRef = useRef(0);
@@ -236,6 +221,14 @@ export function App() {
       { section: practiceChapterRef.current, video: practiceVideoRef.current },
     ].filter((entry): entry is { section: HTMLElement; video: HTMLVideoElement } => Boolean(entry.section && entry.video));
     if (entries.length === 0) return;
+    const reducedMotion = forceReduced || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reducedMotion) {
+      entries.forEach(({ video }) => {
+        video.pause();
+        video.currentTime = 0;
+      });
+      return;
+    }
     const observers = entries.map(({ section, video }) => {
       const observer = new IntersectionObserver(([entry]) => {
         if (entry.isIntersecting) void video.play().catch(() => undefined);
@@ -245,18 +238,39 @@ export function App() {
       return observer;
     });
     return () => observers.forEach((observer) => observer.disconnect());
-  }, []);
+  }, [forceReduced]);
 
   useEffect(() => {
     if (!inquiryOpen) return;
+    const sheet = inquirySheetRef.current;
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setInquiryOpen(false);
+      if (event.key === 'Escape') {
+        setInquiryOpen(false);
+        return;
+      }
+      if (event.key !== 'Tab' || !sheet) return;
+      const focusable = Array.from(sheet.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      )).filter((element) => element.getClientRects().length > 0);
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     };
     document.body.classList.add('has-inquiry-open');
     window.addEventListener('keydown', onKey);
+    const focusFrame = requestAnimationFrame(() => inquiryCloseRef.current?.focus());
     return () => {
+      cancelAnimationFrame(focusFrame);
       document.body.classList.remove('has-inquiry-open');
       window.removeEventListener('keydown', onKey);
+      inquiryTriggerRef.current?.focus();
     };
   }, [inquiryOpen]);
 
@@ -292,13 +306,19 @@ export function App() {
     const video = heroVideoRef.current;
     const stage = storyStageRef.current;
     if (!video || !stage) return;
+    const reducedMotion = forceReduced || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reducedMotion) {
+      video.pause();
+      video.currentTime = 0;
+      return;
+    }
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) void video.play().catch(() => undefined);
       else video.pause();
     }, { threshold: 0.01 });
     observer.observe(stage);
     return () => observer.disconnect();
-  }, []);
+  }, [forceReduced]);
 
   useEffect(() => {
     const updateFraming = () => {
@@ -588,7 +608,9 @@ export function App() {
       const lifeStoryProgress = desktopLifeStory ? clamp(-lifeStoryRect.top / lifeStoryDistance) : 1;
       const practiceProgress = reduced ? 1 : clamp((viewport - practiceRect.top) / (viewport + practiceRect.height));
       const inquiryProgress = reduced ? 1 : clamp((viewport - inquiryRect.top) / (viewport + inquiryRect.height));
-      const lifeIntroIn = desktopLifeStory ? smooth(clamp(lifeStoryProgress / 0.16)) : 1;
+      const lifeIntroIn = desktopLifeStory
+        ? smooth(clamp((viewport * .78 - lifeStoryRect.top) / (viewport * .62)))
+        : 1;
       const lifeIntroOut = desktopLifeStory ? smooth((lifeStoryProgress - 0.26) / 0.10) : 0;
       const lifeVideoIn = desktopLifeStory ? smooth((lifeStoryProgress - 0.22) / 0.14) : 1;
       const lifeProofIn = desktopLifeStory ? smooth((lifeStoryProgress - 0.30) / 0.14) : 1;
@@ -655,7 +677,7 @@ export function App() {
 
       if (desktopProcession) {
         const entryProgress = smooth(clamp((viewport * .9 - portfolioRect.top) / (viewport * .62)));
-        const exitProgress = smooth((portfolioProgress - .9) / .1);
+        const exitProgress = smooth((portfolioProgress - .985) / .015);
         const prologueLeave = smooth((portfolioProgress - .055) / .085);
         const prologueOpacity = entryProgress * (1 - prologueLeave);
         const panelCount = WORK_STUDIES.length;
@@ -668,7 +690,7 @@ export function App() {
         // panel has already settled. The copy still clears before the next
         // residence enters, preserving one readable focal point at a time.
         const copyStarts = panelStarts.map((start) => start + .025);
-        const copyEnds = panelStarts.map((_, index) => panelStarts[index + 1] == null ? .955 : panelStarts[index + 1] - .025);
+        const copyEnds = panelStarts.map((_, index) => panelStarts[index + 1] == null ? .99 : panelStarts[index + 1] - .025);
 
         portfolioStage.style.setProperty('--residence-progress', String(portfolioProgress));
         portfolioStage.style.setProperty('--residence-entry', String(entryProgress));
@@ -790,7 +812,7 @@ export function App() {
         <div className="experience">
           <div className="hero-scene" ref={heroSceneRef}>
             <div className="room-camera room-camera--background" ref={backgroundCameraRef} aria-hidden="true">
-              <video ref={heroVideoRef} src="/assets/tta-living-cinematic-camera-v1.mp4" poster="/assets/tta-living-cinematic-master-v1.png" autoPlay muted loop playsInline preload="auto" disablePictureInPicture />
+              <video ref={heroVideoRef} src="/assets/tta-living-cinematic-camera-v1.mp4" poster="/assets/tta-living-cinematic-master-v1.png" muted loop playsInline preload="auto" disablePictureInPicture />
             </div>
 
             <div className="material-field" ref={macroRef} aria-hidden="true">
@@ -874,7 +896,7 @@ export function App() {
               <span className="type-line" aria-hidden="true"><i>Every decision</i></span>
               <span className="type-line" aria-hidden="true"><i>leaves an atmosphere.</i></span>
             </h2>
-            <span className="residence-prologue-note">Selected spaces, seen through five connected moments.</span>
+            <span className="residence-prologue-note">One residence, seen through three connected moments.</span>
           </div>
 
           <div className="project-constellations">
@@ -961,7 +983,7 @@ export function App() {
           <div className="inquiry-copy">
             <p>For a considered residence</p>
             <h2 id="inquiry-title" className="cinematic-heading"><span><i>Let’s begin with the way</i></span><span><i>you want to live.</i></span></h2>
-            <button className="inquiry-link" type="button" onClick={() => { setInquiryStatus(''); setInquiryOpen(true); }}>
+            <button ref={inquiryTriggerRef} className="inquiry-link" type="button" onClick={() => { setInquiryStatus(''); setInquiryOpen(true); }}>
               <span className="moving-label"><i>Begin a conversation</i><i aria-hidden="true">Begin a conversation</i></span>
               <b aria-hidden="true">↗</b>
             </button>
@@ -981,10 +1003,10 @@ export function App() {
 
       <section className={`inquiry-panel ${inquiryOpen ? 'is-open' : ''}`} role="dialog" aria-modal="true" aria-labelledby="project-inquiry-title" aria-hidden={!inquiryOpen}>
         <button className="inquiry-panel-backdrop" type="button" onClick={() => setInquiryOpen(false)} aria-label="Close project inquiry" />
-        <div className="inquiry-panel-sheet">
+        <div className="inquiry-panel-sheet" ref={inquirySheetRef}>
           <div className="inquiry-panel-head">
             <div><p>Project inquiry</p><h2 id="project-inquiry-title">Begin with the way you want to live.</h2></div>
-            <button type="button" onClick={() => setInquiryOpen(false)} aria-label="Close project inquiry">Close</button>
+            <button ref={inquiryCloseRef} type="button" onClick={() => setInquiryOpen(false)} aria-label="Close project inquiry">Close</button>
           </div>
           <form onSubmit={handleInquirySubmit}>
             <label><span>Name</span><input name="name" autoComplete="name" required /></label>
