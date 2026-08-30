@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type FormEvent } from 'react';
 import { getHeroVerticalFocus } from './framing';
+import { InquiryMaterialCanvas } from './InquiryMaterialCanvas';
 import { LivingMaterialCanvas } from './LivingMaterialCanvas';
 import { NarrativeMaterialCanvas } from './NarrativeMaterialCanvas';
 import { renderApprovedLogoFrame, type LogoLayers } from './logoTimeline';
@@ -137,6 +138,10 @@ export function App() {
   const inquiryChapterRef = useRef<HTMLElement>(null);
   const narrativeCanvasRef = useRef<HTMLCanvasElement>(null);
   const narrativeCanvasControllerRef = useRef<NarrativeMaterialCanvas | null>(null);
+  const inquiryCanvasRef = useRef<HTMLCanvasElement>(null);
+  const inquiryCanvasControllerRef = useRef<InquiryMaterialCanvas | null>(null);
+  const footerCanvasRef = useRef<HTMLCanvasElement>(null);
+  const footerCanvasControllerRef = useRef<NarrativeMaterialCanvas | null>(null);
   const footerRef = useRef<HTMLElement>(null);
   const livedUseVideoRef = useRef<HTMLVideoElement>(null);
   const practiceVideoRef = useRef<HTMLVideoElement>(null);
@@ -350,6 +355,40 @@ export function App() {
   }, [forceReduced]);
 
   useEffect(() => {
+    const canvas = inquiryCanvasRef.current;
+    if (!canvas) return;
+    const reducedMotion = forceReduced || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    try {
+      const controller = new InquiryMaterialCanvas(canvas, reducedMotion);
+      inquiryCanvasControllerRef.current = controller;
+      return () => {
+        controller.destroy();
+        inquiryCanvasControllerRef.current = null;
+      };
+    } catch {
+      canvas.hidden = true;
+      inquiryCanvasControllerRef.current = null;
+    }
+  }, [forceReduced]);
+
+  useEffect(() => {
+    const canvas = footerCanvasRef.current;
+    if (!canvas) return;
+    const reducedMotion = forceReduced || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    try {
+      const controller = new NarrativeMaterialCanvas(canvas, { reducedMotion });
+      footerCanvasControllerRef.current = controller;
+      return () => {
+        controller.destroy();
+        footerCanvasControllerRef.current = null;
+      };
+    } catch {
+      canvas.hidden = true;
+      footerCanvasControllerRef.current = null;
+    }
+  }, [forceReduced]);
+
+  useEffect(() => {
     const chapter = servicesChapterRef.current;
     if (!chapter) return;
     const reduced = forceReduced || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -371,8 +410,14 @@ export function App() {
         : activeBase + smooth((localProgress - .22) / .56);
       const exit = desktop ? smooth((progress - .82) / .14) : 0;
       const chapterVisible = rect.top < viewport && rect.bottom > 0;
+      const kickerEntry = reduced ? 1 : smooth((entry - .04) / .42);
+      const titleEntry = reduced ? 1 : smooth((entry - .2) / .58);
+      const titleSecondEntry = reduced ? 1 : smooth((entry - .38) / .54);
 
       chapter.style.setProperty('--services-entry', String(entry));
+      chapter.style.setProperty('--services-kicker-entry', String(kickerEntry));
+      chapter.style.setProperty('--services-title-entry', String(titleEntry));
+      chapter.style.setProperty('--services-title-second-entry', String(titleSecondEntry));
       chapter.style.setProperty('--services-progress', String(progress));
       chapter.style.setProperty('--services-axis-progress', String(desktop ? clamp(progress * 1.08 + .08) : 1));
       chapter.style.setProperty('--services-exit', String(exit));
@@ -688,7 +733,6 @@ export function App() {
       const practiceRect = practice.getBoundingClientRect();
       const servicesRect = services.getBoundingClientRect();
       const inquiryRect = inquiry.getBoundingClientRect();
-      const footerRect = footer.getBoundingClientRect();
       const portfolioRect = portfolioStage.getBoundingClientRect();
       const portfolioDistance = Math.max(portfolioStage.offsetHeight - viewport, 1);
       const portfolioProgress = clamp(-portfolioRect.top / portfolioDistance);
@@ -725,18 +769,11 @@ export function App() {
       const portfolioField = sectionPresence(portfolioRect);
       const lifeField = sectionPresence(lifeStoryRect);
       const servicesField = sectionPresence(servicesRect);
-      const inquiryField = sectionPresence(inquiryRect);
-      const footerField = sectionPresence(footerRect);
-      const narrativeIntensity = reduced ? 1 : Math.max(portfolioField, lifeField, servicesField, inquiryField, footerField);
-      const closingField = Math.max(servicesField, inquiryField, footerField);
+      const inquiryArrival = reduced ? 1 : smooth((viewport * .9 - inquiryRect.top) / Math.max(viewport * .62, 1));
+      const narrativeIntensity = reduced ? 1 : Math.max(portfolioField, lifeField, servicesField * (1 - inquiryArrival));
       const servicesProgress = clamp(-servicesRect.top / Math.max(services.offsetHeight - viewport, 1));
-      const closingPhase = mix(.78, .42, smooth(inquiryProgress / .72));
-      const narrativePhase = closingField > .12 ? closingPhase : lifeField > .12 ? 1.35 : 0;
-      const narrativeProgress = closingField > .12
-        ? servicesField > inquiryField
-          ? servicesProgress
-          : clamp((viewport - inquiryRect.top) / Math.max(inquiryRect.height + footerRect.height, 1))
-        : lifeField > .12 ? lifeStoryProgress : portfolioProgress;
+      const narrativePhase = servicesField > .12 ? .78 : lifeField > .12 ? 1.35 : 0;
+      const narrativeProgress = servicesField > .12 ? servicesProgress : lifeField > .12 ? lifeStoryProgress : portfolioProgress;
       rootRef.current?.style.setProperty('--narrative-field-opacity', String(narrativeIntensity));
       narrativeCanvasControllerRef.current?.setState(narrativeProgress, narrativePhase, narrativeIntensity);
       const founderJourney = reduced ? 1 : clamp((viewport - founderRect.top) / (viewport + founderRect.height));
@@ -765,9 +802,16 @@ export function App() {
       rootRef.current?.style.setProperty('--practice-title-second-progress', String(practiceSecondLineProgress));
       rootRef.current?.style.setProperty('--practice-support-progress', String(practiceSupportProgress));
       rootRef.current?.style.setProperty('--inquiry-progress', String(inquiryProgress));
-      const footerProgress = reduced ? 1 : clamp((viewport - footerRect.top) / (viewport * .72));
+      inquiryCanvasControllerRef.current?.setProgress(inquiryProgress);
+      // Keep the fixed underlay completely dormant while the transparent
+      // services chapter is still visible. It may activate only once the warm
+      // inquiry has reached the viewport top and can fully conceal it.
+      const footerActive = reduced ? 1 : smooth(clamp((viewport * .02 - inquiryRect.top) / (viewport * .08)));
+      const footerProgress = reduced ? 1 : smooth(clamp((viewport - inquiryRect.bottom) / (viewport * .82)));
+      rootRef.current?.style.setProperty('--footer-active', String(footerActive));
       rootRef.current?.style.setProperty('--footer-progress', String(footerProgress));
-      rootRef.current?.style.setProperty('--footer-reveal', `${((1 - footerProgress) * 100).toFixed(2)}%`);
+      footer.style.pointerEvents = reduced || footerProgress > .84 ? 'auto' : 'none';
+      footerCanvasControllerRef.current?.setState(footerProgress, 1.12, 1);
 
       if (desktopProcession) {
         const entryProgress = smooth(clamp((viewport * .9 - portfolioRect.top) / (viewport * .62)));
@@ -1089,8 +1133,8 @@ export function App() {
       <section className="services-chapter" id="services" ref={servicesChapterRef} aria-labelledby="services-title">
         <div className="services-stage">
           <div className="services-heading">
-            <p>Ways to work with TTA</p>
-            <h2 id="services-title">One standard of attention.<br />Five ways to begin.</h2>
+            <p><span>Working with TTA</span></p>
+            <h2 id="services-title"><span><i>One standard of attention.</i></span><span><i>Five ways to begin.</i></span></h2>
           </div>
           <span className="services-axis" aria-hidden="true" />
           <ol className="services-index">
@@ -1109,6 +1153,7 @@ export function App() {
       </section>
 
       <div className="closing-stage">
+        <canvas className="inquiry-material" ref={inquiryCanvasRef} aria-hidden="true" />
         <section className="inquiry-chapter" id="inquiry" ref={inquiryChapterRef} aria-labelledby="inquiry-title">
           <div className="inquiry-copy">
             <p>For a considered home, workplace or creative space</p>
@@ -1122,12 +1167,15 @@ export function App() {
         </section>
 
         <footer className="site-footer" ref={footerRef}>
-          <div className="footer-topline">
-            <div className="footer-column"><p>Studio</p><span>Residential and commercial interiors<br />Lagos, Nigeria</span></div>
-            <div className="footer-column"><p>Connect</p><a href="mailto:ttadesignsng@gmail.com">ttadesignsng@gmail.com ↗</a><a href="tel:+2348144581080">+234 814 458 1080</a><a href="https://www.instagram.com/ttadesigns/" target="_blank" rel="noreferrer">Instagram ↗</a></div>
+          <canvas className="footer-material" ref={footerCanvasRef} aria-hidden="true" />
+          <div className="footer-parallax-content">
+            <div className="footer-topline">
+              <div className="footer-column"><p>Studio</p><span>Residential and commercial interiors<br />Lagos, Nigeria</span></div>
+              <div className="footer-column"><p>Connect</p><a href="mailto:ttadesignsng@gmail.com">ttadesignsng@gmail.com ↗</a><a href="tel:+2348144581080">+234 814 458 1080</a><a href="https://www.instagram.com/ttadesigns/" target="_blank" rel="noreferrer">Instagram ↗</a></div>
+            </div>
+            <a className="footer-wordmark" href="#top" aria-label="TTA Designs — back to top"><img src="/assets/tta-wordmark-white.png" alt="TTA Designs" /></a>
+            <div className="footer-meta"><span>Spaces shaped around the way life is lived.</span><span>Private cinematic concept · © TTA Designs</span><span>Made by Bevamped</span></div>
           </div>
-          <a className="footer-wordmark" href="#top" aria-label="TTA Designs — back to top"><img src="/assets/tta-wordmark-white.png" alt="TTA Designs" /></a>
-          <div className="footer-meta"><span>Spaces shaped around the way life is lived.</span><span>Private cinematic concept · © TTA Designs</span><span>Made by Bevamped</span></div>
         </footer>
       </div>
 
