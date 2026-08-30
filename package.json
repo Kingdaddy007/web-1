@@ -17,9 +17,12 @@
     "vite": "latest"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.37.1",
+    "@openai/sites-vite-plugin": "^0.2.0",
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "@types/three": "latest",
-    "typescript": "latest"
+    "typescript": "latest",
+    "wrangler": "^4.92.0"
   }
 }
