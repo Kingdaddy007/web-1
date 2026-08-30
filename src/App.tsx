@@ -393,7 +393,10 @@ export function App() {
         const rawAxisCorrection = logoRef.current.offsetWidth * (0.5 - LOGO_AXIS);
         const maxCorrection = Math.max(0, (window.innerWidth - logoRef.current.offsetWidth) * 0.44);
         const initialAxisCorrection = Math.min(rawAxisCorrection, maxCorrection);
-        const logoRelease = reduced ? Number(registration >= 0.9) : smooth((registration - 0.7) / 0.26);
+        // Clear the assembled center mark before the foreground aperture opens.
+        // Letting both transitions overlap made the shrinking wordmark read as
+        // a second logo briefly reappearing on the television.
+        const logoRelease = reduced ? Number(registration >= 0.9) : smooth((registration - 0.38) / 0.3);
         logoRef.current.style.left = `calc(50% + ${(initialAxisCorrection * (1 - cameraEase)).toFixed(2)}px)`;
         logoRef.current.style.top = `${mix(48, 46.2, cameraEase).toFixed(2)}%`;
         logoRef.current.style.transform = `translate(-50%, -50%) scale(${mix(1, 0.265, cameraEase).toFixed(4)})`;
