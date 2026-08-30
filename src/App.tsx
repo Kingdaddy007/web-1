@@ -3,6 +3,7 @@ import { getHeroVerticalFocus } from './framing';
 import { InquiryMaterialCanvas } from './InquiryMaterialCanvas';
 import { LivingMaterialCanvas } from './LivingMaterialCanvas';
 import { NarrativeMaterialCanvas } from './NarrativeMaterialCanvas';
+import { ServiceMorphCanvas } from './ServiceMorphCanvas';
 import { renderApprovedLogoFrame, type LogoLayers } from './logoTimeline';
 
 const TOTAL = 7.15;
@@ -142,6 +143,8 @@ export function App() {
   const inquiryCanvasControllerRef = useRef<InquiryMaterialCanvas | null>(null);
   const footerCanvasRef = useRef<HTMLCanvasElement>(null);
   const footerCanvasControllerRef = useRef<NarrativeMaterialCanvas | null>(null);
+  const serviceMorphCanvasRef = useRef<HTMLCanvasElement>(null);
+  const serviceMorphControllerRef = useRef<ServiceMorphCanvas | null>(null);
   const footerRef = useRef<HTMLElement>(null);
   const livedUseVideoRef = useRef<HTMLVideoElement>(null);
   const practiceVideoRef = useRef<HTMLVideoElement>(null);
@@ -389,6 +392,23 @@ export function App() {
   }, [forceReduced]);
 
   useEffect(() => {
+    const canvas = serviceMorphCanvasRef.current;
+    if (!canvas) return;
+    const reducedMotion = forceReduced || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    try {
+      const controller = new ServiceMorphCanvas(canvas, reducedMotion);
+      serviceMorphControllerRef.current = controller;
+      return () => {
+        controller.destroy();
+        serviceMorphControllerRef.current = null;
+      };
+    } catch {
+      canvas.hidden = true;
+      serviceMorphControllerRef.current = null;
+    }
+  }, [forceReduced]);
+
+  useEffect(() => {
     const chapter = servicesChapterRef.current;
     if (!chapter) return;
     const reduced = forceReduced || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -413,6 +433,8 @@ export function App() {
       const kickerEntry = reduced ? 1 : smooth((entry - .04) / .42);
       const titleEntry = reduced ? 1 : smooth((entry - .2) / .58);
       const titleSecondEntry = reduced ? 1 : smooth((entry - .38) / .54);
+
+      serviceMorphControllerRef.current?.setService(desktop ? activeFloat : 2);
 
       chapter.style.setProperty('--services-entry', String(entry));
       chapter.style.setProperty('--services-kicker-entry', String(kickerEntry));
@@ -1133,8 +1155,11 @@ export function App() {
       <section className="services-chapter" id="services" ref={servicesChapterRef} aria-labelledby="services-title">
         <div className="services-stage">
           <div className="services-heading">
-            <p><span>Working with TTA</span></p>
-            <h2 id="services-title"><span><i>One standard of attention.</i></span><span><i>Five ways to begin.</i></span></h2>
+            <p><span>TTA design services</span></p>
+            <h2 id="services-title"><span><i>Five ways we can</i></span><span><i>work with you.</i></span></h2>
+          </div>
+          <div className="service-morph" aria-hidden="true">
+            <canvas ref={serviceMorphCanvasRef} />
           </div>
           <span className="services-axis" aria-hidden="true" />
           <ol className="services-index">
